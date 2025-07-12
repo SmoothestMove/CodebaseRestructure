@@ -1,0 +1,1 @@
+Purpose: Contains static assets served directly by the web server. These files are publicly accessible and not processed by the build system.

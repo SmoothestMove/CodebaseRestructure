@@ -1,0 +1,1 @@
+Purpose: Highly reusable, atomic components (e.g., Button, Input, Card, Modal) that can be used throughout the application.

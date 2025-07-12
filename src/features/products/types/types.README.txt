@@ -1,0 +1,1 @@
+Purpose: TypeScript interfaces and types specific to products feature.

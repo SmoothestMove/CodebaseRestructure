@@ -1,0 +1,1 @@
+Purpose: General utility functions and constants that can be used throughout the application.

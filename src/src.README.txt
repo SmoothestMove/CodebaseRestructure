@@ -1,0 +1,1 @@
+Purpose: The core of your application code. Contains all React components, logic, and application-specific assets.

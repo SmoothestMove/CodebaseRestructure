@@ -1,0 +1,1 @@
+Purpose: Authentication feature containing login, registration, and user management functionality.

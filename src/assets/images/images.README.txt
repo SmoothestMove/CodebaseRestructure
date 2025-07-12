@@ -1,0 +1,1 @@
+Purpose: Static image files (logos, backgrounds, etc.) used throughout the application.

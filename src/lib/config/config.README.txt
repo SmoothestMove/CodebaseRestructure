@@ -1,0 +1,1 @@
+Purpose: Application-wide configuration variables and environment-specific settings.

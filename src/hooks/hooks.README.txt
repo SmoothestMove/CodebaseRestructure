@@ -1,0 +1,1 @@
+Purpose: Global custom React hooks that can be used across multiple features or components.

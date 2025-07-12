@@ -1,0 +1,1 @@
+// Products listing page component.

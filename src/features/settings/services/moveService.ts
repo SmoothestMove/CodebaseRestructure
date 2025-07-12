@@ -1,0 +1,112 @@
+import { collection, doc, getDoc, getDocs, query, where, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '../index';
+
+export interface Move {
+  id: string;
+  moveCode: string;
+  ownerId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  participants: Record<string, boolean>;
+}
+
+const generateMoveCode = (): string => {
+  // Generate a random 6-character alphanumeric code
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
+export const getUserMoves = async (userId: string): Promise<Move[]> => {
+  const movesRef = collection(firestore, 'moves');
+  const q = query(movesRef, where(`participants.${userId}`, '==', true));
+  const querySnapshot = await getDocs(q);
+  
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  } as Move));
+};
+
+export const createMove = async (userId: string): Promise<Move> => {
+  // Check if user already has an active move
+  const existingMoves = await getUserMoves(userId);
+  if (existingMoves.length > 0) {
+    throw new Error('You are already part of a move. Please complete or leave your current move before creating a new one.');
+  }
+
+  const movesRef = collection(firestore, 'moves');
+  const moveCode = generateMoveCode();
+  const newMove = {
+    moveCode,
+    ownerId: userId,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    participants: { [userId]: true },
+  };
+  
+  const moveDoc = await addDoc(movesRef, newMove);
+  
+  return {
+    id: moveDoc.id,
+    ...newMove,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+};
+
+export const joinMove = async (moveCode: string, userId: string): Promise<Move | null> => {
+  // Check if user already has an active move
+  const existingMoves = await getUserMoves(userId);
+  if (existingMoves.length > 0) {
+    throw new Error('You are already part of a move. Please complete or leave your current move before joining another one.');
+  }
+
+  // Find the move by code
+  const movesRef = collection(firestore, 'moves');
+  const q = query(movesRef, where('moveCode', '==', moveCode));
+  const querySnapshot = await getDocs(q);
+  
+  if (querySnapshot.empty) {
+    throw new Error('Invalid move code');
+  }
+  
+  const moveDoc = querySnapshot.docs[0];
+  const moveData = moveDoc.data() as Omit<Move, 'id'>;
+  
+  // Add user to participants if not already a participant
+  if (!moveData.participants[userId]) {
+    await updateDoc(doc(firestore, 'moves', moveDoc.id), {
+      [`participants.${userId}`]: true,
+      updatedAt: serverTimestamp(),
+    });
+  }
+  
+  // Return the updated move
+  const updatedMove = await getMoveById(moveDoc.id);
+  return updatedMove;
+};
+
+export const getMoveById = async (moveId: string): Promise<Move | null> => {
+  const moveDoc = await getDoc(doc(firestore, 'moves', moveId));
+  if (!moveDoc.exists()) {
+    return null;
+  }
+  return { id: moveDoc.id, ...moveDoc.data() } as Move;
+};
+
+export const getMoveByCode = async (moveCode: string): Promise<Move | null> => {
+  const movesRef = collection(firestore, 'moves');
+  const q = query(movesRef, where('moveCode', '==', moveCode));
+  const querySnapshot = await getDocs(q);
+  
+  if (querySnapshot.empty) {
+    return null;
+  }
+  
+  const moveDoc = querySnapshot.docs[0];
+  return { id: moveDoc.id, ...moveDoc.data() } as Move;
+};

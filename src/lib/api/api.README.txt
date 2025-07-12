@@ -1,0 +1,1 @@
+Purpose: API client setup (e.g., Axios instance, fetch wrapper) and general API utility functions.

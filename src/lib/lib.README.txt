@@ -1,0 +1,1 @@
+Purpose: Contains third-party library configurations, wrappers, or low-level utilities that don't depend on React.

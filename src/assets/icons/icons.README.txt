@@ -1,0 +1,1 @@
+Purpose: SVG icons or icon sprite sheets for UI elements.
