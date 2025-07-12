@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Alert from '../components/Alert';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import Alert from '@/components/common/Alert';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -12,11 +12,11 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, firestore } from '../index';
-import { createMove, joinMove, getUserMoves } from '../services/moveService';
-import { useAuth } from '../context/AuthContext';
-import { IconSmoothMovesLogo, IconGoogle } from '../constants'; 
+import { createMove, joinMove, getUserMoves } from '@/features/settings/services/moveService';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { IconSmoothMovesLogo, IconGoogle } from '@/lib/config/constants'; 
 import { FaSignInAlt, FaUserPlus, FaIdBadge, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useSettings } from '../hooks/useSettings';
+import { useSettings } from '@/features/settings/hooks/useSettings';
 
 type AuthMode = 'signin' | 'register';
 type MoveMode = 'new' | 'join';

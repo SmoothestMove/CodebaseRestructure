@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { IconCheck, IconXMark, IconPlus, IconCamera } from '../constants'; 
+import { IconCheck, IconXMark, IconPlus, IconCamera } from '@/lib/config/constants'; 
 
 interface AlertProps {
   message: string;

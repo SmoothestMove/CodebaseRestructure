@@ -1,11 +1,11 @@
 import React from 'react';
-import { useMove } from '../contexts/MoveContext';
+import { useMove } from '@/features/settings/hooks/MoveContext';
 import { Link } from 'react-router-dom';
-import { useBoxes } from '../hooks/useBoxes'; 
-import { ItemStatus } from '../types';
-import { IconListBullet, IconCamera } from '../constants'; 
-import Button from '../components/Button';
-import { MOVING_STATUS_LABELS } from '../utils/statusUtils'; 
+import { useBoxes } from '@/features/boxes/hooks/useBoxes'; 
+import { ItemStatus } from '@/types';
+import { IconListBullet, IconCamera } from '@/lib/config/constants'; 
+import Button from '@/components/common/Button';
+import { MOVING_STATUS_LABELS } from '@/utils/statusUtils'; 
 import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaQrcode, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
 import { FaHouseCircleCheck, FaUserPlus } from 'react-icons/fa6';
 

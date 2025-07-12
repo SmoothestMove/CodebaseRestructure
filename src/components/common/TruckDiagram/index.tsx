@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { TRUCK_ZONES, Box as AppBox } from '../types'; 
-import { IconBox } from '../constants';
-import { useTheme } from '../hooks/useTheme'; // Import useTheme
+import { TRUCK_ZONES, Box as AppBox } from '@/types'; 
+import { IconBox } from '@/lib/config/constants';
+import { useTheme } from '@/hooks/useTheme'; // Import useTheme
 
 type TruckZoneName = typeof TRUCK_ZONES[number];
 

@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
-import { useOwners } from '../hooks/useOwners';
-import { Owner } from '../types'; 
-import { IconPlus, IconCheck } from '../constants';
-import Alert from './Alert';
+import Modal from '@/components/common/Modal';
+import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { Owner } from '@/types'; 
+import { IconPlus, IconCheck } from '@/lib/config/constants';
+import Alert from '@/components/common/Alert';
 
 interface AddSpaceModalProps {
   isOpen: boolean;

@@ -1,19 +1,19 @@
 
 // components/OwnerCard.tsx
 import React, { useState } from 'react';
-import { Owner } from '../types';
-import Button from './Button';
-import { IconTrash } from '../constants';
-import { useOwners } from '../hooks/useOwners';
-import { useAuth } from '../context/AuthContext';
-import { useBoxes } from '../hooks/useBoxes';
-import { Box } from '../types';
+import { Owner } from '@/types';
+import Button from '@/components/common/Button';
+import { IconTrash } from '@/lib/config/constants';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { Box } from '@/types';
 import { FaPrint, FaCouch, FaBath, FaChair, FaRedo, FaUtensils, FaLaptop, FaWarehouse } from 'react-icons/fa'; 
 import { BsFillHouseDownFill } from "react-icons/bs";
-import { addPreppedBoxesForPrint } from '../services/boxService';
-import { generateLabelPdf } from '../utils/pdfGenerator'; 
-import PrintLabelsModal from './PrintLabelsModal';
-import ReprintBatchesModal from './ReprintBatchesModal';
+import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
+import { generateLabelPdf } from '@/utils/pdfGenerator'; 
+import PrintLabelsModal from '@/features/owners/components/PrintLabelsModal';
+import ReprintBatchesModal from '@/features/owners/components/ReprintBatchesModal';
 
 interface OwnerCardProps {
   owner: Owner;

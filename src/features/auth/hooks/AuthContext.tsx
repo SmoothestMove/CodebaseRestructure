@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../index';
-import { getSettings, saveSettings } from '../services/settingsService';
+import { auth } from '@/main';
+import { getSettings, saveSettings } from '@/features/settings/services/settingsService';
 
 interface AuthContextType {
   user: User | null;

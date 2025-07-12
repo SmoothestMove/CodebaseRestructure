@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect, useCallback, useContext, createContext, ReactNode } from 'react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { firestore as db } from '../index';
-import { useMove } from '../contexts/MoveContext';
-import { Owner, NewOwnerData } from '../types';
+import { firestore as db } from '@/main';
+import { useMove } from '@/features/settings/hooks/MoveContext';
+import { Owner, NewOwnerData } from '@/types';
 import * as ownerService from '../services/ownerService';
-import { PREDEFINED_COMMUNAL_ROOMS } from '../constants';
+import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 
 interface OwnersContextType {
   owners: Owner[];

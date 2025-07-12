@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal';
-import Button from './Button';
-import Input from './Input';
-import { Box } from '../types';
-import { IconCheck, IconHome, IconBox as IconBoxCustom } from '../constants'; 
-import Alert from './Alert';
+import Modal from '@/components/common/Modal';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import { Box } from '@/types';
+import { IconCheck, IconHome, IconBox as IconBoxCustom } from '@/lib/config/constants'; 
+import Alert from '@/components/common/Alert';
 
 interface QuickUnloadOptionsModalProps {
   isOpen: boolean;

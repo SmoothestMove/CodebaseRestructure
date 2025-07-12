@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBoxes } from '../hooks/useBoxes'; // Renamed from useItems
-import { useOwners } from '../hooks/useOwners';
-import { NewBoxData, Box } from '../types'; // Renamed Item to Box, NewItemData to NewBoxData
-import QRCodeDisplay from '../components/QRCodeDisplay';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Textarea from '../components/Textarea';
-import Select from '../components/Select';
-import Alert from '../components/Alert';
-import { IconPlus, IconQrCode } from '../constants';
-import { getItemStatusDisplayLabel } from '../utils/statusUtils';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes'; // Renamed from useItems
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { NewBoxData, Box } from '@/types'; // Renamed Item to Box, NewItemData to NewBoxData
+import QRCodeDisplay from '@/components/common/QRCodeDisplay';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import Textarea from '@/components/common/Textarea';
+import Select from '@/components/common/Select';
+import Alert from '@/components/common/Alert';
+import { IconPlus, IconQrCode } from '@/lib/config/constants';
+import { getItemStatusDisplayLabel } from '@/utils/statusUtils';
 
 const PackBoxPage: React.FC = () => { // Renamed from AddItemPage
   const [name, setName] = useState('');

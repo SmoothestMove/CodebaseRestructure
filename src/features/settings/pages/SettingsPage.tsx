@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useSettings } from '../hooks/useSettings';
-import { useBoxes } from '../hooks/useBoxes';
-import { useOwners } from '../hooks/useOwners';
-import { useTheme } from '../hooks/useTheme'; 
-import { getMoveById } from '../services/moveService';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Modal from '../components/Modal';
-import Alert from '../components/Alert';
-import { IconSettings, IconTrash } from '../constants';
-import { PREDEFINED_COMMUNAL_ROOMS } from '../constants';
+import { useSettings } from '@/features/settings/hooks/useSettings';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useTheme } from '@/hooks/useTheme'; 
+import { getMoveById } from '@/features/settings/services/moveService';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import Modal from '@/components/common/Modal';
+import Alert from '@/components/common/Alert';
+import { IconSettings, IconTrash } from '@/lib/config/constants';
+import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner } from 'react-icons/fa'; 
 
 interface AppMetadata {

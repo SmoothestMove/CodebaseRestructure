@@ -1,5 +1,5 @@
 import { collection, doc, getDoc, getDocs, query, where, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { firestore } from '../index';
+import { firestore } from '@/main';
 
 export interface Move {
   id: string;

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { doc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { firestore } from '../index';
-import { Move } from '../services/moveService';
+import { firestore } from '@/main';
+import { Move } from '@/features/settings/services/moveService';
 
 type MoveUpdate = Partial<Omit<Move, 'id' | 'createdAt' | 'updatedAt'>>;
 

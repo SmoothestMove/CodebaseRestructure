@@ -14,9 +14,9 @@ import {
   arrayUnion,
   writeBatch,
 } from 'firebase/firestore';
-import { firestore as db } from '../index'; // Corrected path
-import { Box, NewBoxData, ScanEntry, ItemStatus } from '../types';
-import { getOwnerByUid } from './ownerService'; // Assumes ownerService will be refactored to be async
+import { firestore as db } from '@/main'; // Corrected path
+import { Box, NewBoxData, ScanEntry, ItemStatus } from '@/types';
+import { getOwnerByUid } from '@/features/owners/services/ownerService'; // Assumes ownerService will be refactored to be async
 
 const getBoxesCollection = (moveId: string) => collection(db, 'moves', moveId, 'boxes');
 

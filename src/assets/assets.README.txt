@@ -1,1 +1,0 @@
-Purpose: Contains static assets like images, fonts, and icons that are imported into your React components.

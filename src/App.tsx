@@ -1,23 +1,23 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import DashboardPage from './pages/DashboardPage';
-import ScanPage from './pages/ScanPage';
-import BoxDetailsPage from './pages/BoxDetailsPage';
-import BoxesListPage from './pages/BoxesListPage';
-import ManageOwnersPage from './pages/ManageOwnersPage';
-import ManageSpacesPage from './pages/ManageSpacesPage';
-import TruckLoadPage from './pages/TruckLoadPage';
-import SettingsPage from './pages/SettingsPage';
-import AuthPage from './pages/AuthPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import { BoxesProvider } from './hooks/useBoxes';
-import { OwnersProvider } from './hooks/useOwners';
-import { SettingsProvider } from './hooks/useSettings';
-import { useAuth } from './context/AuthContext';
-import { MoveProvider } from './contexts/MoveContext';
-import AddOwnerModal from './components/AddOwnerModal';
+import Navbar from '@/components/layout/Header';
+import DashboardPage from '@/features/settings/pages/DashboardPage';
+import ScanPage from '@/features/boxes/pages/ScanPage';
+import BoxDetailsPage from '@/features/boxes/pages/BoxDetailsPage';
+import BoxesListPage from '@/features/boxes/pages/BoxesListPage';
+import ManageOwnersPage from '@/features/owners/pages/ManageOwnersPage';
+import ManageSpacesPage from '@/features/owners/pages/ManageSpacesPage';
+import TruckLoadPage from '@/features/boxes/pages/TruckLoadPage';
+import SettingsPage from '@/features/settings/pages/SettingsPage';
+import AuthPage from '@/features/auth/pages/AuthPage';
+import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
+import { BoxesProvider } from '@/features/boxes/hooks/useBoxes';
+import { OwnersProvider } from '@/features/owners/hooks/useOwners';
+import { SettingsProvider } from '@/features/settings/hooks/useSettings';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { MoveProvider } from '@/features/settings/hooks/MoveContext';
+import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 
 const MainAppLayout: React.FC = () => {
   const { moveId, loading: authLoading, currentUser } = useAuth();

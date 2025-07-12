@@ -1,7 +1,7 @@
 import React from 'react';
-import { Owner, Box } from '../types';
-import Modal from './Modal';
-import Button from './Button';
+import { Owner, Box } from '@/types';
+import Modal from '@/components/common/Modal';
+import Button from '@/components/common/Button';
 import { FaPrint, FaBoxOpen, FaHashtag } from 'react-icons/fa'; 
 
 interface Batch {

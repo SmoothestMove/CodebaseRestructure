@@ -1,7 +1,7 @@
 // utils/pdfGenerator.ts
 
 import { jsPDF } from 'jspdf';
-import { Owner, Box } from '../types'; 
+import { Owner, Box } from '@/types'; 
 
 // Declare QRious globally as it's loaded via CDN in index.html
 declare global {

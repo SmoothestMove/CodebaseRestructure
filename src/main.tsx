@@ -1,15 +1,15 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from '@/App';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
-import { ThemeProvider } from './hooks/useTheme';
+import { AuthProvider } from '@/features/auth/hooks/AuthContext'; // Import AuthProvider
+import { ThemeProvider } from '@/hooks/useTheme';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { firebaseConfig } from './constants';
+import { firebaseConfig } from '@/lib/config/constants';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

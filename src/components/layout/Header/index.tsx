@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom'; 
-import { IconHome, IconListBullet, IconSmoothMovesLogo, IconSettings } from '../constants'; 
+import { IconHome, IconListBullet, IconSmoothMovesLogo, IconSettings } from '@/lib/config/constants'; 
 import { FaTruck } from 'react-icons/fa'; 
 import { FaUserGroup, FaHouseUser } from 'react-icons/fa6';
 import { BsQrCodeScan } from 'react-icons/bs'; 

@@ -1,15 +1,15 @@
 
 import React, { useState, useMemo } from 'react';
-import { useBoxes } from '../hooks/useBoxes'; 
-import BoxCard from '../components/BoxCard'; 
-import Input from '../components/Input';
-import Select from '../components/Select';
-import { ItemStatus } from '../types';
-import Button from '../components/Button';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes'; 
+import BoxCard from '@/features/boxes/components/BoxCard'; 
+import Input from '@/components/common/Input';
+import Select from '@/components/common/Select';
+import { ItemStatus } from '@/types';
+import Button from '@/components/common/Button';
 import { Link } from 'react-router-dom';
-import { IconQrCode, IconListBullet } from '../constants'; 
+import { IconQrCode, IconListBullet } from '@/lib/config/constants'; 
 import { FaPrint } from 'react-icons/fa'; 
-import { getItemStatusOptionsForSelect } from '../utils/statusUtils';
+import { getItemStatusOptionsForSelect } from '@/utils/statusUtils';
 
 
 const BoxesListPage: React.FC = () => { 

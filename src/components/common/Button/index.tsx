@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { IconCheck } from '../constants'; 
+import { IconCheck } from '@/lib/config/constants'; 
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost';

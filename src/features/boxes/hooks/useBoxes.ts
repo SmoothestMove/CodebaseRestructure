@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect, useCallback, useContext, createContext, ReactNode } from 'react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { firestore as db } from '../index';
-import { useMove } from '../contexts/MoveContext';
-import { Box, NewBoxData, ItemStatus } from '../types';
-import * as boxService from '../services/boxService';
+import { firestore as db } from '@/main';
+import { useMove } from '@/features/settings/hooks/MoveContext';
+import { Box, NewBoxData, ItemStatus } from '@/types';
+import * as boxService from '@/features/boxes/services/boxService';
 
 interface BoxesContextType {
   boxes: Box[];

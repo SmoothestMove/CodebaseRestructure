@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useContext, createContext, ReactNode } from 'react';
-import { AppSettings } from '../types';
-import * as settingsService from '../services/settingsService';
+import { AppSettings } from '@/types';
+import * as settingsService from '@/features/settings/services/settingsService';
 
 interface SettingsContextType {
   settings: AppSettings;

@@ -1,17 +1,17 @@
 
 import React, { useState, useMemo } from 'react';
-import { useOwners } from '../hooks/useOwners';
-import { Owner } from '../types';
-import Button from '../components/Button';
-import OwnerCard from '../components/OwnerCard';
-import AddSpaceModal from '../components/AddSpaceModal'; 
-import Alert from '../components/Alert';
-import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '../constants';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { Owner } from '@/types';
+import Button from '@/components/common/Button';
+import OwnerCard from '@/features/owners/components/OwnerCard';
+import AddSpaceModal from '@/features/owners/components/AddSpaceModal'; 
+import Alert from '@/components/common/Alert';
+import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 import { FaHouseUser } from 'react-icons/fa6'; 
-import { addPreppedBoxesForPrint } from '../services/boxService';
-import { generateLabelPdf } from '../utils/pdfGenerator';
-import BatchPrintConfirmationModal from '../components/BatchPrintConfirmationModal';
-import { useSettings } from '../hooks/useSettings'; 
+import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
+import { generateLabelPdf } from '@/utils/pdfGenerator';
+import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrintConfirmationModal';
+import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
 
 const ManageSpacesPage: React.FC = () => {

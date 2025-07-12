@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
-import { Owner } from '../types';
-import { IconQrCode, IconCheck } from '../constants';
-import Alert from './Alert';
-import { useSettings } from '../hooks/useSettings'; // Import useSettings
+import Modal from '@/components/common/Modal';
+import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
+import { Owner } from '@/types';
+import { IconQrCode, IconCheck } from '@/lib/config/constants';
+import Alert from '@/components/common/Alert';
+import { useSettings } from '@/features/settings/hooks/useSettings'; // Import useSettings
 
 interface PrintLabelsModalProps {
   isOpen: boolean;

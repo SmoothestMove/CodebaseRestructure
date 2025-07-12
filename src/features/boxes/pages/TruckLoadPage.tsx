@@ -1,12 +1,12 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useBoxes } from '../hooks/useBoxes';
-import { Box, ItemStatus, TruckZone, TRUCK_ZONES } from '../types';
-import TruckDiagram, { ZoneOccupancyInfo } from '../components/TruckDiagram'; 
-import BoxCard from '../components/BoxCard';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import { IconListBullet } from '../constants';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { Box, ItemStatus, TruckZone, TRUCK_ZONES } from '@/types';
+import TruckDiagram, { ZoneOccupancyInfo } from '@/components/common/TruckDiagram'; 
+import BoxCard from '@/features/boxes/components/BoxCard';
+import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
+import { IconListBullet } from '@/lib/config/constants';
 import { FaSearch, FaTimesCircle, FaTruck } from 'react-icons/fa'; 
 import { Link } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState, useId } from 'react';
-import { IconSpinner, IconWarning } from '../constants';
+import { IconSpinner, IconWarning } from '@/lib/config/constants';
 
 declare global {
   interface Window {

@@ -1,4 +1,4 @@
-import { ItemStatus } from '../types';
+import { ItemStatus } from '@/types';
 
 export const MOVING_STATUS_LABELS: Record<ItemStatus, string> = {
   [ItemStatus.PREPARED]: 'Prepared',

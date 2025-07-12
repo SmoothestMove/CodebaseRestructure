@@ -1,8 +1,8 @@
 
 import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, runTransaction, query, where } from 'firebase/firestore';
-import { firestore as db } from '../index';
-import { Owner, NewOwnerData } from '../types';
-import { PREDEFINED_COMMUNAL_ROOMS } from '../constants';
+import { firestore as db } from '@/main';
+import { Owner, NewOwnerData } from '@/types';
+import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 
 // Helper to get the owners subcollection for a given move
 const getOwnersCollection = (moveId: string) => collection(db, 'moves', moveId, 'owners');

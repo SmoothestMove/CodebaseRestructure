@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
-import { useTheme } from '../hooks/useTheme'; // Import useTheme
+import { useTheme } from '@/hooks/useTheme'; // Import useTheme
 
 declare global {
   interface Window {

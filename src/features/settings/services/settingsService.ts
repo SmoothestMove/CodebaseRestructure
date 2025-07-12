@@ -1,6 +1,6 @@
 
-import { AppSettings } from '../types';
-import { SETTINGS_LOCAL_STORAGE_KEY } from '../constants';
+import { AppSettings } from '@/types';
+import { SETTINGS_LOCAL_STORAGE_KEY } from '@/lib/config/constants';
 
 const DEFAULT_SETTINGS: AppSettings = {
   defaultBatchPrintCount: 9,

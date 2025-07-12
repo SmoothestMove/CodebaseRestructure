@@ -1,13 +1,13 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, ItemStatus } from '../types'; 
-import QRCodeDisplay from './QRCodeDisplay';
-import { IconEdit, IconTrash, IconExternalLink } from '../constants';
-import { useBoxes } from '../hooks/useBoxes'; 
-import { useOwners } from '../hooks/useOwners';
-import Button from './Button'; 
-import { getItemStatusDisplayLabel } from '../utils/statusUtils'; 
+import { Box, ItemStatus } from '@/types'; 
+import QRCodeDisplay from '@/components/common/QRCodeDisplay';
+import { IconEdit, IconTrash, IconExternalLink } from '@/lib/config/constants';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes'; 
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import Button from '@/components/common/Button'; 
+import { getItemStatusDisplayLabel } from '@/utils/statusUtils'; 
 
 interface BoxCardProps { 
   box: Box; 

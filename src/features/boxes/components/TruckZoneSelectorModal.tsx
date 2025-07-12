@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal';
-import Button from './Button';
-import TruckDiagram from './TruckDiagram';
-import { Box, TruckZone, VerticalPosition, TRUCK_ZONES } from '../types';
-import { IconCheck } from '../constants';
+import Modal from '@/components/common/Modal';
+import Button from '@/components/common/Button';
+import TruckDiagram from '@/components/common/TruckDiagram';
+import { Box, TruckZone, VerticalPosition, TRUCK_ZONES } from '@/types';
+import { IconCheck } from '@/lib/config/constants';
 
 interface TruckZoneSelectorModalProps {
   isOpen: boolean;

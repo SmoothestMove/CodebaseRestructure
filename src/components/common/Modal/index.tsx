@@ -1,7 +1,7 @@
 
 import React, { ReactNode, useEffect, useState } from 'react';
-import Button from './Button'; 
-import { IconXMark } from '../constants'; 
+import Button from '@/components/common/Button'; 
+import { IconXMark } from '@/lib/config/constants'; 
 
 interface ModalProps {
   isOpen: boolean;

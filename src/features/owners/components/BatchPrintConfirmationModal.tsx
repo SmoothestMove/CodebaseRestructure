@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal';
-import Button from './Button';
-import { Owner } from '../types';
-import { IconQrCode, IconCheck } from '../constants';
-import Alert from './Alert';
-import { useSettings } from '../hooks/useSettings';
+import Modal from '@/components/common/Modal';
+import Button from '@/components/common/Button';
+import { Owner } from '@/types';
+import { IconQrCode, IconCheck } from '@/lib/config/constants';
+import Alert from '@/components/common/Alert';
+import { useSettings } from '@/features/settings/hooks/useSettings';
 
 interface BatchPrintConfirmationModalProps {
   isOpen: boolean;

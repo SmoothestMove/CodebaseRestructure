@@ -1,17 +1,17 @@
 
 import React, { useState, useMemo } from 'react';
-import { useOwners } from '../hooks/useOwners';
-import { Owner } from '../types';
-import Button from '../components/Button';
-import AddOwnerModal from '../components/AddOwnerModal';
-import OwnerCard from '../components/OwnerCard';
-import BatchPrintConfirmationModal from '../components/BatchPrintConfirmationModal';
-import Alert from '../components/Alert';
-import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '../constants';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { Owner } from '@/types';
+import Button from '@/components/common/Button';
+import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
+import OwnerCard from '@/features/owners/components/OwnerCard';
+import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrintConfirmationModal';
+import Alert from '@/components/common/Alert';
+import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 import { FaUserGroup } from 'react-icons/fa6'; 
-import { addPreppedBoxesForPrint } from '../services/boxService';
-import { generateLabelPdf } from '../utils/pdfGenerator';
-import { useSettings } from '../hooks/useSettings'; 
+import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
+import { generateLabelPdf } from '@/utils/pdfGenerator';
+import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
 const ManageOwnersPage: React.FC = () => {
   const { owners, isLoading: isLoadingOwners } = useOwners();

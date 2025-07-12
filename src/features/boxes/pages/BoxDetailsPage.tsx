@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useBoxes } from '../hooks/useBoxes';
-import { useOwners } from '../hooks/useOwners';
-import { Box, ItemStatus, NewBoxData, TruckZone, VerticalPosition } from '../types';
-import QRCodeDisplay from '../components/QRCodeDisplay';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Textarea from '../components/Textarea';
-import Select from '../components/Select';
-import Modal from '../components/Modal';
-import Alert from '../components/Alert';
-import TruckZoneSelectorModal from '../components/TruckZoneSelectorModal';
-import { IconChevronLeft, IconEdit, IconCamera, IconTrash, IconCheck, IconQrCode } from '../constants';
-import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '../utils/statusUtils';
-import { useAuth } from '../context/AuthContext';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { Box, ItemStatus, NewBoxData, TruckZone, VerticalPosition } from '@/types';
+import QRCodeDisplay from '@/components/common/QRCodeDisplay';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import Textarea from '@/components/common/Textarea';
+import Select from '@/components/common/Select';
+import Modal from '@/components/common/Modal';
+import Alert from '@/components/common/Alert';
+import TruckZoneSelectorModal from '@/features/boxes/components/TruckZoneSelectorModal';
+import { IconChevronLeft, IconEdit, IconCamera, IconTrash, IconCheck, IconQrCode } from '@/lib/config/constants';
+import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '@/utils/statusUtils';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const BoxDetailsPage: React.FC = () => {
   const { boxId } = useParams<{ boxId: string }>();

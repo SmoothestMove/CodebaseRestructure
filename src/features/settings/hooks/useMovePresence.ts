@@ -14,7 +14,7 @@ import {
   DocumentSnapshot,
   FirestoreError
 } from 'firebase/firestore';
-import { auth, firestore } from '../index';
+import { auth, firestore } from '@/main';
 import { toast } from 'react-toastify';
 
 export interface PresenceState {

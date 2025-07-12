@@ -1,20 +1,20 @@
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { QRCodeScanner, ScannerError } from '../components/QRCodeScanner'; // Updated import
-import { useBoxes } from '../hooks/useBoxes';
-import { Box, ItemStatus, NewBoxData, Owner, TruckZone, VerticalPosition } from '../types';
-import Alert from '../components/Alert';
-import Button from '../components/Button';
-import Modal from '../components/Modal';
-import Input from '../components/Input';
-import Textarea from '../components/Textarea';
-import TruckZoneSelectorModal from '../components/TruckZoneSelectorModal';
-import QuickUnloadOptionsModal from '../components/QuickUnloadOptionsModal';
-import { useOwners } from '../hooks/useOwners';
-import { useTheme } from '../hooks/useTheme'; // Import useTheme
-import { IconCamera, IconQrCode, IconCheck, IconChevronLeft, IconLightningBolt, IconXMark } from '../constants';
-import { getItemStatusDisplayLabel } from '../utils/statusUtils';
+import { QRCodeScanner, ScannerError } from '@/features/boxes/components/QRCodeScanner'; // Updated import
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { Box, ItemStatus, NewBoxData, Owner, TruckZone, VerticalPosition } from '@/types';
+import Alert from '@/components/common/Alert';
+import Button from '@/components/common/Button';
+import Modal from '@/components/common/Modal';
+import Input from '@/components/common/Input';
+import Textarea from '@/components/common/Textarea';
+import TruckZoneSelectorModal from '@/features/boxes/components/TruckZoneSelectorModal';
+import QuickUnloadOptionsModal from '@/features/boxes/components/QuickUnloadOptionsModal';
+import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useTheme } from '@/hooks/useTheme'; // Import useTheme
+import { IconCamera, IconQrCode, IconCheck, IconChevronLeft, IconLightningBolt, IconXMark } from '@/lib/config/constants';
+import { getItemStatusDisplayLabel } from '@/utils/statusUtils';
 import { FaUpload } from 'react-icons/fa';
 
 const BRAND_TERTIARY_COLOR = '#ff7e00';

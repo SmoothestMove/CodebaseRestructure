@@ -1,1 +1,0 @@
-Purpose: Manages global application state using a state management library (e.g., Zustand, Redux, React Context).
