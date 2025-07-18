@@ -1,12 +1,11 @@
-
 import React, { useState } from 'react';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
+import Modal from '@/components/common/Modal';
+import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
 import { useOwners } from '../hooks/useOwners';
-import { Owner } from '../types'; // Import Owner type
-import { IconPlus } from '../constants';
-import Alert from './Alert';
+import { Owner } from '@/types';
+import { IconPlus } from '@/lib/config/constants';
+import Alert from '@/components/common/Alert';
 
 interface AddOwnerModalProps {
   isOpen: boolean;
@@ -72,12 +71,12 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
         setTimeout(() => {
           handleClose();
         }, 1500);
-      } catch (err) {
+      } catch (err: unknown) {
         throw err; // Re-throw to be caught by the outer catch
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false);
-      const errorMessage = err.message || 'Failed to add owner. Please try again.';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add owner. Please try again.';
       setError(errorMessage);
       if (onAddError) {
         onAddError(errorMessage);
@@ -100,7 +99,7 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
           label="First Name*"
           id="ownerFirstName"
           value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
           placeholder="e.g., John"
           required
           disabled={isLoading || showSuccess}
@@ -109,7 +108,7 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
           label="Last Name*"
           id="ownerLastName"
           value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
           placeholder="e.g., Doe"
           required
           disabled={isLoading || showSuccess}
@@ -123,7 +122,7 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
               type="color"
               id="ownerColor"
               value={color}
-              onChange={(e) => setColor(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setColor(e.target.value)}
               className="h-10 w-10 rounded-md border-slate-300 cursor-pointer shadow-sm focus:ring-2 focus:ring-brand-tertiary focus:outline-none disabled:opacity-50"
               disabled={isLoading || showSuccess}
             />

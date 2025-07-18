@@ -13,7 +13,7 @@ import Alert from '@/components/common/Alert';
 import TruckZoneSelectorModal from '@/features/boxes/components/TruckZoneSelectorModal';
 import { IconChevronLeft, IconEdit, IconCamera, IconTrash, IconCheck, IconQrCode } from '@/lib/config/constants';
 import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '@/utils/statusUtils';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 
 const BoxDetailsPage: React.FC = () => {
   const { boxId } = useParams<{ boxId: string }>();

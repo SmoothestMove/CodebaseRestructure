@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { Owner } from '@/types';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 import Button from '@/components/common/Button';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 import OwnerCard from '@/features/owners/components/OwnerCard';
@@ -15,6 +16,7 @@ import { useSettings } from '@/features/settings/hooks/useSettings';
 
 const ManageOwnersPage: React.FC = () => {
   const { owners, isLoading: isLoadingOwners } = useOwners();
+  const { moveId } = useAuth();
   const { settings } = useSettings(); 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);

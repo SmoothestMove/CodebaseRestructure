@@ -5,7 +5,7 @@ import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { Owner } from '@/types'; 
-import { IconPlus, IconCheck } from '@/lib/config/constants';
+import { IconPlus } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 
 interface AddSpaceModalProps {
@@ -50,20 +50,18 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
 
     try {
       // Simulate API call
+      const newSpacePayload = { 
+        firstName: spaceName.trim(), 
+        lastName: "(Custom Space)", // Fixed lastName for custom spaces
+        color 
+      };
+      const newSpace = await addOwner(newSpacePayload);
+      setIsLoading(false);
+      setShowSuccess(true);
+      onSpaceAdded(newSpace); 
       setTimeout(() => {
-        const newSpacePayload = { 
-          firstName: spaceName.trim(), 
-          lastName: "(Custom Space)", // Fixed lastName for custom spaces
-          color 
-        };
-        const newSpace = addOwner(newSpacePayload);
-        setIsLoading(false);
-        setShowSuccess(true);
-        onSpaceAdded(newSpace); 
-        setTimeout(() => {
-          handleClose();
-        }, 1500); 
-      }, 700);
+        handleClose();
+      }, 1500); 
     } catch (err: any) {
       setIsLoading(false);
       const errorMessage = err.message || 'Failed to add space. Please try again.';
@@ -87,7 +85,7 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
           label="Space Name*"
           id="spaceName"
           value={spaceName}
-          onChange={(e) => setSpaceName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpaceName(e.target.value)}
           placeholder="e.g., Master Closet, Storage Shed"
           required
           disabled={isLoading || showSuccess}
@@ -101,7 +99,7 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
               type="color"
               id="spaceColor"
               value={color}
-              onChange={(e) => setColor(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setColor(e.target.value)}
               className="h-10 w-10 rounded-md border-slate-300 cursor-pointer shadow-sm focus:ring-2 focus:ring-brand-tertiary focus:outline-none disabled:opacity-50"
               disabled={isLoading || showSuccess}
             />

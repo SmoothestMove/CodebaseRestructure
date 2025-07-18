@@ -11,9 +11,9 @@ import {
   updateProfile 
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, firestore } from '../index';
+import { auth, firestore } from '@/main';
 import { createMove, joinMove, getUserMoves } from '@/features/settings/services/moveService';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 import { IconSmoothMovesLogo, IconGoogle } from '@/lib/config/constants'; 
 import { FaSignInAlt, FaUserPlus, FaIdBadge, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSettings } from '@/features/settings/hooks/useSettings';

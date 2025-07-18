@@ -1,5 +1,5 @@
 import React from 'react';
-import { Owner } from './types'; // Import Owner type
+import { Owner } from '@/types';
 import { IoSettingsSharp, IoSync } from 'react-icons/io5'; 
 import { FcGoogle } from 'react-icons/fc'; 
 import { FaExclamationTriangle } from 'react-icons/fa';

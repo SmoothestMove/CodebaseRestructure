@@ -5,7 +5,7 @@ import { Owner } from '@/types';
 import Button from '@/components/common/Button';
 import { IconTrash } from '@/lib/config/constants';
 import { useOwners } from '@/features/owners/hooks/useOwners';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { Box } from '@/types';
 import { FaPrint, FaCouch, FaBath, FaChair, FaRedo, FaUtensils, FaLaptop, FaWarehouse } from 'react-icons/fa'; 

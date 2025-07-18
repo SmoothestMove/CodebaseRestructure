@@ -1,7 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { useOwners } from '@/features/owners/hooks/useOwners';
-import { Owner } from '@/types';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
+import { Owner, Box } from '@/types';
 import Button from '@/components/common/Button';
 import OwnerCard from '@/features/owners/components/OwnerCard';
 import AddSpaceModal from '@/features/owners/components/AddSpaceModal'; 
@@ -53,7 +54,7 @@ const ManageSpacesPage: React.FC = () => {
       if (newPreppedBoxes.length === 0) {
         throw new Error("No boxes were prepared for this space. Check ID generation.");
       }
-      const labelsDataForPdf = newPreppedBoxes.map(box => ({
+      const labelsDataForPdf = newPreppedBoxes.map((box: Box) => ({
         boxId: box.id,
         qrCodeValue: box.qrCodeValue,
         ownerColor: space.color, 

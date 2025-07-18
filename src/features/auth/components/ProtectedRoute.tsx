@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading, setRedirectPath } = useAuth();

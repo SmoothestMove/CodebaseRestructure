@@ -15,7 +15,7 @@ import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { BoxesProvider } from '@/features/boxes/hooks/useBoxes';
 import { OwnersProvider } from '@/features/owners/hooks/useOwners';
 import { SettingsProvider } from '@/features/settings/hooks/useSettings';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 import { MoveProvider } from '@/features/settings/hooks/MoveContext';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 
