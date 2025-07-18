@@ -26,6 +26,7 @@ yarn-error.log*
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
+firestore.rules
 
 # System Files
 .DS_Store
