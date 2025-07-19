@@ -28,7 +28,6 @@ const BudgetSetup: React.FC<BudgetSetupProps> = ({
   const [totalBudget, setTotalBudget] = useState(initialBudget);
   const [moveType, setMoveType] = useState<MoveType>(initialMoveType);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [categoryBudgets, setCategoryBudgets] = useState<{ [key: string]: number }>({});
   
   // Initialize category budgets
@@ -73,10 +72,8 @@ const BudgetSetup: React.FC<BudgetSetupProps> = ({
       // Save total budget and move type
       onSave(totalBudget, moveType);
       
-      // Save category budgets if in advanced mode
-      if (showAdvanced) {
-        onSaveCategoryBudgets(categoryBudgets);
-      }
+      // Save category budgets
+      onSaveCategoryBudgets(categoryBudgets);
       
       onClose();
     } catch (error) {
@@ -87,206 +84,133 @@ const BudgetSetup: React.FC<BudgetSetupProps> = ({
     }
   };
 
-  const handleCategoryBudgetChange = (categoryId: string, value: string) => {
-    setCategoryBudgets(prev => ({
-      ...prev,
-      [categoryId]: parseFloat(value) || 0,
-    }));
-  };
-
-  const calculateCategoryPercentage = (categoryId: string) => {
-    if (totalBudget <= 0) return 0;
-    const amount = categoryBudgets[categoryId] || 0;
-    return Math.round((amount / totalBudget) * 100);
-  };
-
-  const remainingBudget = Object.values(categoryBudgets).reduce(
+  const totalEstimatedExpenses = Object.values(categoryBudgets).reduce(
     (sum, amount) => sum + amount,
     0
   );
-  
-  const budgetDifference = totalBudget - remainingBudget;
   
   return (
     <Modal 
       isOpen={isOpen} 
       onClose={onClose}
-      title="Set Your Moving Budget"
+      title="Ready to set up your budget?"
+      subtitle="Start from scratch or choose a move type to get started!"
       size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-            <span className="inline-flex items-center">
-              <span className="mr-2">{ICONS.Info}</span>
-              Budget Setup Tips
-            </span>
-          </h3>
-          <p className="text-sm text-blue-700 dark:text-blue-300">
-            Set your total moving budget and we'll help you allocate it across different categories. 
-            You can use our suggested allocations or customize them in the advanced settings.
+        
+        <div className="text-center">
+          <p className="text-slate-400 mb-6">
+            Select your move type to get started with budget estimates
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Input
-              label="Total Moving Budget ($)"
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            type="button"
+            className={`px-4 py-3 rounded-lg border text-center ${
+              moveType === MoveType.LOCAL
+                ? 'bg-slate-600 border-slate-500 text-white'
+                : 'border-slate-600 text-slate-300 hover:bg-slate-700'
+            }`}
+            onClick={() => setMoveType(MoveType.LOCAL)}
+          >
+            <div>
+              <div className="font-medium">Local Move</div>
+              <div className="text-sm text-slate-400">Under 100 miles</div>
+            </div>
+          </button>
+          
+          <button
+            type="button"
+            className={`px-4 py-3 rounded-lg border text-center ${
+              moveType === MoveType.CROSS_STATE
+                ? 'bg-slate-600 border-slate-500 text-white'
+                : 'border-slate-600 text-slate-300 hover:bg-slate-700'
+            }`}
+            onClick={() => setMoveType(MoveType.CROSS_STATE)}
+          >
+            <div>
+              <div className="font-medium">Long Distance</div>
+              <div className="text-sm text-slate-400">100+ miles</div>
+            </div>
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {categories.map((category) => (
+            <div key={category.id} className="flex items-center justify-between p-3 bg-slate-700 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <span style={{ color: category.color }}>
+                    {ICONS[category.icon]}
+                  </span>
+                </div>
+                <span className="text-white font-medium">
+                  {category.name}
+                </span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <span className="text-white">$</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputMode="decimal"
+                  placeholder="0.00"
+                  className="text-white font-medium w-16 text-right bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-slate-400 rounded px-1 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white placeholder:opacity-100"
+                  value={categoryBudgets[category.id] || ''}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    setCategoryBudgets(prev => ({
+                      ...prev,
+                      [category.id]: value
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg"
+          onClick={() => {
+            // Add new category functionality would go here
+            toast.info('Add new category functionality coming soon!');
+          }}
+        >
+          + Add New Category
+        </button>
+
+        <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span className="text-white font-medium">Total Estimated Expenses</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <span className="text-white text-xl font-bold">$</span>
+            <input
               type="number"
               min="0"
               step="0.01"
-              value={totalBudget || ''}
-              onChange={(e) => setTotalBudget(parseFloat(e.target.value) || 0)}
+              inputMode="decimal"
               placeholder="0.00"
-              required
-              
+              className="text-white text-xl font-bold w-20 text-right bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-slate-400 rounded px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white placeholder:opacity-100"
+              value={totalEstimatedExpenses || ''}
+              readOnly
             />
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Move Type
-            </label>
-            <div className="mt-1 grid grid-cols-2 gap-3">
-              <Button
-                type="button"
-                variant={moveType === MoveType.LOCAL ? 'primary' : 'secondary'}
-                onClick={() => setMoveType(MoveType.LOCAL)}
-              >
-                <div className="flex flex-col items-center">
-                  <span className="text-lg">🚚</span>
-                  <span className="mt-1 text-sm font-medium">Local Move</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Within 50 miles
-                  </span>
-                </div>
-              </Button>
-              
-              <Button
-                type="button"
-                variant={moveType === MoveType.CROSS_STATE ? 'primary' : 'secondary'}
-                onClick={() => setMoveType(MoveType.CROSS_STATE)}
-              >
-                <div className="flex flex-col items-center">
-                  <span className="text-lg">✈️</span>
-                  <span className="mt-1 text-sm font-medium">Long Distance</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    50+ miles
-                  </span>
-                </div>
-              </Button>
-            </div>
-          </div>
         </div>
-        
-        <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            leftIcon={showAdvanced ? <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg> : <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>}
-          >
-            {showAdvanced ? 'Hide' : 'Show'} Advanced Settings
-          </Button>
-          
-          {showAdvanced && (
-            <div className="mt-4 space-y-4">
-              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                  Allocate Budget by Category
-                </h4>
-                
-                <div className="space-y-3">
-                  {categories.map((category) => (
-                    <div key={category.id} className="flex items-center space-x-3">
-                      <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg" 
-                           style={{ backgroundColor: `${category.color}20` }}>
-                        <span style={{ color: category.color }}>
-                          {ICONS[category.icon]}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
-                          {category.name}
-                        </p>
-                      </div>
-                      <div className="w-24">
-                        <div className="relative rounded-md shadow-sm">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span className="text-slate-500 dark:text-slate-400 text-sm">$</span>
-                          </div>
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            className="block w-full pl-7 pr-12 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
-                            value={categoryBudgets[category.id] || 0}
-                            onChange={(e) => handleCategoryBudgetChange(category.id, e.target.value)}
-                          />
-                          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span className="text-slate-500 dark:text-slate-400 text-xs">
-                              {calculateCategoryPercentage(category.id)}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Total Allocated</span>
-                    <span className="text-sm font-medium">
-                      ${remainingBudget.toFixed(2)}
-                    </span>
-                  </div>
-                  
-                  {budgetDifference !== 0 && (
-                    <div className={`mt-1 text-sm ${budgetDifference > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                      {budgetDifference > 0 
-                        ? `$${Math.abs(budgetDifference).toFixed(2)} remaining to allocate`
-                        : `$${Math.abs(budgetDifference).toFixed(2)} over budget`}
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 flex items-center">
-                  <span className="mr-2">{ICONS.AlertTriangle}</span>
-                  Budget Allocation Tips
-                </h4>
-                <ul className="mt-2 text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <li>• Local moves typically spend more on labor and truck rentals</li>
-                  <li>• Long-distance moves have higher transportation and fuel costs</li>
-                  <li>• Don't forget to budget for packing supplies and insurance</li>
-                  <li>• Keep some funds aside for unexpected expenses</li>
-                </ul>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex justify-end space-x-3 pt-2">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isSubmitting}
-            disabled={isSubmitting || (showAdvanced && Math.abs(budgetDifference) > 0.01)}
-            title={showAdvanced && Math.abs(budgetDifference) > 0.01 ? 'Please allocate the entire budget' : ''}
-          >
-            Save Budget
-          </Button>
-        </div>
+
+        <button
+          type="submit"
+          className="w-full py-3 bg-slate-600 hover:bg-slate-500 text-white font-medium rounded-lg disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Setting Budget...' : 'Set Budget'}
+        </button>
       </form>
     </Modal>
   );

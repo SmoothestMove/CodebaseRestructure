@@ -95,3 +95,4 @@ export interface Budget {
   totalEstimatedAmount: number;
   moveType: MoveType;
 }
+

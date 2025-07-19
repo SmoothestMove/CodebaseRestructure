@@ -222,11 +222,13 @@ const FinancialNavigator: React.FC = () => {
       payload: { totalEstimatedAmount: amount, moveType } 
     });
     
-    // Apply template if this is the first time setting the budget
-    if (state.categories.every(cat => cat.estimatedAmount === 0)) {
-      const template = BUDGET_TEMPLATES[moveType === MoveType.LOCAL ? 'LOCAL' : 'LONG_DISTANCE'];
-      dispatch({ type: 'SET_CATEGORY_BUDGETS', payload: template });
-    }
+    // Apply template calculations
+    const template = BUDGET_TEMPLATES[moveType === MoveType.LOCAL ? 'LOCAL' : 'LONG_DISTANCE'];
+    const calculatedBudgets: { [key: string]: number } = {};
+    Object.entries(template).forEach(([catId, percentage]) => {
+      calculatedBudgets[catId] = (amount * percentage) / 100;
+    });
+    dispatch({ type: 'SET_CATEGORY_BUDGETS', payload: calculatedBudgets });
     
     toast.success('Budget set successfully!');
   };
