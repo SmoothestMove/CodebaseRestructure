@@ -1,1 +1,0 @@
-Purpose: Pure utility functions that don't depend on React for data manipulation and formatting.

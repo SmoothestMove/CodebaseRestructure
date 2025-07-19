@@ -1,1 +1,0 @@
-Purpose: The core of the feature-based structure. Each subfolder represents a distinct, self-contained feature with its own components, hooks, and logic.

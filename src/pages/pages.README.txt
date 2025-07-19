@@ -1,1 +1,0 @@
-Purpose: Top-level page components that primarily compose features and common components to create full pages.
