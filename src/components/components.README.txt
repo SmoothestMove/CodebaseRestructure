@@ -1,1 +1,0 @@
-Purpose: Houses presentational, reusable UI components not tied to a specific feature. Promotes component reusability across the application.

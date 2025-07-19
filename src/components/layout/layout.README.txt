@@ -1,1 +1,0 @@
-Purpose: Components related to the overall page structure (e.g., Header, Footer, Sidebar, Navbar).
