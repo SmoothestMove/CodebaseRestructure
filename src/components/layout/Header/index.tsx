@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom'; 
 import { IconHome, IconListBullet, IconSmoothMovesLogo, IconSettings } from '@/lib/config/constants'; 
 import { FaTruck } from 'react-icons/fa'; 
-import { FaUserGroup, FaHouseUser } from 'react-icons/fa6';
+import { FaUserGroup, FaHouseUser, FaLandmark } from 'react-icons/fa6';
 import { BsQrCodeScan } from 'react-icons/bs'; 
 
 const Navbar: React.FC = () => {
@@ -11,6 +11,7 @@ const Navbar: React.FC = () => {
   const desktopNavLinks = [
     { to: "/app", label: "Dashboard", icon: IconHome },
     { to: "/app/boxes", label: "Manifest", icon: IconListBullet }, 
+    { to: "/app/budget", label: "Budget", icon: FaLandmark },
     { to: "/app/owners", label: "Owners", icon: FaUserGroup },
     { to: "/app/spaces", label: "Spaces", icon: FaHouseUser }, 
     { to: "/app/truck-load", label: "Truck Load", icon: FaTruck }, 
@@ -33,6 +34,7 @@ const Navbar: React.FC = () => {
     { to: "/app/scan", label: "Quick Scan", icon: BsQrCodeScan, special: true, state: { isQuickScanMode: true } }, 
     { to: "/app/owners", label: "Owners", icon: FaUserGroup },
     { to: "/app/spaces", label: "Spaces", icon: FaHouseUser }, 
+    { to: "/app/budget", label: "Budget", icon: FaLandmark }, 
   ];
   
   // Ensure all bottom nav links start with /app

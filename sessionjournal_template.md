@@ -135,18 +135,16 @@ This appears to be a React-based application with a modern feature-driven archit
 **Working on**: [Current focus]
 
 #### Progress Made
-- [2025-07-18 10:30 AM] - Updated navigation links in Header component to point to budget-setup page.
-- [2025-07-18 10:35 AM] - Added new route for BudgetSetupPage in App.tsx.
-- [2025-07-18 10:40 AM] - Added import statement for BudgetSetupPage in App.tsx.
+- [Timestamp] - [Action taken]
+- [Timestamp] - [Action taken]
 
 #### Changes Made
-**File**: `src/components/layout/Header/index.tsx`
-- **Lines [20-22]**: MODIFIED - Updated desktop navigation link for Budget to '/app/budget-setup'.
-- **Lines [35-37]**: MODIFIED - Updated mobile bottom navigation link for Budget to '/app/budget-setup'.
+**File**: `filename.ext`
+- **Lines [X-Y]**: [ADDED/MODIFIED/REMOVED] - [Description of change]
+- **Lines [A-B]**: [ADDED/MODIFIED/REMOVED] - [Description of change]
 
-**File**: `src/App.tsx`
-- **Lines [100-101]**: ADDED - Added new route for BudgetSetupPage under '/app/budget-setup'.
-- **Lines [13-14]**: ADDED - Added import for BudgetSetupPage.
+**File**: `filename2.ext`
+- **Lines [X-Y]**: [ADDED/MODIFIED/REMOVED] - [Description of change]
 
 ---
 

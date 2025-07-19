@@ -52,6 +52,7 @@ Side effects should be isolated and dependencies clearly defined
   Keep plans separate for different features
   Keep plans in a docs folder
   Keep plans in a planForFeature.md file (replace Feature with the feature name)
+  Planning docs should contain a stepped checklist [ ] of tasks to be completed, and should be X'ed off as they are completed [X]. 
  
 
 # Implementation
@@ -68,12 +69,15 @@ Side effects should be isolated and dependencies clearly defined
   - The template which needs to be used EVERY time is found in the sessionjournal.md file in the root directory.
   - It needs to maintain accuracy in reall time the same way that you create and maintain an updated plan.md, or like, document (only moreso due to it being an OVERALL document and not task specific)
     
-# Cascade Logic
+# Gemini Logic
   Assume the user has little to no knowledge of coding, be it development or design (front-end or back-end)
   If the user seems unable to explain something, ask for clarification
   If instructions are unclear, use reasoning to determine what the user is actually asking for
 
 # Output Format
   Anytime a change in a file outside of the codebase is shown to the user (e.g., firestore rules, etc.), provide the entire file not just the changes, this allows for simple copy and paste.
+
+# Troubleshooting Files and Their Purpose
+  - public\docs\consoleoutput.md: This file is used to store the output of the console as shown in the Dev Tools of the browser when running a manual test using either npm run dev or npm run preview.
 
 *IMPORTANT* the session journal will be dynamically updated by both Cascade Agent as well as Gemini CLI as each agent completes tasks, modifies files, implements features, etc. If at any time there becomes a contradiction, lack of clarity, any confusion, redundancy, overlap, etc. DO NOT overwrite the text causing the aforementioned issue, IMMEDIATELY notify the user of the issue and wait for their response before making any changes to the session journal!!
