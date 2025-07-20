@@ -1,5 +1,6 @@
 import path from 'path';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   resolve: {
@@ -45,6 +46,7 @@ export default defineConfig({
   },
   // Plugin to handle HTML files
   plugins: [
+    react(), // Enable React/TypeScript compilation
     // This will automatically handle cache-busting for your assets
   ]
 });

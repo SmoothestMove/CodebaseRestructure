@@ -2,7 +2,8 @@
 export { default as BudgetPage } from './pages/BudgetPage';
 
 // Components
-export { default as BudgetSetup } from './components/BudgetSetup';
+export { default as SetupBudgetModal } from './components/SetupBudgetModal';
+export { default as SetupExpensesModal } from './components/SetupExpensesModal';
 export { default as AddExpenseModal } from './components/AddExpenseModal';
 export { default as CategoryModal } from './components/CategoryModal';
 export { default as ExpenseDetailModal } from './components/ExpenseDetailModal';
