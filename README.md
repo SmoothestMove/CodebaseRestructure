@@ -18,16 +18,17 @@ A comprehensive web application designed to help users efficiently manage and tr
 12. [Credits & Licensing](#credits--licensing)
 
 ## Overview
-**Purpose:** Smooth Moves simplifies the relocation process by providing a complete moving management solution. Users can catalog boxes, assign them to owners or spaces, generate unique QR codes for tracking, manage comprehensive budgets with expense tracking, and monitor their move progress in real-time.
+**Purpose:** Smooth Moves is a comprehensive digital moving management platform that revolutionizes the relocation experience. It combines QR code-based box tracking, AI-powered assistance, comprehensive budget management, and real-time collaboration to make moving organized, efficient, and stress-free.
 
-**Audience:** Individuals, families, or anyone planning and executing a residential or office move who want to stay organized and on budget.
+**Audience:** Individuals, families, or anyone planning and executing a residential or office move who want to stay organized, on budget, and leverage modern technology for a smoother moving experience.
 
-**Development Status:** Active development. The application uses Firebase for authentication and real-time data synchronization, with a modern React-based frontend built on Vite.
+**Development Status:** Active development with production-ready features. The application leverages Firebase for real-time collaboration, Google Gemini AI for intelligent assistance, and modern React architecture for optimal performance across all devices.
 
 ## Features
 - 📦 **Box Management** - QR code generation, scanning, and status tracking
 - 👥 **Owner & Space Management** - Assign items to people or rooms
 - 💰 **Financial Navigator** - Comprehensive budget tracking with expense management
+- 🤖 **MARVIN AI Assistant** - Voice-enabled AI assistant with wake word detection
 - 📊 **Visual Analytics** - Charts and graphs for spending and inventory insights
 - 📱 **Mobile-First Design** - Responsive interface for all devices
 - 🔄 **Real-Time Sync** - Firebase-powered live data updates
@@ -52,6 +53,8 @@ A comprehensive web application designed to help users efficiently manage and tr
 - **Notifications:** React Toastify 11.0
 - **Utilities:** UUID 11.1
 - **Server:** Express.js 4.19
+- **AI Integration:** Google Gemini API 1.10
+- **Voice Processing:** Picovoice Porcupine 3.0, Web Voice Processor 4.0
 
 ## Installation & Setup
 **Prerequisites:**
@@ -71,10 +74,23 @@ A comprehensive web application designed to help users efficiently manage and tr
    npm install
    ```
 
-3. **Configure Firebase**
-   - Create a Firebase project at https://console.firebase.google.com
-   - Enable Firestore Database and Authentication
-   - Copy your Firebase config and update `src/main.tsx`
+3. **Configure Environment Variables**
+   Create a `.env.local` file in the project root:
+   ```bash
+   # Firebase Configuration
+   VITE_FIREBASE_API_KEY=your_firebase_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   
+   # MARVIN AI Assistant Configuration
+   VITE_GEMINI_API_KEY=your_gemini_api_key
+   
+   # Picovoice Wake Word Configuration (Optional)
+   VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
+   ```
 
 4. **Start development server**
    ```bash
@@ -137,6 +153,12 @@ src/
 │   │   ├── hooks/          # Budget state management
 │   │   ├── pages/          # Budget tracking pages
 │   │   └── types/          # Budget type definitions
+│   ├── marvin/             # MARVIN AI Assistant
+│   │   ├── adapters/       # Data transformation for AI context
+│   │   ├── components/     # AI chat interface and voice components
+│   │   ├── pages/          # MARVIN assistant page
+│   │   ├── services/       # Gemini API, TTS, wake word services
+│   │   └── types/          # AI assistant type definitions
 │   ├── owners/             # Owner management
 │   │   ├── components/     # Owner-related components
 │   │   ├── hooks/          # Owner state management
@@ -165,24 +187,37 @@ src/
 ```
 
 ## Configuration
-### Firebase Setup
-1. Create a Firebase project
-2. Enable Authentication and Firestore Database
-3. Add your Firebase configuration to `src/main.tsx`:
 
-```typescript
-const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-auth-domain",
-  projectId: "your-project-id",
-  storageBucket: "your-storage-bucket",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id"
-};
-```
+### Required API Keys
+1. **Firebase Project** - Create at https://console.firebase.google.com
+   - Enable Authentication and Firestore Database
+   - Copy configuration values to `.env.local`
+
+2. **Google Gemini API** - Get API key at https://aistudio.google.com/app/apikey
+   - Required for MARVIN AI Assistant functionality
+
+3. **Picovoice Access Key** (Optional) - Get at https://console.picovoice.ai/
+   - Required for wake word detection ("Let's Move Marvin")
+   - MARVIN works without this, but lacks wake word activation
 
 ### Environment Variables
-Configure your environment variables for different deployment targets.
+All configuration is handled through environment variables in `.env.local`:
+
+```bash
+# Firebase Configuration (Required)
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+
+# MARVIN AI Assistant (Required for AI features)
+VITE_GEMINI_API_KEY=your_gemini_api_key
+
+# Picovoice Wake Word (Optional)
+VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
+```
 
 ## Core Features & Use Cases
 
@@ -224,6 +259,15 @@ Configure your environment variables for different deployment targets.
 - **Zone Assignment:** Assign boxes to specific truck zones and positions
 - **Load Optimization:** Visual feedback for efficient truck loading
 - **Loading Progress:** Track loading status in real-time
+
+### 🤖 **MARVIN AI Assistant**
+- **Natural Language Processing:** Google Gemini API integration for contextual responses
+- **Voice Interaction:** Speech recognition and text-to-speech capabilities
+- **Wake Word Detection:** "Let's Move Marvin" activation using Picovoice technology
+- **Moving Context Awareness:** Real-time access to your boxes, owners, and move data
+- **Smart Actions:** Create calendar events, checklists, and navigate app features
+- **Web Search Integration:** Real-time search for moving-related queries
+- **Mobile Optimized:** Cross-platform voice support for mobile browsers
 
 ### 📄 **PDF Label Generation**
 - **Batch Printing:** Generate multiple QR code labels at once
@@ -276,14 +320,15 @@ Configure your environment variables for different deployment targets.
 *   Standard Tailwind transitions for colors, transforms (`duration-150`, `duration-200`, `duration-300`).
 
 ## Known Issues / Limitations
-*   **Duplicate Imports:** App.tsx contains duplicate BudgetSetupPage imports (lines 14-17)
 *   **Missing Error Boundaries:** No global error handling for component failures
 *   **Large Components:** Budget component (673 lines) could benefit from splitting into smaller components
-*   **Loading States:** Some components lack comprehensive loading indicators
-*   **Firebase Configuration:** appConfig.ts is minimal and may need additional configuration
+*   **Budget Firebase Integration:** Budget feature uses localStorage only, not synced with Firebase
+*   **Testing Framework:** No test suite currently configured
 *   **Performance:** Large datasets in budget tracking may impact performance
 *   **Camera Permissions:** QR scanning requires explicit camera permissions from users
 *   **PDF Generation:** Complex layouts with many labels may have performance considerations
+*   **MARVIN Voice Limitations:** Voice quality depends on browser and platform (mobile browsers have limited voice options)
+*   **API Dependencies:** MARVIN requires external API keys (Gemini, Picovoice) for full functionality
 
 ## Future Development Ideas
 
@@ -294,13 +339,16 @@ Configure your environment variables for different deployment targets.
 *   **Bulk Operations:** Enhanced bulk editing and batch operations for boxes
 *   **Image Management:** Direct device uploads and image optimization
 
-### 🤖 **AI Integration**
-*   **Gemini API Integration:** 
+### 🤖 **Enhanced AI Features**
+*   **Advanced MARVIN Capabilities:**
     *   Smart suggestions for box contents based on room/context
     *   Voice commands for hands-free box updates
     *   AI-powered move progress summaries and insights
+    *   Integration with calendar and task management systems
 *   **Smart Categorization:** Automatic expense categorization using AI
 *   **Workload Distribution:** AI-powered task delegation among move participants
+*   **Computer Vision:** Box content identification through camera
+*   **Predictive Analytics:** Moving timeline optimization and delay prediction
 
 ### 📱 **Enhanced Mobile & Collaboration**
 *   **Progressive Web App:** Enhanced offline capabilities with Service Workers
