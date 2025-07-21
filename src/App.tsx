@@ -12,6 +12,7 @@ import TruckLoadPage from '@/features/boxes/pages/TruckLoadPage';
 import SettingsPage from '@/features/settings/pages/SettingsPage';
 import AuthPage from '@/features/auth/pages/AuthPage';
 import BudgetPage from './features/budget/pages/BudgetPage';
+import MarvinPage from '@/features/marvin/pages/MarvinPage';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { BoxesProvider } from '@/features/boxes/hooks/useBoxes';
 import { OwnersProvider } from '@/features/owners/hooks/useOwners';
@@ -118,6 +119,7 @@ const App: React.FC = () => {
             <Route path="truck-load" element={<TruckLoadPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="budget" element={<BudgetPage />} />
+            <Route path="marvin" element={<MarvinPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>
