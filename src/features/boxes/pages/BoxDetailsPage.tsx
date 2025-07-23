@@ -35,13 +35,38 @@ const BoxDetailsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [editFormData, setEditFormData] = useState<Partial<NewBoxData> & { ownerUid?: string }>({});
+  const [editFormData, setEditFormData] = useState<Partial<NewBoxData> & { ownerUid?: string; spaceUid?: string }>({});
   const [scanFormData, setScanFormData] = useState<{ location: string; notes?: string; newStatus: ItemStatus }>({ location: '', notes: '', newStatus: ItemStatus.PACKED });
 
   const [pendingScanForLoad, setPendingScanForLoad] = useState<{ location: string; notes?: string; newStatus: ItemStatus.LOADED } | null>(null);
 
   const itemStatusOptions = getItemStatusOptionsForSelect();
 
+  // Separate people from spaces for better UX
+  const peopleOptions = useMemo(() => [
+    { value: '', label: 'Unassigned to Person' },
+    ...owners
+      .filter(owner => owner.lastName !== '(Communal)' && owner.lastName !== '(Custom Space)')
+      .map(person => ({
+        value: person.uid,
+        label: `${person.firstName} ${person.lastName}`,
+        color: person.color
+      }))
+  ], [owners]);
+
+  const spaceOptions = useMemo(() => [
+    { value: '', label: 'Unassigned to Space' },
+    ...owners
+      .filter(owner => owner.lastName === '(Communal)' || owner.lastName === '(Custom Space)')
+      .map(space => ({
+        value: space.uid,
+        label: space.firstName + (space.lastName === '(Custom Space)' ? ' (Custom)' : ''),
+        color: space.color,
+        isSpace: true
+      }))
+  ], [owners]);
+
+  // Legacy combined options for backward compatibility if needed
   const ownerOptionsForSelect = useMemo(() => [
     { value: '', label: 'Unassigned / No Owner' },
     ...owners.map(owner => ({
@@ -81,12 +106,18 @@ const BoxDetailsPage: React.FC = () => {
       setBox(fetchedBox);
       // Pre-fill forms with the latest data
       setScanFormData({ location: fetchedBox.currentLocation || '', notes: '', newStatus: fetchedBox.currentStatus });
+      
+      // Determine if current assignment is to a person or space
+      const currentOwner = fetchedBox.ownerUid ? getOwnerByUid(fetchedBox.ownerUid) : null;
+      const isCurrentlySpace = currentOwner && (currentOwner.lastName === '(Communal)' || currentOwner.lastName === '(Custom Space)');
+      
       setEditFormData({ 
         name: fetchedBox.name,
         contents: fetchedBox.contents,
         destinationRoom: fetchedBox.destinationRoom,
         imageUrl: fetchedBox.imageUrl,
-        ownerUid: fetchedBox.ownerUid 
+        ownerUid: isCurrentlySpace ? '' : fetchedBox.ownerUid || '',
+        spaceUid: isCurrentlySpace ? fetchedBox.ownerUid || '' : ''
       });
     } else {
       setError('Box not found. It might have been deleted or the link is incorrect.');
@@ -109,12 +140,15 @@ const BoxDetailsPage: React.FC = () => {
     setError(null);
 
     try {
+      // Determine final assignment - prioritize person over space, or use space if person is empty
+      const finalOwnerUid = editFormData.ownerUid || editFormData.spaceUid || '';
+      
       const updatedDetails: Partial<Omit<Box, 'id' | 'history'>> = {
         name: editFormData.name,
         contents: editFormData.contents,
         destinationRoom: editFormData.destinationRoom,
         imageUrl: editFormData.imageUrl,
-        ownerUid: editFormData.ownerUid || '', // Ensure ownerUid is not undefined
+        ownerUid: finalOwnerUid, // Unified storage but separate UI
       };
 
       await updateBox(box.id, updatedDetails);
@@ -289,12 +323,20 @@ const BoxDetailsPage: React.FC = () => {
                   <span
                     className="w-4 h-4 rounded-full inline-block mr-2 border-2 border-white/50 dark:border-slate-400/50"
                     style={{ backgroundColor: currentOwnerDetails.color }}
-                    title={`Owner: ${currentOwnerDetails.firstName} ${currentOwnerDetails.lastName} color`}
+                    title={`${currentOwnerDetails.firstName} ${currentOwnerDetails.lastName} color`}
                   />
-                  <span className="text-sm text-brand-light-gray dark:text-slate-300">Owner: {currentOwnerDetails.firstName} {currentOwnerDetails.lastName}</span>
+                  <span className="text-sm text-brand-light-gray dark:text-slate-300">
+                    {currentOwnerDetails.lastName === '(Communal)' ? 'Space: ' : 
+                     currentOwnerDetails.lastName === '(Custom Space)' ? 'Custom Space: ' : 
+                     'Person: '}
+                    {currentOwnerDetails.firstName}
+                    {currentOwnerDetails.lastName !== '(Communal)' && currentOwnerDetails.lastName !== '(Custom Space)' 
+                      ? ` ${currentOwnerDetails.lastName}` 
+                      : ''}
+                  </span>
                 </div>
               ) : (
-                <p className="text-sm text-brand-light-gray dark:text-slate-300 mt-1.5">Owner: Unassigned</p>
+                <p className="text-sm text-brand-light-gray dark:text-slate-300 mt-1.5">Assignment: Unassigned</p>
               )}
               <p className="text-sm text-brand-light-gray/80 dark:text-slate-400/80 mt-1 font-mono">Box ID: {box.id}</p>
             </div>
@@ -343,7 +385,22 @@ const BoxDetailsPage: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap gap-3 pt-6 border-t border-slate-200 dark:border-slate-700">
-              <Button onClick={() => { setEditFormData({ name: box.name, contents: box.contents, destinationRoom: box.destinationRoom, imageUrl: box.imageUrl, ownerUid: box.ownerUid }); setError(null); setIsEditModalOpen(true); }} variant="primary" leftIcon={<IconEdit />}>
+              <Button onClick={() => { 
+                // Determine if current assignment is to a person or space
+                const currentOwner = box.ownerUid ? getOwnerByUid(box.ownerUid) : null;
+                const isCurrentlySpace = currentOwner && (currentOwner.lastName === '(Communal)' || currentOwner.lastName === '(Custom Space)');
+                
+                setEditFormData({ 
+                  name: box.name, 
+                  contents: box.contents, 
+                  destinationRoom: box.destinationRoom, 
+                  imageUrl: box.imageUrl, 
+                  ownerUid: isCurrentlySpace ? '' : box.ownerUid || '',
+                  spaceUid: isCurrentlySpace ? box.ownerUid || '' : ''
+                }); 
+                setError(null); 
+                setIsEditModalOpen(true); 
+              }} variant="primary" leftIcon={<IconEdit />}>
                 Edit Details
               </Button>
               <Button onClick={() => { setScanFormData({ location: box.currentLocation || '', notes: '', newStatus: box.currentStatus }); setError(null); setIsScanModalOpen(true); }} variant="success" leftIcon={<IconCamera />}>
@@ -428,13 +485,54 @@ const BoxDetailsPage: React.FC = () => {
             onChange={e => setEditFormData({...editFormData, imageUrl: e.target.value})}
             placeholder="Link to a photo of the box or its contents"
           />
-          <Select
-            label="Assign to Owner"
-            id="editOwnerUid"
-            value={editFormData.ownerUid || ''}
-            onChange={e => setEditFormData({...editFormData, ownerUid: e.target.value})}
-            options={ownerOptionsForSelect}
-          />
+          {/* Separate Person and Space Assignment */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Select
+                label="Assign to Person"
+                id="editOwnerUid"
+                value={editFormData.ownerUid || ''}
+                onChange={e => setEditFormData({...editFormData, ownerUid: e.target.value, spaceUid: e.target.value ? '' : editFormData.spaceUid})}
+                options={peopleOptions}
+              />
+              {editFormData.ownerUid && (
+                <div className="mt-2 flex items-center text-sm text-slate-600 dark:text-slate-400">
+                  <span 
+                    className="w-3 h-3 rounded-full mr-2" 
+                    style={{ backgroundColor: peopleOptions.find(p => p.value === editFormData.ownerUid)?.color || '#6B7280' }}
+                  />
+                  Person Assignment
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <Select
+                label="Assign to Space"
+                id="editSpaceUid"
+                value={editFormData.spaceUid || ''}
+                onChange={e => setEditFormData({...editFormData, spaceUid: e.target.value, ownerUid: e.target.value ? '' : editFormData.ownerUid})}
+                options={spaceOptions}
+              />
+              {editFormData.spaceUid && (
+                <div className="mt-2 flex items-center text-sm text-slate-600 dark:text-slate-400">
+                  <span 
+                    className="w-3 h-3 rounded-full mr-2" 
+                    style={{ backgroundColor: spaceOptions.find(s => s.value === editFormData.spaceUid)?.color || '#6B7280' }}
+                  />
+                  Space Assignment
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {editFormData.ownerUid && editFormData.spaceUid && (
+            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm text-amber-800 dark:text-amber-200">
+                ⚠️ Both person and space are selected. Person assignment will take priority.
+              </p>
+            </div>
+          )}
           <div className="flex justify-end items-center gap-4 pt-4">
             <Button type="button" variant="secondary" onClick={() => setIsEditModalOpen(false)} disabled={isSubmitting}>
               Cancel

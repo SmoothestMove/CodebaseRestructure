@@ -98,7 +98,15 @@ const DashboardPage: React.FC = () => {
           {moveLoading ? (
             <p className="text-slate-500 dark:text-slate-400">Loading participants...</p>
           ) : moveError ? (
-            <p className="text-red-500">Error: {moveError.message}</p>
+            <div className="text-red-500">
+              <p className="font-semibold">Error loading participants:</p>
+              <p className="text-sm">{moveError.message}</p>
+              {moveError.message.includes('permissions') && (
+                <p className="text-xs mt-2 text-orange-600">
+                  This may be due to Firestore security rules. Please check console for details.
+                </p>
+              )}
+            </div>
           ) : move && move.participants ? (
             <ul className="space-y-4">
               {Object.keys(move.participants || {}).map((userId) => {

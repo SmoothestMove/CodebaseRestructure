@@ -4,7 +4,7 @@ import { firestore } from '@/main';
 export interface Move {
   id: string;
   moveCode: string;
-  ownerId: string;
+  createdBy: string; // Changed from ownerId to match Firestore rules
   createdAt: Date;
   updatedAt: Date;
   participants: Record<string, boolean>;
@@ -42,7 +42,7 @@ export const createMove = async (userId: string): Promise<Move> => {
   const moveCode = generateMoveCode();
   const newMove = {
     moveCode,
-    ownerId: userId,
+    createdBy: userId, // Changed from ownerId to match Firestore rules
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     participants: { [userId]: true },

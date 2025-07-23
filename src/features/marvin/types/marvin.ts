@@ -62,14 +62,21 @@ export interface AppData {
   };
   reservations: Reservation[];
   checklist: ChecklistItem[];
+  calendar: {
+    upcomingEvents: MarvinCalendarEvent[];
+    totalEvents: number;
+  };
 }
 
-// Represents a calendar event to be created or modified.
-export interface CalendarEvent {
+// Represents a calendar event to be created or modified by MARVIN.
+export interface MarvinCalendarEvent {
   title: string;
   date: string; // ISO format e.g., "YYYY-MM-DD"
   time?: string; // e.g., "HH:MM"
+  endTime?: string; // e.g., "HH:MM"
+  description?: string;
   assignees?: string[];
+  allDay?: boolean;
 }
 
 // Type for the AI's structured response when creating a checklist.
@@ -81,7 +88,33 @@ export interface CreateChecklistAction {
 // Type for the AI's structured response when creating a calendar event.
 export interface CreateCalendarEventAction {
   action: 'create_calendar_event';
-  event: CalendarEvent;
+  event: MarvinCalendarEvent;
+}
+
+// Type for the AI's structured response when updating a calendar event.
+export interface UpdateCalendarEventAction {
+  action: 'update_calendar_event';
+  eventId: string;
+  event: Partial<MarvinCalendarEvent>;
+}
+
+// Type for the AI's structured response when deleting a calendar event.
+export interface DeleteCalendarEventAction {
+  action: 'delete_calendar_event';
+  eventId: string;
+}
+
+// Type for the AI's structured response when querying calendar events.
+export interface QueryCalendarAction {
+  action: 'query_calendar';
+  query: {
+    dateRange?: {
+      start: string; // YYYY-MM-DD
+      end: string; // YYYY-MM-DD
+    };
+    assignee?: string;
+    searchTerm?: string;
+  };
 }
 
 // Type for the AI's structured response for navigation.
@@ -91,4 +124,10 @@ export interface NavigateAction {
 }
 
 // A union type for all possible structured actions the AI can return.
-export type AiAction = CreateChecklistAction | CreateCalendarEventAction | NavigateAction;
+export type AiAction = 
+  | CreateChecklistAction 
+  | CreateCalendarEventAction 
+  | UpdateCalendarEventAction
+  | DeleteCalendarEventAction
+  | QueryCalendarAction
+  | NavigateAction;

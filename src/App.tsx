@@ -13,12 +13,14 @@ import SettingsPage from '@/features/settings/pages/SettingsPage';
 import AuthPage from '@/features/auth/pages/AuthPage';
 import BudgetPage from './features/budget/pages/BudgetPage';
 import MarvinPage from '@/features/marvin/pages/MarvinPage';
+import CalendarPage from '@/features/calendar/pages/CalendarPage';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { BoxesProvider } from '@/features/boxes/hooks/useBoxes';
 import { OwnersProvider } from '@/features/owners/hooks/useOwners';
 import { SettingsProvider } from '@/features/settings/hooks/useSettings';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 import { MoveProvider } from '@/features/settings/hooks/MoveContext';
+import { CalendarProvider } from '@/features/calendar/hooks/useCalendar';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 
 const MainAppLayout: React.FC = () => {
@@ -77,6 +79,7 @@ const MainAppLayout: React.FC = () => {
     <MoveProvider moveId={moveId || null}>
       <BoxesProvider>
         <OwnersProvider>
+          <CalendarProvider>
           <div className="min-h-screen bg-slate-100 dark:bg-slate-900">
             <Navbar />
             <div className="md:pl-64 flex flex-col min-h-screen">
@@ -94,6 +97,7 @@ const MainAppLayout: React.FC = () => {
               initialLastName={newUserFullName.split(' ').slice(1).join(' ')}
             />
           </div>
+          </CalendarProvider>
         </OwnersProvider>
       </BoxesProvider>
     </MoveProvider>
@@ -119,6 +123,7 @@ const App: React.FC = () => {
             <Route path="truck-load" element={<TruckLoadPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="budget" element={<BudgetPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="marvin" element={<MarvinPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/app" replace />} />

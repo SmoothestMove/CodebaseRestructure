@@ -3,23 +3,94 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Marvin } from '../components';
 import { createMarvinAppData } from '../adapters/dataAdapter';
-import { CalendarEvent, ChecklistItem } from '../types';
+import { MarvinCalendarEvent, ChecklistItem, CreateCalendarEventAction, UpdateCalendarEventAction, DeleteCalendarEventAction, QueryCalendarAction } from '../types';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useCalendar } from '@/features/calendar/hooks/useCalendar';
+import { useMarvinCalendar } from '@/features/calendar/hooks/useMarvinCalendar';
 
 const MarvinPage: React.FC = () => {
   const navigate = useNavigate();
   const { boxes } = useBoxes();
   const { owners } = useOwners();
+  const { events } = useCalendar();
+  const { 
+    handleCreateCalendarEvent, 
+    handleUpdateCalendarEvent, 
+    handleDeleteCalendarEvent,
+    handleQueryCalendarEvents
+  } = useMarvinCalendar();
 
-  // Convert app data to MARVIN's expected format
-  const appData = createMarvinAppData(boxes, owners, []);
+  // Convert app data to MARVIN's expected format including calendar events
+  const appData = createMarvinAppData(boxes, owners, [], events);
 
-  // Handler for calendar events - shows toast for now, could integrate with actual calendar
-  const handleCalendarAction = (event: CalendarEvent) => {
-    toast.success(`Calendar event created: "${event.title}" on ${event.date}${event.time ? ` at ${event.time}` : ''}`);
-    // TODO: Integrate with actual calendar system when available
-    console.log('Calendar event:', event);
+  // Enhanced handler for calendar actions with actual integration
+  const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction) => {
+    try {
+      let result;
+      
+      switch (action.action) {
+        case 'create_calendar_event':
+          result = await handleCreateCalendarEvent(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        case 'update_calendar_event':
+          result = await handleUpdateCalendarEvent(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        case 'delete_calendar_event':
+          result = await handleDeleteCalendarEvent(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        case 'query_calendar':
+          result = await handleQueryCalendarEvents(action);
+          if (result.success) {
+            toast.success(result.message);
+            // Optionally display query results in a more detailed way
+            if (result.data && result.data.length > 0) {
+              console.log('Calendar query results:', result.data);
+            }
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        default:
+          // Fallback for legacy single event format
+          const event = action as any;
+          if (event.title && event.date) {
+            const legacyAction: CreateCalendarEventAction = {
+              action: 'create_calendar_event',
+              event: event
+            };
+            result = await handleCreateCalendarEvent(legacyAction);
+            if (result.success) {
+              toast.success(result.message);
+            } else {
+              toast.error(result.message);
+            }
+          }
+          break;
+      }
+    } catch (error) {
+      console.error('Calendar action error:', error);
+      toast.error('Failed to perform calendar action');
+    }
   };
 
   // Handler for navigation requests - uses React Router
