@@ -66,6 +66,26 @@ export interface AppData {
     upcomingEvents: MarvinCalendarEvent[];
     totalEvents: number;
   };
+  budget: {
+    totalEstimatedAmount: number;
+    totalSpent: number;
+    categories: Array<{
+      id: string;
+      name: string;
+      estimatedAmount: number;
+      spentAmount: number;
+      color: string;
+    }>;
+    recentExpenses: Array<{
+      id: string;
+      categoryName: string;
+      amount: number;
+      merchantName: string;
+      description: string;
+      date: string;
+    }>;
+    overspentCategories: string[]; // Category IDs that are over budget
+  };
 }
 
 // Represents a calendar event to be created or modified by MARVIN.
@@ -123,6 +143,42 @@ export interface NavigateAction {
   destination: string;
 }
 
+// Type for the AI's structured response when adding an expense.
+export interface AddExpenseAction {
+  action: 'add_expense';
+  expense: {
+    categoryId: string;
+    amount: number;
+    merchantName: string;
+    description: string;
+    date?: string; // Optional, defaults to today
+  };
+}
+
+// Type for the AI's structured response when creating a budget category.
+export interface CreateBudgetCategoryAction {
+  action: 'create_budget_category';
+  category: {
+    name: string;
+    estimatedAmount: number;
+    color?: string;
+    icon?: string;
+  };
+}
+
+// Type for the AI's structured response when querying budget information.
+export interface QueryBudgetAction {
+  action: 'query_budget';
+  query: {
+    type: 'summary' | 'by_category' | 'recent_expenses' | 'overspent_categories';
+    categoryId?: string;
+    dateRange?: {
+      start: string; // YYYY-MM-DD
+      end: string; // YYYY-MM-DD
+    };
+  };
+}
+
 // A union type for all possible structured actions the AI can return.
 export type AiAction = 
   | CreateChecklistAction 
@@ -130,4 +186,7 @@ export type AiAction =
   | UpdateCalendarEventAction
   | DeleteCalendarEventAction
   | QueryCalendarAction
-  | NavigateAction;
+  | NavigateAction
+  | AddExpenseAction
+  | CreateBudgetCategoryAction
+  | QueryBudgetAction;

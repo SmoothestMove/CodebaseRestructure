@@ -28,7 +28,8 @@ A comprehensive web application designed to help users efficiently manage and tr
 - 📦 **Box Management** - QR code generation, scanning, and status tracking
 - 👥 **Owner & Space Management** - Assign items to people or rooms
 - 💰 **Financial Navigator** - Comprehensive budget tracking with expense management
-- 🤖 **MARVIN AI Assistant** - Voice-enabled AI assistant with wake word detection
+- 📅 **Calendar System** - Full calendar management with event scheduling and team collaboration
+- 🤖 **MARVIN AI Assistant** - Voice-enabled AI with budget, calendar, and navigation integration
 - 📊 **Visual Analytics** - Charts and graphs for spending and inventory insights
 - 📱 **Mobile-First Design** - Responsive interface for all devices
 - 🔄 **Real-Time Sync** - Firebase-powered live data updates
@@ -47,6 +48,7 @@ A comprehensive web application designed to help users efficiently manage and tr
 
 **Key Libraries:**
 - **UI Components:** Lucide React, React Icons
+- **Calendar:** React Big Calendar 1.19, Date-fns 4.1
 - **Animations:** Framer Motion 12.18
 - **Charts:** Recharts 3.1
 - **PDF Generation:** jsPDF 3.0
@@ -150,9 +152,15 @@ src/
 │   ├── budget/             # Financial Navigator
 │   │   ├── components/     # Budget UI components
 │   │   ├── constants/      # Budget constants
-│   │   ├── hooks/          # Budget state management
+│   │   ├── hooks/          # Budget state management (including MARVIN integration)
 │   │   ├── pages/          # Budget tracking pages
 │   │   └── types/          # Budget type definitions
+│   ├── calendar/           # Calendar System
+│   │   ├── components/     # Calendar UI components and event modals
+│   │   ├── hooks/          # Calendar state management (including MARVIN integration)
+│   │   ├── pages/          # Calendar view pages
+│   │   ├── services/       # Calendar API services
+│   │   └── types/          # Calendar type definitions
 │   ├── marvin/             # MARVIN AI Assistant
 │   │   ├── adapters/       # Data transformation for AI context
 │   │   ├── components/     # AI chat interface and voice components
@@ -260,12 +268,23 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 - **Load Optimization:** Visual feedback for efficient truck loading
 - **Loading Progress:** Track loading status in real-time
 
+### 📅 **Calendar System**
+- **Interactive Calendar Views:** Month, week, day, and agenda views using React Big Calendar
+- **Event Management:** Create, edit, and delete moving-related events with full CRUD operations
+- **Team Collaboration:** Assign events to specific team members with real-time updates
+- **Firebase Integration:** Real-time synchronization across all connected devices
+- **MARVIN Integration:** AI-powered event creation and scheduling through natural language
+- **Event Details:** Rich event descriptions, time management, and assignee tracking
+- **Responsive Design:** Optimized calendar interface for all screen sizes
+
 ### 🤖 **MARVIN AI Assistant**
 - **Natural Language Processing:** Google Gemini API integration for contextual responses
 - **Voice Interaction:** Speech recognition and text-to-speech capabilities
 - **Wake Word Detection:** "Let's Move Marvin" activation using Picovoice technology
-- **Moving Context Awareness:** Real-time access to your boxes, owners, and move data
-- **Smart Actions:** Create calendar events, checklists, and navigate app features
+- **Moving Context Awareness:** Real-time access to your boxes, owners, budget, and calendar data
+- **Smart Actions:** Create calendar events, manage budget expenses, and navigate app features
+- **Budget Integration:** Add expenses, create categories, and query spending through voice commands
+- **Calendar Integration:** Schedule events, check availability, and manage move timeline
 - **Web Search Integration:** Real-time search for moving-related queries
 - **Mobile Optimized:** Cross-platform voice support for mobile browsers
 
@@ -329,6 +348,8 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 *   **PDF Generation:** Complex layouts with many labels may have performance considerations
 *   **MARVIN Voice Limitations:** Voice quality depends on browser and platform (mobile browsers have limited voice options)
 *   **API Dependencies:** MARVIN requires external API keys (Gemini, Picovoice) for full functionality
+*   **MARVIN Wake Word:** Picovoice access key required for "Let's Move Marvin" activation (optional feature)
+*   **No Standalone Checklist System:** Task management currently handled through calendar events only
 
 ## Future Development Ideas
 
@@ -344,7 +365,7 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
     *   Smart suggestions for box contents based on room/context
     *   Voice commands for hands-free box updates
     *   AI-powered move progress summaries and insights
-    *   Integration with calendar and task management systems
+    *   Enhanced inventory management integration
 *   **Smart Categorization:** Automatic expense categorization using AI
 *   **Workload Distribution:** AI-powered task delegation among move participants
 *   **Computer Vision:** Box content identification through camera
@@ -358,8 +379,8 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 
 ### 🗺️ **Location & Planning**
 *   **Google Maps Integration:** Route planning and moving day logistics
-*   **Google Calendar Integration:** Shared calendar for move milestones and deadlines
-*   **Personalized Move Checklist:** Timeline-based task management with delegation
+*   **Google Calendar Integration:** External calendar sync with existing calendar system
+*   **Standalone Checklist System:** Dedicated task management separate from calendar events
 *   **Inventory Valuation:** Insurance and valuation tracking for belongings
 
 ### 🔧 **Technical Improvements**

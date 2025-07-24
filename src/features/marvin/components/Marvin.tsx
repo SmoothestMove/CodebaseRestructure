@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { AppData, Message, MessageSender, CalendarEvent, ChecklistItem, GroundingChunk, AiAction } from '../types/marvin';
+import { AppData, Message, MessageSender, CalendarEvent, ChecklistItem, GroundingChunk, AiAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '../types/marvin';
 import { getMarvinResponse } from '../services/geminiService';
 import { ttsService } from '../services/ttsService';
 import { wakeWordService } from '../services/wakeWordService';
@@ -22,16 +22,19 @@ interface MarvinProps {
   onNavigate: (destination: string) => void;
   onUpdateChecklist: (items: Omit<ChecklistItem, 'id' | 'completed'>[]) => void;
   onWakeWordDetected: () => void;
+  onBudgetAction?: (action: AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction) => void;
 }
 
 const promptStarters = [
   "Create a moving agenda for this week.",
   "How many boxes are packed?",
+  "Add a $50 expense for moving boxes to supplies.",
+  "Show me my budget summary.",
   "Search for moving companies near me.",
   "Set a reminder for Saturday."
 ];
 
-export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNavigate, onUpdateChecklist, onWakeWordDetected }) => {
+export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNavigate, onUpdateChecklist, onWakeWordDetected, onBudgetAction }) => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 'init', text: "Hello! I'm MARVIN, your moving assistant. How can I help you plan your relocation today?", sender: MessageSender.AI }
   ]);
@@ -107,9 +110,24 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
     } else if (action.action === 'navigate') {
       onNavigate(action.destination);
       confirmationText = `Here are the directions to ${action.destination}.`;
+    } else if (action.action === 'add_expense' || action.action === 'create_budget_category' || action.action === 'query_budget') {
+      if (onBudgetAction) {
+        onBudgetAction(action as AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction);
+        if (action.action === 'add_expense') {
+          const expenseAction = action as AddExpenseAction;
+          confirmationText = `I've added an expense of $${expenseAction.expense.amount} for ${expenseAction.expense.description}.`;
+        } else if (action.action === 'create_budget_category') {
+          const categoryAction = action as CreateBudgetCategoryAction;
+          confirmationText = `I've created a new budget category "${categoryAction.category.name}" with $${categoryAction.category.estimatedAmount}.`;
+        } else if (action.action === 'query_budget') {
+          confirmationText = `I've retrieved your budget information.`;
+        }
+      } else {
+        confirmationText = 'Budget functionality is not available right now.';
+      }
     }
     return confirmationText;
-  }, [onCalendarAction, onNavigate, onUpdateChecklist]);
+  }, [onCalendarAction, onNavigate, onUpdateChecklist, onBudgetAction]);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;

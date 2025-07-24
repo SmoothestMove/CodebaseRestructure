@@ -1,6 +1,7 @@
 import { Box, Owner, ItemStatus } from '@/types';
 import { AppData, TeamMember, InventoryItem, Reservation, ChecklistItem, MarvinCalendarEvent } from '../types/marvin';
 import { CalendarEvent } from '@/features/calendar/types/calendarTypes';
+import { Expense, Category, Budget } from '@/features/budget/types/types';
 
 /**
  * Converts the existing app data structures to MARVIN's expected AppData format
@@ -9,7 +10,8 @@ export const createMarvinAppData = (
   boxes: Box[] = [],
   owners: Owner[] = [],
   budgetReservations: any[] = [],
-  calendarEvents: CalendarEvent[] = []
+  calendarEvents: CalendarEvent[] = [],
+  budgetData?: { categories: Category[], expenses: Expense[], budget: Budget }
 ): AppData => {
   // Convert owners to team members with task counts
   const teamMembers: TeamMember[] = owners.map(owner => ({
@@ -36,19 +38,8 @@ export const createMarvinAppData = (
     date: reservation.date || new Date().toISOString().split('T')[0]
   }));
 
-  // Placeholder for checklist - could be integrated with move management later
-  const checklist: ChecklistItem[] = [
-    {
-      id: 'default-1',
-      task: 'Pack remaining items',
-      completed: false
-    },
-    {
-      id: 'default-2', 
-      task: 'Confirm moving truck rental',
-      completed: packedBoxes > 0
-    }
-  ];
+  // No checklist system currently implemented - use calendar for scheduling tasks
+  const checklist: ChecklistItem[] = [];
 
   // Convert calendar events to MARVIN format
   const now = new Date();
@@ -66,6 +57,51 @@ export const createMarvinAppData = (
       allDay: event.allDay
     }));
 
+  // Transform budget data for MARVIN
+  const budget = budgetData ? {
+    totalEstimatedAmount: budgetData.budget.totalEstimatedAmount,
+    totalSpent: budgetData.expenses.reduce((sum, expense) => sum + expense.amount, 0),
+    categories: budgetData.categories.map(category => {
+      const categoryExpenses = budgetData.expenses.filter(e => e.categoryId === category.id);
+      const spentAmount = categoryExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+      return {
+        id: category.id,
+        name: category.name,
+        estimatedAmount: category.estimatedAmount,
+        spentAmount,
+        color: category.color
+      };
+    }),
+    recentExpenses: budgetData.expenses
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 10)
+      .map(expense => {
+        const category = budgetData.categories.find(c => c.id === expense.categoryId);
+        return {
+          id: expense.id,
+          categoryName: category?.name || 'Unknown',
+          amount: expense.amount,
+          merchantName: expense.merchantName,
+          description: expense.description,
+          date: expense.date
+        };
+      }),
+    overspentCategories: budgetData.categories
+      .filter(category => {
+        const spent = budgetData.expenses
+          .filter(e => e.categoryId === category.id)
+          .reduce((sum, expense) => sum + expense.amount, 0);
+        return spent > category.estimatedAmount;
+      })
+      .map(category => category.id)
+  } : {
+    totalEstimatedAmount: 0,
+    totalSpent: 0,
+    categories: [],
+    recentExpenses: [],
+    overspentCategories: []
+  };
+
   return {
     teamMembers,
     inventory: {
@@ -78,7 +114,8 @@ export const createMarvinAppData = (
     calendar: {
       upcomingEvents,
       totalEvents: calendarEvents.length
-    }
+    },
+    budget
   };
 };
 

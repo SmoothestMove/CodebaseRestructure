@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Marvin } from '../components';
 import { createMarvinAppData } from '../adapters/dataAdapter';
-import { MarvinCalendarEvent, ChecklistItem, CreateCalendarEventAction, UpdateCalendarEventAction, DeleteCalendarEventAction, QueryCalendarAction } from '../types';
+import { MarvinCalendarEvent, ChecklistItem, CreateCalendarEventAction, UpdateCalendarEventAction, DeleteCalendarEventAction, QueryCalendarAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '../types';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
 import { useMarvinCalendar } from '@/features/calendar/hooks/useMarvinCalendar';
+import { useMarvinBudget } from '@/features/budget/hooks/useMarvinBudget';
 
 const MarvinPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,9 +21,16 @@ const MarvinPage: React.FC = () => {
     handleDeleteCalendarEvent,
     handleQueryCalendarEvents
   } = useMarvinCalendar();
+  
+  const { 
+    handleAddExpense, 
+    handleCreateBudgetCategory, 
+    handleQueryBudget, 
+    budgetData 
+  } = useMarvinBudget();
 
-  // Convert app data to MARVIN's expected format including calendar events
-  const appData = createMarvinAppData(boxes, owners, [], events);
+  // Convert app data to MARVIN's expected format including calendar events and budget data
+  const appData = createMarvinAppData(boxes, owners, [], events, budgetData);
 
   // Enhanced handler for calendar actions with actual integration
   const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction) => {
@@ -93,6 +101,49 @@ const MarvinPage: React.FC = () => {
     }
   };
 
+  // Enhanced handler for budget actions with actual integration
+  const handleBudgetAction = async (action: AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction) => {
+    try {
+      let result;
+      
+      switch (action.action) {
+        case 'add_expense':
+          result = await handleAddExpense(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        case 'create_budget_category':
+          result = await handleCreateBudgetCategory(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        case 'query_budget':
+          result = await handleQueryBudget(action);
+          if (result.success) {
+            toast.success(result.message);
+          } else {
+            toast.error(result.message);
+          }
+          break;
+          
+        default:
+          toast.error('Unknown budget action');
+          break;
+      }
+    } catch (error) {
+      console.error('Budget action error:', error);
+      toast.error('Failed to perform budget action');
+    }
+  };
+
   // Handler for navigation requests - uses React Router
   const handleNavigate = (destination: string) => {
     toast.info(`Navigation requested to: ${destination}`);
@@ -114,11 +165,10 @@ const MarvinPage: React.FC = () => {
     }
   };
 
-  // Handler for checklist updates - shows toast for now, could integrate with task management
+  // Handler for checklist updates - redirects to calendar since no checklist system exists
   const handleUpdateChecklist = (items: Omit<ChecklistItem, 'id' | 'completed'>[]) => {
-    toast.success(`Added ${items.length} new tasks to your checklist`);
-    // TODO: Integrate with actual task management system
-    console.log('Checklist items:', items);
+    toast.info(`Checklist functionality not available. Try asking me to create calendar events for your tasks instead.`);
+    console.log('Checklist items that would be created:', items);
   };
 
   // Handler for wake word detection - could trigger UI focus or animations
@@ -137,6 +187,7 @@ const MarvinPage: React.FC = () => {
           onNavigate={handleNavigate}
           onUpdateChecklist={handleUpdateChecklist}
           onWakeWordDetected={handleWakeWordDetected}
+          onBudgetAction={handleBudgetAction}
         />
       </div>
     </div>

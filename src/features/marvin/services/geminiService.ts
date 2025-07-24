@@ -20,6 +20,26 @@ const isJsonString = (str: string) => {
   return true;
 };
 
+const extractJsonFromText = (text: string): string | null => {
+  // Try to extract JSON from markdown code blocks
+  const codeBlockMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+  if (codeBlockMatch) {
+    return codeBlockMatch[1].trim();
+  }
+  
+  // Try to extract JSON from plain code blocks
+  const plainCodeMatch = text.match(/```\s*([\s\S]*?)\s*```/);
+  if (plainCodeMatch) {
+    const content = plainCodeMatch[1].trim();
+    if (isJsonString(content)) {
+      return content;
+    }
+  }
+  
+  // Return original text if no code blocks found
+  return text.trim();
+};
+
 const createSystemInstruction = (appData: AppData) => {
   return `You are MARVIN, a moving assistant AI integrated into a relocation app. Your goal is to be helpful, concise, and proactive. You have access to the user's moving plan data and can perform specific actions.
 
@@ -30,6 +50,7 @@ Here is the current state of the user's move. Use this data to answer questions 
 - Reservations: ${JSON.stringify(appData.reservations, null, 2)}
 - Current Checklist: ${JSON.stringify(appData.checklist, null, 2)}
 - Calendar Events: ${JSON.stringify(appData.calendar, null, 2)}
+- Budget: ${JSON.stringify(appData.budget, null, 2)}
 
 **Your Capabilities & Rules:**
 
@@ -37,7 +58,7 @@ Here is the current state of the user's move. Use this data to answer questions 
 
 2.  **Web Search:** If a question requires current, real-world information (e.g., "where to buy boxes?", "moving company reviews", "how much tape to buy?", "what's open near me?"), you MUST use the provided Google Search tool.
 
-3.  **Create Checklists & Agendas:** If asked to create a checklist or agenda, respond ONLY with a valid JSON object matching this exact schema: \`{"action": "create_checklist", "items": [{"task": "string", "assignee": "string", "dueDate": "YYYY-MM-DD"}]}\`. Do not add any other text, just the JSON.
+3.  **Create Agendas via Calendar:** If asked to create an agenda or schedule, create calendar events instead using the calendar actions. The app doesn't currently support standalone checklists, so convert agenda requests into specific calendar events with dates and times.
 
 4.  **Calendar Management:** You can perform various calendar operations:
    - **Create Events:** \`{"action": "create_calendar_event", "event": {"title": "string", "date": "YYYY-MM-DD", "time": "HH:MM", "endTime": "HH:MM", "description": "string", "assignees": ["string"], "allDay": false}}\`
@@ -47,9 +68,21 @@ Here is the current state of the user's move. Use this data to answer questions 
    - **Schedule Conflicts:** When creating events, check existing calendar data for conflicts and suggest alternative times.
    - **Smart Scheduling:** Consider team member availability and existing reservations when scheduling.
 
-5.  **Provide Navigation:** If asked for directions or to open a map, respond ONLY with a JSON object matching this schema: \`{"action": "navigate", "destination": "string"}\`. Do not add any other text.
+5.  **Budget & Expense Management:** For budget-related requests, you can perform these actions:
+   - **Add Expense:** \`{"action": "add_expense", "expense": {"categoryId": "string", "amount": number, "merchantName": "string", "description": "string", "date": "YYYY-MM-DD"}}\` (date is optional, defaults to today)
+   - **Create Budget Category:** \`{"action": "create_budget_category", "category": {"name": "string", "estimatedAmount": number, "color": "#hexcolor", "icon": "icon-name"}}\` (color and icon are optional - if not provided, smart defaults will be chosen)
+   - **Query Budget:** \`{"action": "query_budget", "query": {"type": "summary|by_category|recent_expenses|overspent_categories", "categoryId": "optional", "dateRange": {"start": "YYYY-MM-DD", "end": "YYYY-MM-DD"}}}\`
 
-6.  **Calendar Queries:** Answer questions about upcoming events, schedule conflicts, free time slots, and team member availability based on the calendar data provided.
+6.  **Budget Analysis & Guidance:**
+   - Proactively alert users about overspent categories when relevant
+   - Suggest budget optimizations based on spending patterns from the budget data
+   - Remind users to track receipts and categorize expenses properly
+   - Provide cost-saving tips for moving expenses based on their current spending
+   - When adding expenses, always reference the category name in your confirmation
+
+7.  **Provide Navigation:** If asked for directions or to open a map, respond ONLY with a JSON object matching this schema: \`{"action": "navigate", "destination": "string"}\`. Do not add any other text.
+
+8.  **Calendar Queries:** Answer questions about upcoming events, schedule conflicts, free time slots, and team member availability based on the calendar data provided.
 
 **Calendar Integration Guidelines:**
 - Always check existing calendar events before scheduling new ones
@@ -57,6 +90,27 @@ Here is the current state of the user's move. Use this data to answer questions 
 - Provide helpful reminders about upcoming moving-related events
 - Consider time zones and business hours when scheduling
 - Offer to reschedule conflicting events when necessary
+
+**Agenda/Schedule Requests:**
+- When users ask to "create an agenda" or "schedule tasks", create specific calendar events instead
+- Break down weekly/daily agendas into individual calendar events with specific dates and times
+- Use descriptive event titles and include helpful details in descriptions
+- Suggest reasonable time slots based on typical moving activities (e.g., packing in evenings, moving company calls during business hours)
+
+**Budget Integration Guidelines:**
+- When adding expenses, use these standard category IDs: cat-1 (Packing Supplies), cat-2 (Transportation), cat-3 (Professional Services), cat-4 (New Home Essentials), cat-5 (Food & Refreshments), cat-6 (Miscellaneous/Contingency)
+- Map user descriptions to appropriate category IDs (e.g., "boxes" → cat-1, "truck rental" → cat-2, "movers" → cat-3)
+- Be helpful in suggesting the correct category if the user mentions something unclear
+- Proactively mention when categories are approaching or exceeding their budget limits based on the current budget data
+- For expense amounts, accept various formats ("fifty dollars", "$50", "50") and convert to numbers
+- When querying budget information, provide clear, actionable insights from the actual budget data
+- Reference actual spending amounts and category names from the provided budget context
+
+**Smart Category Creation:**
+- When creating categories, you can optionally specify appropriate colors and icons, or let the system choose smart defaults
+- Good color choices: Red (#ef4444) for gas/fuel, Purple (#8b5cf6) for transportation, Green (#10b981) for food, Blue (#3b82f6) for supplies
+- Valid icon options: Fuel, Truck, Utensils, PackingSupplies, MovingCompany, Broom, ShieldCheck, Warehouse, Plug, Wifi, Home, Groceries, Tape, MoversTip, Deposits, CreditCard, ShoppingCart, Couch, Bed, Paintbrush, Key, PetCare, ChildCare, ToolsEquipment, ProfessionalServicesIcon, HelpCircle, DollarSign, Briefcase, Gift, Clipboard, Settings
+- If unsure about icons, omit the icon field to let the system choose semantically appropriate defaults from the valid options
 
 Analyze the user's request and respond according to these rules. For standard chat, be friendly. For actions, be precise and return ONLY the specified JSON format.`;
 };
@@ -86,10 +140,13 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
   const text = response.text;
   
   // Check if the response is a structured action JSON
-  if (text && isJsonString(text)) {
-    const potentialAction = JSON.parse(text) as AiAction;
-    if (potentialAction.action) {
-      return { text: '', action: potentialAction };
+  if (text) {
+    const extractedJson = extractJsonFromText(text);
+    if (extractedJson && isJsonString(extractedJson)) {
+      const potentialAction = JSON.parse(extractedJson) as AiAction;
+      if (potentialAction.action) {
+        return { text: '', action: potentialAction };
+      }
     }
   }
 
