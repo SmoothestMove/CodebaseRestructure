@@ -234,7 +234,7 @@ const SetupBudgetModal: React.FC<SetupBudgetModalProps> = ({ isOpen, onClose, on
           <Button
             onClick={handleSubmit}
             disabled={!isCreateButtonEnabled() || isSubmitting}
-            loading={isSubmitting}
+            isLoading={isSubmitting}
           >
             Create Budget
           </Button>

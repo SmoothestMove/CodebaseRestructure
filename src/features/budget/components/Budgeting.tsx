@@ -2,7 +2,7 @@ import React, { useState, useReducer, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { FaPlus, FaTrash, FaEdit, FaChartBar, FaChartPie, FaFilter, FaSearch, FaTimes, FaInfoCircle } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaEdit, FaChartBar, FaChartPie, FaFilter, FaSearch, FaTimes, FaInfoCircle, FaCamera } from 'react-icons/fa';
 import { Expense, Category, MoveType } from '../types/types';
 import { INITIAL_CATEGORIES, BUDGET_TEMPLATES, ICONS } from '../constants/constants';
 import AddExpenseModal from './AddExpenseModal';
@@ -12,6 +12,7 @@ import SetupExpensesModal from './SetupExpensesModal';
 import ExpenseDetailModal from './ExpenseDetailModal';
 import HorizontalBarChart from './HorizontalBarChart';
 import BulletChart from './BulletChart';
+import ReceiptScanModal from './ReceiptScanModal';
 import usePersistentReducer from '../hooks/usePersistentReducer';
 
 // Types
@@ -123,6 +124,7 @@ const Budgeting: React.FC = () => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isSetupBudgetModalOpen, setIsSetupBudgetModalOpen] = useState(false);
   const [isSetupExpensesModalOpen, setIsSetupExpensesModalOpen] = useState(false);
+  const [isReceiptScanModalOpen, setIsReceiptScanModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -203,6 +205,11 @@ const Budgeting: React.FC = () => {
     toast.success('Expense deleted successfully!');
   };
 
+  const handleReceiptScanned = (expense: Omit<Expense, 'id'>) => {
+    dispatch({ type: 'ADD_EXPENSE', payload: expense });
+    toast.success('Expense added from receipt scan!');
+  };
+
   const handleAddCategory = (category: Omit<Category, 'id'>) => {
     dispatch({ type: 'ADD_CATEGORY', payload: category });
     toast.success('Category added successfully!');
@@ -264,14 +271,6 @@ const Budgeting: React.FC = () => {
           </div>
           
           <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
-            <button className="flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white px-4 py-2 rounded-lg transition-colors"
-                    onClick={() => {
-                      setSelectedExpense(null);
-                      setIsAddExpenseModalOpen(true);
-                    }}>
-              <FaPlus /> Add Expense
-            </button>
-            
             <button className="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 px-4 py-2 rounded-lg transition-colors"
                     onClick={() => {
                       setSelectedCategory(null);
@@ -524,29 +523,28 @@ const Budgeting: React.FC = () => {
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold">Expense Log</h2>
-            <button 
-              onClick={() => {
-                setSelectedExpense(null);
-                setIsAddExpenseModalOpen(true);
-              }}
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors">
-              <FaPlus /> Add Expense
-            </button>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setIsReceiptScanModalOpen(true)}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <FaCamera /> Scan Receipt
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedExpense(null);
+                  setIsAddExpenseModalOpen(true);
+                }}
+                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <FaPlus /> Add Expense
+              </button>
+            </div>
           </div>
           
           {state.expenses.length === 0 ? (
             <div className="p-12 text-center">
               <div className="text-slate-500 dark:text-slate-400">
                 <p className="text-lg font-medium mb-2">No expenses logged yet.</p>
-                <p className="mb-4">Add your first expense to get started!</p>
-                <button 
-                  onClick={() => {
-                    setSelectedExpense(null);
-                    setIsAddExpenseModalOpen(true);
-                  }}
-                  className="inline-flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white px-4 py-2 rounded-lg transition-colors">
-                  <FaPlus /> Add Expense
-                </button>
+                <p className="mb-4">Use the 'Add Expense' button above to get started!</p>
               </div>
             </div>
           ) : (
@@ -699,6 +697,14 @@ const Budgeting: React.FC = () => {
         onSubmit={selectedExpense ? handleUpdateExpense : handleAddExpense}
         categories={state.categories}
         initialData={selectedExpense}
+      />
+
+      <ReceiptScanModal
+        isOpen={isReceiptScanModalOpen}
+        onClose={() => setIsReceiptScanModalOpen(false)}
+        onConfirm={handleReceiptScanned}
+        categories={state.categories}
+        apiKey={import.meta.env.VITE_MINDEE_API_KEY || '0934184ca7773f4e3f22935db2852918'}
       />
 
       <CategoryModal

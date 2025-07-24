@@ -39,6 +39,7 @@ src/
 - 📦 **Box Management** - QR code generation, scanning, status tracking
 - 👥 **Owner & Space Management** - Assign items to people/rooms  
 - 💰 **Financial Navigator** - Comprehensive budget tracking with charts
+- 🤖 **AI Receipt Scanning** - Mindee OCR integration for automatic expense extraction
 - 🔄 **Real-time Collaboration** - Multi-user moves with live updates
 - 📱 **Mobile-First Design** - Responsive interface with touch support
 - 🎨 **Dark/Light Mode** - System-wide theme switching
@@ -76,9 +77,10 @@ BrowserRouter → AuthProvider → ThemeProvider → SettingsProvider
 
 **Architecture:**
 - **State Management:** Custom `usePersistentReducer` with localStorage persistence
-- **Components:** BudgetPage, BudgetSetup, AddExpenseModal, CategoryModal, charts
+- **Components:** BudgetPage, BudgetSetup, AddExpenseModal, CategoryModal, ReceiptScanModal, charts
 - **Data Storage:** Client-side only (localStorage) - no Firebase integration
-- **Key Features:** Expense tracking, receipt uploads (base64), budget templates, visual analytics
+- **AI Integration:** Mindee OCR API for automated receipt scanning and data extraction
+- **Key Features:** Expense tracking, AI receipt scanning, receipt uploads (base64), budget templates, visual analytics
 
 **Main Types:**
 ```typescript
@@ -100,6 +102,28 @@ interface Category {
   icon: string;
 }
 ```
+
+### AI Receipt Scanning (Mindee OCR Integration)
+**Location:** `src/features/budget/services/ReceiptScanningService.ts`, `src/features/budget/components/ReceiptScanModal.tsx`
+
+**Features:**
+- **Automated Data Extraction:** Merchant name, amount, date, line items from receipt images
+- **Smart Category Mapping:** AI-suggested categories mapped to local budget categories  
+- **Confidence Scoring:** Visual indicators showing extraction accuracy (High/Medium/Low)
+- **Multi-format Support:** JPEG, PNG, GIF, PDF files up to 5MB
+- **3-step Workflow:** Upload → AI Processing → Review & Edit extracted data
+- **Error Handling:** Comprehensive error handling with retry logic and user-friendly messages
+
+**Usage:**
+- Click "Scan Receipt with AI" button in AddExpenseModal
+- Upload receipt image via drag-and-drop or file picker
+- Review and edit AI-extracted data before saving
+- Supports both AI scanning and manual entry in same interface
+
+**Configuration:**
+- API Key: Set `VITE_MINDEE_API_KEY` environment variable
+- Rate Limits: 250 API calls/month, 20 calls/minute (free tier)
+- Processing Time: ~1 second average per receipt
 
 ### Box Management
 **Location:** `src/features/boxes/`
@@ -124,6 +148,7 @@ VITE_FIREBASE_PROJECT_ID
 VITE_FIREBASE_STORAGE_BUCKET
 VITE_FIREBASE_MESSAGING_SENDER_ID
 VITE_FIREBASE_APP_ID
+VITE_MINDEE_API_KEY
 ```
 
 ### Key Configuration Files
