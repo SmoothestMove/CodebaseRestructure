@@ -1,25 +1,21 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 
-interface BulletChartProps {
+interface ThresholdBulletChartProps {
   data: Array<{
     name: string;
     spent: number;
     budget: number;
-    color: string;
   }>;
 }
 
-const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
-  // Filter out categories with no budget
+const ThresholdBulletChart: React.FC<ThresholdBulletChartProps> = ({ data }) => {
   const filteredData = data.filter(item => item.budget > 0);
   
-  // Sort by budget percentage (spent/budget)
   const sortedData = [...filteredData].sort((a, b) => 
     (b.spent / b.budget) - (a.spent / a.budget)
   );
 
-  // Format currency
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -29,7 +25,6 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
     }).format(value);
   };
 
-  // Custom tooltip
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -58,14 +53,20 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
     return null;
   };
 
-  // Find the maximum value for the x-axis
   const maxValue = Math.max(
     ...filteredData.map(item => Math.max(item.spent, item.budget)),
-    1000 // Minimum max value to prevent chart from being too small
+    1000
   );
 
-  // Calculate the x-axis domain with some padding
   const domain = [0, Math.ceil(maxValue * 1.1)];
+
+  const legendItems = [
+    { color: '#ffffff', label: 'Estimated' },
+    { color: '#22c55e', label: '< 50%' },
+    { color: '#facc15', label: '50-79%' },
+    { color: '#f97316', label: '80-99%' },
+    { color: '#ef4444', label: '>= 100%' },
+  ];
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -87,7 +88,7 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
             <XAxis 
               type="number" 
               domain={domain}
-              tickFormatter={(value) => `${value}`}
+              tickFormatter={(value) => `$${value}`}
               axisLine={false}
               tickLine={false}
             />
@@ -101,24 +102,15 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
             />
             <Tooltip content={<CustomTooltip />} />
             
-            {/* Budget bar (full width, light color) */}
             <Bar 
               dataKey="budget" 
               name="Budget"
               barSize={20}
-              fill="#e2e8f0"
+              fill="#ffffff"
               radius={[0, 4, 4, 0]}
               isAnimationActive={false}
-            >
-              {sortedData.map((entry, index) => (
-                <Cell 
-                  key={`budget-cell-${index}`} 
-                  fill={`${entry.color}40`} // 25% opacity
-                />
-              ))}
-            </Bar>
+            />
             
-            {/* Spent bar (on top of budget) */}
             <Bar 
               dataKey="spent" 
               name="Spent"
@@ -126,19 +118,27 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
               radius={[0, 4, 4, 0]}
             >
               {sortedData.map((entry, index) => {
-                const percentage = (entry.spent / entry.budget) * 100;
-                const isOverBudget = percentage > 100;
+                const percentage = entry.budget > 0 ? (entry.spent / entry.budget) * 100 : 0;
+                let fillColor;
+                if (percentage >= 100) {
+                  fillColor = '#ef4444'; // red
+                } else if (percentage >= 80) {
+                  fillColor = '#f97316'; // orange
+                } else if (percentage >= 50) {
+                  fillColor = '#facc15'; // yellow
+                } else {
+                  fillColor = '#22c55e'; // green
+                }
                 
                 return (
                   <Cell 
                     key={`spent-cell-${index}`} 
-                    fill={isOverBudget ? '#ef4444' : entry.color} // Red if over budget
+                    fill={fillColor}
                   />
                 );
               })}
             </Bar>
             
-            {/* Reference line for 100% of budget */}
             {sortedData.map((entry, index) => (
               <ReferenceLine
                 key={`ref-${index}`}
@@ -153,21 +153,15 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
         </ResponsiveContainer>
       </div>
       <div className="flex justify-center items-center space-x-4 mt-4 text-xs text-slate-600 dark:text-slate-400">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-sm bg-slate-300" />
-          <span>Budget</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-sm bg-slate-500" />
-          <span>Spent</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-sm bg-red-500" />
-          <span>Over Budget</span>
-        </div>
+        {legendItems.map(item => (
+          <div key={item.label} className="flex items-center space-x-2">
+            <div className="w-3 h-3 rounded-sm border border-slate-300" style={{ backgroundColor: item.color }} />
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default BulletChart;
+export default ThresholdBulletChart;

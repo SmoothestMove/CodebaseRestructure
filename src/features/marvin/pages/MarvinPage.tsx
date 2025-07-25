@@ -33,7 +33,7 @@ const MarvinPage: React.FC = () => {
   const appData = createMarvinAppData(boxes, owners, [], events, budgetData);
 
   // Enhanced handler for calendar actions with actual integration
-  const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction) => {
+  const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction | MarvinCalendarEvent) => {
     try {
       let result;
       
@@ -79,7 +79,7 @@ const MarvinPage: React.FC = () => {
           break;
           
         default:
-          // Fallback for legacy single event format
+          // Fallback for legacy single event format or direct event object
           const event = action as any;
           if (event.title && event.date) {
             const legacyAction: CreateCalendarEventAction = {
@@ -92,6 +92,9 @@ const MarvinPage: React.FC = () => {
             } else {
               toast.error(result.message);
             }
+          } else {
+            console.error('Unknown calendar action format:', action);
+            toast.error('Unknown calendar action format');
           }
           break;
       }

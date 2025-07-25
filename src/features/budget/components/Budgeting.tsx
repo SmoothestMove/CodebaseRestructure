@@ -12,6 +12,8 @@ import SetupExpensesModal from './SetupExpensesModal';
 import ExpenseDetailModal from './ExpenseDetailModal';
 import HorizontalBarChart from './HorizontalBarChart';
 import BulletChart from './BulletChart';
+import StackedBarChart from './StackedBarChart';
+import ThresholdBulletChart from './ThresholdBulletChart';
 import ReceiptScanModal from './ReceiptScanModal';
 import usePersistentReducer from '../hooks/usePersistentReducer';
 
@@ -132,6 +134,8 @@ const Budgeting: React.FC = () => {
   const [chartView, setChartView] = useState<'bar' | 'pie'>('bar');
   const [showHelp, setShowHelp] = useState(false);
   
+  const [categoryView, setCategoryView] = useState<'table' | 'bullet'>('table');
+
   // New state for the two-step budget setup workflow
   const [setupBudgetAmount, setSetupBudgetAmount] = useState(0);
   const [setupMoveType, setSetupMoveType] = useState<MoveType>(MoveType.LOCAL);
@@ -272,14 +276,6 @@ const Budgeting: React.FC = () => {
           
           <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
             <button className="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 px-4 py-2 rounded-lg transition-colors"
-                    onClick={() => {
-                      setSelectedCategory(null);
-                      setIsCategoryModalOpen(true);
-                    }}>
-              <FaPlus /> Add Category
-            </button>
-            
-            <button className="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 px-4 py-2 rounded-lg transition-colors"
                     onClick={() => setIsSetupBudgetModalOpen(true)}>
               <FaEdit /> Edit Budget
             </button>
@@ -408,15 +404,13 @@ const Budgeting: React.FC = () => {
                         <Pie
                           data={categorySpending}
                           cx="50%"
-                          cy="50%"
+                          cy="42%"
                           labelLine={false}
-                          outerRadius={80}
+                          outerRadius={70} // Slightly smaller radius to ensure labels fit
                           fill="#8884d8"
                           dataKey="spent"
                           nameKey="name"
-                          label={({ name, percent }) => 
-                            `${name} ${(percent * 100).toFixed(0)}%`
-                          }
+                          label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                         >
                           {categorySpending.map((entry, index) => (
                             <Cell 
@@ -428,7 +422,7 @@ const Budgeting: React.FC = () => {
                         <Tooltip 
                           formatter={(value: number) => formatCurrency(value)}
                         />
-                        <Legend />
+                        <Legend verticalAlign="bottom" />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
@@ -445,7 +439,7 @@ const Budgeting: React.FC = () => {
           <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
             <h2 className="text-lg font-semibold mb-4">Category Spending (Actual vs. Estimate)</h2>
             <div className="h-64">
-              <BulletChart data={categorySpending} />
+              <StackedBarChart data={categorySpending} />
             </div>
           </div>
         </div>
@@ -455,9 +449,25 @@ const Budgeting: React.FC = () => {
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold">Budget Categories</h2>
             <div className="flex items-center space-x-3">
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 text-sm bg-slate-100 dark:bg-slate-700 rounded">Table</button>
-                <button className="px-3 py-1 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded">Bullet Chart</button>
+              <div className="flex space-x-2 bg-slate-200 dark:bg-slate-700 rounded-lg p-1">
+                <button 
+                  onClick={() => setCategoryView('table')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    categoryView === 'table' 
+                      ? 'bg-white dark:bg-slate-800 shadow text-slate-900 dark:text-white' 
+                      : 'text-slate-600 dark:text-slate-300'
+                  }`}>
+                  Table
+                </button>
+                <button 
+                  onClick={() => setCategoryView('bullet')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    categoryView === 'bullet' 
+                      ? 'bg-white dark:bg-slate-800 shadow text-slate-900 dark:text-white' 
+                      : 'text-slate-600 dark:text-slate-300'
+                  }`}>
+                  Bullet Chart
+                </button>
               </div>
               <button 
                 onClick={() => {
@@ -470,53 +480,59 @@ const Budgeting: React.FC = () => {
             </div>
           </div>
           
-          <div className="p-4 space-y-3">
-            {state.categories.map((category) => (
-              <div key={category.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-lg" 
-                       style={{ backgroundColor: `${category.color}20` }}>
-                    <span style={{ color: category.color }}>
-                      {ICONS[category.icon]}
-                    </span>
+          {categoryView === 'table' ? (
+            <div className="p-4 space-y-3">
+              {state.categories.map((category) => (
+                <div key={category.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 flex items-center justify-center rounded-lg" 
+                         style={{ backgroundColor: `${category.color}20` }}>
+                      <span style={{ color: category.color }}>
+                        {ICONS[category.icon]}
+                      </span>
+                    </div>
+                    <span className="font-medium">{category.name}</span>
                   </div>
-                  <span className="font-medium">{category.name}</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <div className="font-medium">
-                      {formatCurrency(
-                        state.expenses
-                          .filter(exp => exp.categoryId === category.id)
-                          .reduce((sum, exp) => sum + exp.amount, 0)
-                      )} / {formatCurrency(category.estimatedAmount)}
+                  <div className="flex items-center space-x-4">
+                    <div className="text-right">
+                      <div className="font-medium">
+                        {formatCurrency(
+                          state.expenses
+                            .filter(exp => exp.categoryId === category.id)
+                            .reduce((sum, exp) => sum + exp.amount, 0)
+                        )} / {formatCurrency(category.estimatedAmount)}
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button 
+                        className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                        onClick={() => {
+                          setSelectedCategory(category);
+                          setIsCategoryModalOpen(true);
+                        }}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button 
+                        className="p-1 text-slate-400 hover:text-red-500"
+                        onClick={() => {
+                          if (window.confirm('Are you sure you want to delete this category?')) {
+                            handleDeleteCategory(category.id);
+                          }
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <button 
-                      className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                      onClick={() => {
-                        setSelectedCategory(category);
-                        setIsCategoryModalOpen(true);
-                      }}
-                    >
-                      <FaEdit />
-                    </button>
-                    <button 
-                      className="p-1 text-slate-400 hover:text-red-500"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this category?')) {
-                          handleDeleteCategory(category.id);
-                        }
-                      }}
-                    >
-                      <FaTrash />
-                    </button>
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-4 h-96">
+              <ThresholdBulletChart data={categorySpending} />
+            </div>
+          )}
         </div>
 
         {/* Expense Log */}

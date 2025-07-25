@@ -102,7 +102,7 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   const handleAction = useCallback((action: AiAction): string => {
     let confirmationText = '';
     if (action.action === 'create_calendar_event') {
-      onCalendarAction(action.event);
+      onCalendarAction(action);
       confirmationText = `I've created a calendar event for "${action.event.title}" on ${action.event.date}.`;
     } else if (action.action === 'create_checklist') {
       onUpdateChecklist(action.items);
@@ -145,6 +145,8 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
                 onEnd: () => setIsSpeaking(false),
                 onError: (error) => { console.error("TTS Error:", error); setIsSpeaking(false); }
             });
+        } else {
+            setIsSpeaking(false);
         }
     };
 
@@ -219,9 +221,13 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   }, [isWakeWordEnabled, isWakeWordConfigured, picovoiceAccessKey, picovoiceModelPath, handleWakeWord]);
 
   const handleToggleTTS = () => {
-    setIsTTSEnabled(nextState => {
-      if (nextState) ttsService.stop();
-      return !nextState;
+    setIsTTSEnabled(prev => {
+      const newState = !prev;
+      if (!newState) {
+        ttsService.stop();
+        setIsSpeaking(false);
+      }
+      return newState;
     });
   };
   
