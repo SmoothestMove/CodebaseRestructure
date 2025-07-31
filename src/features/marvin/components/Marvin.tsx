@@ -45,6 +45,7 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string | null>(null);
+  const [ttsError, setTtsError] = useState<string | null>(null);
   
   // Wake Word State
   const [isWakeWordEnabled, setIsWakeWordEnabled] = useState(false);
@@ -53,12 +54,71 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   const [picovoiceModelPath, setPicovoiceModelPath] = useState('');
   const [showWakeWordSettings, setShowWakeWordSettings] = useState(false);
   
+  // Speech recognition delay state
+  const [speechDelayCountdown, setSpeechDelayCountdown] = useState<number | null>(null);
+  const speechDelayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const speechDelayDuration = 2500; // 2.5 seconds delay
+  const sendMessageRef = useRef<((text: string) => void) | null>(null);
+  
   const chatEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Handle delayed speech message sending
+  const scheduleDelayedSpeechSend = useCallback((transcript: string) => {
+    console.log('Scheduling delayed speech send:', transcript.substring(0, 50) + '...');
+    
+    // Clear any existing timer
+    if (speechDelayTimerRef.current) {
+      clearTimeout(speechDelayTimerRef.current);
+      speechDelayTimerRef.current = null;
+    }
+    
+    // Start countdown
+    let remainingTime = Math.ceil(speechDelayDuration / 1000);
+    setSpeechDelayCountdown(remainingTime);
+    
+    const countdownInterval = setInterval(() => {
+      remainingTime -= 1;
+      setSpeechDelayCountdown(remainingTime);
+      
+      if (remainingTime <= 0) {
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+    
+    // Set timer to send message
+    speechDelayTimerRef.current = setTimeout(() => {
+      console.log('Speech delay expired, sending message');
+      clearInterval(countdownInterval);
+      setSpeechDelayCountdown(null);
+      // Call sendMessage that will be defined later
+      if (sendMessageRef.current) {
+        sendMessageRef.current(transcript.trim());
+      }
+    }, speechDelayDuration);
+  }, [speechDelayDuration]);
+
+  const cancelDelayedSpeechSend = useCallback(() => {
+    if (speechDelayTimerRef.current) {
+      console.log('Canceling delayed speech send');
+      clearTimeout(speechDelayTimerRef.current);
+      speechDelayTimerRef.current = null;
+      setSpeechDelayCountdown(null);
+    }
+  }, []);
+
+  // Cleanup speech delay timer on unmount
+  useEffect(() => {
+    return () => {
+      if (speechDelayTimerRef.current) {
+        clearTimeout(speechDelayTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(scrollToBottom, [messages]);
   
@@ -136,16 +196,36 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
-    ttsService.stop();
+    // Don't stop TTS here - let the speak() function handle stopping previous speech
 
     const speak = (textToSpeak: string) => {
+        console.log('MARVIN speak() called:', { 
+            textLength: textToSpeak.length, 
+            isTTSEnabled, 
+            selectedVoiceURI,
+            availableVoicesCount: availableVoices.length 
+        });
+        
         if (isTTSEnabled) {
+            setTtsError(null); // Clear previous errors
+            console.log('Calling ttsService.speak()...');
             ttsService.speak(textToSpeak, selectedVoiceURI, {
-                onStart: () => setIsSpeaking(true),
-                onEnd: () => setIsSpeaking(false),
-                onError: (error) => { console.error("TTS Error:", error); setIsSpeaking(false); }
+                onStart: () => {
+                    console.log('TTS onStart callback fired');
+                    setIsSpeaking(true);
+                },
+                onEnd: () => {
+                    console.log('TTS onEnd callback fired');
+                    setIsSpeaking(false);
+                },
+                onError: (error) => { 
+                    console.error("TTS Error:", error);
+                    setTtsError(`Speech unavailable: ${error}`);
+                    setIsSpeaking(false);
+                }
             });
         } else {
+            console.log('TTS disabled - not speaking');
             setIsSpeaking(false);
         }
     };
@@ -169,14 +249,20 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
     }
   }, [appData, handleAction, isLoading, isTTSEnabled, selectedVoiceURI]);
 
+  // Update the ref whenever sendMessage changes
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  }, [sendMessage]);
+
   const startListening = useCallback(() => {
     if (!recognitionRef.current || isListening) return;
     if(wakeWordService.isRunning()) wakeWordService.stop();
     setIsWakeWordEnabled(false);
     ttsService.stop();
+    cancelDelayedSpeechSend(); // Cancel any pending speech sends
     setInputValue('');
     recognitionRef.current.start();
-  }, [isListening]);
+  }, [isListening, cancelDelayedSpeechSend]);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -188,14 +274,31 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
     recognition.onresult = (event: any) => {
       const transcript = Array.from(event.results).map((r: any) => r[0].transcript).join('');
       setInputValue(transcript);
-      if (event.results[0].isFinal) { sendMessage(transcript.trim()); }
+      
+      // Check if any result is final
+      const hasFinalResult = Array.from(event.results).some((result: any) => result.isFinal);
+      
+      if (hasFinalResult && transcript.trim()) {
+        console.log('Final speech result detected, scheduling delayed send');
+        scheduleDelayedSpeechSend(transcript);
+      } else if (!hasFinalResult) {
+        // If user is still speaking, cancel any pending send
+        cancelDelayedSpeechSend();
+      }
     };
     recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = (event: any) => { console.error('Speech recognition error:', event.error); setIsListening(false); };
+    recognition.onend = () => {
+      setIsListening(false);
+      // Don't cancel delayed speech here - let the timer complete naturally
+    };
+    recognition.onerror = (event: any) => { 
+      console.error('Speech recognition error:', event.error); 
+      setIsListening(false);
+      cancelDelayedSpeechSend(); // Cancel on error
+    };
     recognitionRef.current = recognition;
-    return () => ttsService.stop();
-  }, [sendMessage]);
+    // Don't stop TTS in cleanup - it cancels speech that's about to start
+  }, [sendMessage, scheduleDelayedSpeechSend, cancelDelayedSpeechSend]);
   
   const handleWakeWord = useCallback(() => {
     onWakeWordDetected();
@@ -293,6 +396,20 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
       )}
       
       <div className="flex-1 p-6 overflow-y-auto space-y-6">
+        {ttsError && (
+          <div className="bg-yellow-900 border border-yellow-600 rounded-lg p-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-400 text-sm">⚠️ {ttsError}</span>
+            </div>
+            <button 
+              onClick={() => setTtsError(null)} 
+              className="text-yellow-400 hover:text-yellow-300 ml-2"
+              aria-label="Dismiss error"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {messages.map((msg) => <ChatMessage key={msg.id} message={msg} isCurrentlySpeaking={isSpeaking && msg.id === messages[messages.length - 1].id && msg.sender === MessageSender.AI} />)}
         {isLoading && <LoadingMessage />}
         <div ref={chatEndRef} />
@@ -308,7 +425,22 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
       )}
 
       <div className="p-4 border-t border-gray-700">
-        <form onSubmit={(e) => { e.preventDefault(); sendMessage(inputValue); }} className="flex items-center gap-2">
+        {speechDelayCountdown !== null && (
+          <div className="mb-2 text-center">
+            <div className="inline-flex items-center gap-2 bg-blue-900 text-blue-200 px-3 py-1 rounded-full text-sm">
+              <span className="animate-pulse w-2 h-2 bg-blue-400 rounded-full"></span>
+              <span>Sending in {speechDelayCountdown}s... (continue speaking to extend)</span>
+              <button 
+                onClick={cancelDelayedSpeechSend}
+                className="ml-1 text-blue-300 hover:text-white"
+                aria-label="Cancel sending"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+        <form onSubmit={(e) => { e.preventDefault(); cancelDelayedSpeechSend(); sendMessage(inputValue); }} className="flex items-center gap-2">
           <input type="text" value={inputValue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} placeholder={isListening ? "Listening..." : "Ask MARVIN anything..."} className="flex-1 bg-gray-700 border border-gray-600 rounded-full py-3 px-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all" disabled={isLoading} />
           <button type="button" onClick={startListening} disabled={!recognitionRef.current || isListening} className={`p-3 text-white rounded-full transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${isListening ? 'bg-red-500 animate-pulse' : 'bg-gray-600 hover:bg-gray-500'}`} aria-label={isListening ? 'Stop listening' : 'Start listening'}>
             <MicrophoneIcon />
