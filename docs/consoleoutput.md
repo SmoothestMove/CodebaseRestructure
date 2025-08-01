@@ -1,11 +1,3 @@
-Uncaught ReferenceError: Cannot access 'sendMessage' before initialization
-    at Marvin (Marvin.tsx:99:28)
-    at react-stack-bottom-frame (react-dom-client.development.js:23863:20)
-    at renderWithHooks (react-dom-client.development.js:5529:22)
-    at updateFunctionComponent (react-dom-client.development.js:8897:19)
-    at beginWork (react-dom-client.development.js:10522:18)
-    at runWithFiberInDEV (react-dom-client.development.js:1519:30)
-    at performUnitOfWork (react-dom-client.development.js:15132:22)
-    at workLoopSync (react-dom-client.development.js:14956:41)
-    at renderRootSync (react-dom-client.development.js:14936:11)
-    at performWorkOnRoot (react-dom-client.development.js:14462:44)
+set an all day event for saturday: pack boxes. set an event on sunday for 11 am: reserve truck, 1 pm pickup truck and create an expense under transportation for $52.99 for moving truck payment.
+
+I've created a calendar event for "Pack Boxes" on 2024-08-03. I've created a calendar event for "Reserve Truck" on 2024-08-04. I've created a calendar event for "Pickup Truck" on 2024-08-04. I've added an expense of $52.99 for Moving truck payment.

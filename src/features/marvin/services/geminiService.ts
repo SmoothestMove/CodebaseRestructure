@@ -137,6 +137,7 @@ interface MarvinResponse {
   text: string;
   sources?: GroundingChunk[];
   action?: AiAction;
+  additionalActions?: AiAction[];
 }
 
 export const getMarvinResponse = async (prompt: string, appData: AppData): Promise<MarvinResponse> => {
@@ -185,12 +186,48 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
   
   // For non-search requests, check if the response is a structured action JSON
   if (text) {
+    console.log('MARVIN processing text response:', {
+      textLength: text.length,
+      containsJson: text.includes('{') && text.includes('}')
+    });
+    
     const extractedJson = extractJsonFromText(text);
+    console.log('MARVIN extracted JSON:', {
+      hasExtracted: !!extractedJson,
+      isValidJson: extractedJson ? isJsonString(extractedJson) : false,
+      extracted: extractedJson ? extractedJson.substring(0, 100) + '...' : null
+    });
+    
     if (extractedJson && isJsonString(extractedJson)) {
-      const potentialAction = JSON.parse(extractedJson) as AiAction;
-      if (potentialAction.action) {
-        console.log('Returning structured action:', potentialAction.action);
-        return { text: '', action: potentialAction };
+      try {
+        const parsed = JSON.parse(extractedJson);
+        console.log('MARVIN parsed JSON:', { parsed, isArray: Array.isArray(parsed) });
+        
+        // Handle array of actions (multiple actions)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log('MARVIN detected array of actions:', parsed.length);
+          // For now, return the first action and let the handler process it
+          // TODO: Could be enhanced to handle multiple actions sequentially
+          const firstAction = parsed[0] as AiAction;
+          if (firstAction.action) {
+            console.log('Returning first action from array:', firstAction.action);
+            return { text: '', action: firstAction, additionalActions: parsed.slice(1) };
+          }
+        }
+        // Handle single action object
+        else if (parsed.action) {
+          const potentialAction = parsed as AiAction;
+          console.log('MARVIN parsed single action:', {
+            hasAction: !!potentialAction.action,
+            actionType: potentialAction.action,
+            fullAction: potentialAction
+          });
+          
+          console.log('Returning structured action:', potentialAction.action);
+          return { text: '', action: potentialAction };
+        }
+      } catch (parseError) {
+        console.warn('MARVIN failed to parse extracted JSON:', parseError);
       }
     }
   }
