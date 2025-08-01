@@ -1,5 +1,5 @@
 import { Box, Owner, ItemStatus } from '@/types';
-import { AppData, TeamMember, InventoryItem, Reservation, ChecklistItem, MarvinCalendarEvent } from '../types/marvin';
+import { AppData, TeamMember, InventoryItem, Reservation, ChecklistItem, MarvinCalendarEvent, LocationData } from '../types/marvin';
 import { CalendarEvent } from '@/features/calendar/types/calendarTypes';
 import { Expense, Category, Budget } from '@/features/budget/types/types';
 
@@ -11,7 +11,8 @@ export const createMarvinAppData = (
   owners: Owner[] = [],
   budgetReservations: any[] = [],
   calendarEvents: CalendarEvent[] = [],
-  budgetData?: { categories: Category[], expenses: Expense[], budget: Budget }
+  budgetData?: { categories: Category[], expenses: Expense[], budget: Budget },
+  location?: LocationData | null
 ): AppData => {
   // Convert owners to team members with task counts
   const teamMembers: TeamMember[] = owners.map(owner => ({
@@ -115,7 +116,8 @@ export const createMarvinAppData = (
       upcomingEvents,
       totalEvents: calendarEvents.length
     },
-    budget
+    budget,
+    location: location || undefined
   };
 };
 

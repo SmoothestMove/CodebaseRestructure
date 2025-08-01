@@ -52,6 +52,17 @@ export interface ChecklistItem {
   completed: boolean;
 }
 
+// Represents user's location information for location-based searches.
+export interface LocationData {
+  latitude: number;
+  longitude: number;
+  city?: string;
+  state?: string;
+  country?: string;
+  accuracy?: number; // Accuracy in meters
+  timestamp?: number; // When location was obtained
+}
+
 // A container for all application-specific data passed to MARVIN.
 export interface AppData {
   teamMembers: TeamMember[];
@@ -81,11 +92,12 @@ export interface AppData {
       categoryName: string;
       amount: number;
       merchantName: string;
-      description: string;
+      description: string; 
       date: string;
     }>;
     overspentCategories: string[]; // Category IDs that are over budget
   };
+  location?: LocationData; // User's current location for "near me" searches
 }
 
 // Represents a calendar event to be created or modified by MARVIN.

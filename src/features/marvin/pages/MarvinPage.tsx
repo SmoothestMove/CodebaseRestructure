@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Marvin } from '../components';
 import { createMarvinAppData } from '../adapters/dataAdapter';
-import { MarvinCalendarEvent, ChecklistItem, CreateCalendarEventAction, UpdateCalendarEventAction, DeleteCalendarEventAction, QueryCalendarAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '../types';
+import { MarvinCalendarEvent, ChecklistItem, CreateCalendarEventAction, UpdateCalendarEventAction, DeleteCalendarEventAction, QueryCalendarAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction, LocationData } from '../types';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
 import { useMarvinCalendar } from '@/features/calendar/hooks/useMarvinCalendar';
 import { useMarvinBudget } from '@/features/budget/hooks/useMarvinBudget';
+import { locationService } from '../services/locationService';
 
 const MarvinPage: React.FC = () => {
   const navigate = useNavigate();
@@ -29,8 +30,51 @@ const MarvinPage: React.FC = () => {
     budgetData 
   } = useMarvinBudget();
 
-  // Convert app data to MARVIN's expected format including calendar events and budget data
-  const appData = createMarvinAppData(boxes, owners, [], events, budgetData);
+  // Location state
+  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
+  const [locationPermissionRequested, setLocationPermissionRequested] = useState(false);
+
+  // Request location permission and get location on component mount
+  useEffect(() => {
+    const initializeLocation = async () => {
+      if (locationPermissionRequested) return;
+      
+      setLocationPermissionRequested(true);
+      
+      try {
+        // First check if we have cached location
+        const cachedLocation = locationService.getCachedLocation();
+        if (cachedLocation) {
+          console.log('Using cached location for MARVIN');
+          setUserLocation(cachedLocation);
+          return;
+        }
+        
+        // Request location permission and get current location
+        const hasPermission = await locationService.requestLocationPermission();
+        if (hasPermission) {
+          console.log('Requesting current location for MARVIN...');
+          const result = await locationService.getCurrentLocation();
+          
+          if (result.success && result.location) {
+            console.log('Location obtained for MARVIN:', result.location);
+            setUserLocation(result.location);
+          } else {
+            console.warn('Failed to get location for MARVIN:', result.error);
+          }
+        } else {
+          console.log('Location permission denied for MARVIN');
+        }
+      } catch (error) {
+        console.error('Error initializing location for MARVIN:', error);
+      }
+    };
+    
+    initializeLocation();
+  }, [locationPermissionRequested]);
+
+  // Convert app data to MARVIN's expected format including calendar events, budget data, and location
+  const appData = createMarvinAppData(boxes, owners, [], events, budgetData, userLocation);
 
   // Enhanced handler for calendar actions with actual integration
   const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction | MarvinCalendarEvent) => {

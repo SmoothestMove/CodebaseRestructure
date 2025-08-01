@@ -41,6 +41,10 @@ const extractJsonFromText = (text: string): string | null => {
 };
 
 const createSystemInstruction = (appData: AppData) => {
+  const locationContext = appData.location ? `
+- User Location: ${appData.location.city ? `${appData.location.city}, ` : ''}${appData.location.state || ''} (${appData.location.latitude.toFixed(4)}, ${appData.location.longitude.toFixed(4)})` : `
+- User Location: Not available (location access not granted or unavailable)`;
+
   return `You are MARVIN, a moving assistant AI integrated into a relocation app. Your goal is to be helpful, concise, and proactive. You have access to the user's moving plan data and can perform specific actions.
 
 **App Data Context:**
@@ -50,7 +54,7 @@ Here is the current state of the user's move. Use this data to answer questions 
 - Reservations: ${JSON.stringify(appData.reservations, null, 2)}
 - Current Checklist: ${JSON.stringify(appData.checklist, null, 2)}
 - Calendar Events: ${JSON.stringify(appData.calendar, null, 2)}
-- Budget: ${JSON.stringify(appData.budget, null, 2)}
+- Budget: ${JSON.stringify(appData.budget, null, 2)}${locationContext}
 
 **Your Capabilities & Rules:**
 
@@ -58,7 +62,11 @@ Here is the current state of the user's move. Use this data to answer questions 
 
 2.  **Answer General & App-Specific Questions:** Use your knowledge and the provided App Data Context to answer questions about the user's move, including upcoming events, schedule conflicts, and calendar information.
 
-3.  **Web Search:** If a question requires current, real-world information (e.g., "where to buy boxes?", "moving company reviews", "how much tape to buy?", "what's open near me?"), you MUST use the provided Google Search tool.
+3.  **Web Search & Location:** If a question requires current, real-world information (e.g., "where to buy boxes?", "moving company reviews", "how much tape to buy?", "what's open near me?"), you MUST use the provided Google Search tool. For location-based searches:
+   - When user asks for places "near me", "nearby", or "within X miles", use their current location from the App Data Context above
+   - If location is available, include the city/state in your search queries for better local results
+   - If location is not available, inform the user and suggest they enable location access for better local recommendations
+   - For searches like "stores near me" or "within 5-mile radius", be specific about the user's location in your search terms
 
 4.  **Create Agendas via Calendar:** If asked to create an agenda or schedule, create calendar events instead using the calendar actions. The app doesn't currently support standalone checklists, so convert agenda requests into specific calendar events with dates and times.
 
@@ -117,7 +125,13 @@ Here is the current state of the user's move. Use this data to answer questions 
 Analyze the user's request and respond according to these rules. For standard chat, be friendly. For actions, be precise and return ONLY the specified JSON format.`;
 };
 
-const webSearchKeywords = ["search for", "find", "how much", "what is", "where can i", "what's open"];
+const webSearchKeywords = [
+  "search for", "find", "how much", "what is", "where can i", "what's open",
+  "stores", "shops", "near me", "nearby", "within", "radius", "mile", "miles",
+  "where to buy", "where can i get", "what stores", "what shops", "places to",
+  "businesses", "locations", "companies", "services", "reviews", "ratings",
+  "hours", "open", "closed", "available", "sell", "selling", "buy", "purchase"
+];
 
 interface MarvinResponse {
   text: string;
@@ -129,6 +143,13 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
   const model = 'gemini-2.5-flash';
   const systemInstruction = createSystemInstruction(appData);
   const useWebSearch = webSearchKeywords.some(keyword => prompt.toLowerCase().includes(keyword));
+  
+  console.log('MARVIN search decision:', {
+    prompt: prompt.substring(0, 100) + '...',
+    useWebSearch,
+    matchedKeywords: webSearchKeywords.filter(keyword => prompt.toLowerCase().includes(keyword)),
+    hasLocation: !!appData.location
+  });
 
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: model,
@@ -141,12 +162,34 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
 
   const text = response.text;
   
-  // Check if the response is a structured action JSON
+  console.log('MARVIN response analysis:', {
+    hasText: !!text,
+    textLength: text?.length || 0,
+    hasGroundingMetadata: !!response.candidates?.[0]?.groundingMetadata,
+    useWebSearch
+  });
+  
+  // If we used web search, prioritize returning search results with sources
+  if (useWebSearch) {
+    const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
+    const sources = (groundingMetadata?.groundingChunks as GroundingChunk[]) ?? [];
+    
+    console.log('Web search results:', {
+      sourcesCount: sources.length,
+      hasText: !!text
+    });
+    
+    // Return search results as text response with sources
+    return { text: text || 'Search completed but no results found.', sources };
+  }
+  
+  // For non-search requests, check if the response is a structured action JSON
   if (text) {
     const extractedJson = extractJsonFromText(text);
     if (extractedJson && isJsonString(extractedJson)) {
       const potentialAction = JSON.parse(extractedJson) as AiAction;
       if (potentialAction.action) {
+        console.log('Returning structured action:', potentialAction.action);
         return { text: '', action: potentialAction };
       }
     }
@@ -156,5 +199,5 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
   const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
   const sources = (groundingMetadata?.groundingChunks as GroundingChunk[]) ?? [];
   
-  return { text, sources };
+  return { text: text || 'No response generated.', sources };
 };
