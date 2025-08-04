@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { 
-  X, 
   Calendar, 
   Clock, 
   Users, 
-  FileText, 
-  Edit, 
   Trash2,
   AlertTriangle 
 } from 'lucide-react';
@@ -29,10 +26,10 @@ export default function EventDetailModal({ isOpen, onClose, event }: EventDetail
 
   // Get assignee details
   const assigneeDetails = event.assignees?.map(assigneeId => {
-    const owner = owners.find(o => o.id === assigneeId);
+    const owner = owners.find(o => o.uid === assigneeId);
     return owner ? {
-      id: owner.id,
-      name: owner.name,
+      id: owner.uid,
+      name: `${owner.firstName} ${owner.lastName}`.trim(),
       color: owner.color,
     } : {
       id: assigneeId,
@@ -167,7 +164,7 @@ export default function EventDetailModal({ isOpen, onClose, event }: EventDetail
                 variant="primary"
                 size="sm"
                 onClick={handleDelete}
-                loading={loading}
+                isLoading={loading}
                 className="bg-red-600 hover:bg-red-700"
               >
                 Delete Event
@@ -177,28 +174,16 @@ export default function EventDetailModal({ isOpen, onClose, event }: EventDetail
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-between pt-6 border-t border-slate-200 dark:border-slate-700">
-          <div className="flex space-x-3">
-            <Button
-              variant="secondary"
-              onClick={() => setShowDeleteConfirm(true)}
-              disabled={loading || showDeleteConfirm}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </Button>
-          </div>
-
-          <div className="flex space-x-3">
-            <Button
-              variant="secondary"
-              onClick={onClose}
-              disabled={loading}
-            >
-              Close
-            </Button>
-          </div>
+        <div className="pt-6 border-t border-slate-200 dark:border-slate-700">
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={loading || showDeleteConfirm}
+            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Event
+          </Button>
         </div>
       </div>
     </Modal>

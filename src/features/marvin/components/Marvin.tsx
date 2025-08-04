@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { AppData, Message, MessageSender, CalendarEvent, ChecklistItem, GroundingChunk, AiAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '../types/marvin';
+import { AppData, Message, MessageSender, ChecklistItem, AiAction, AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '../types/marvin';
 import { getMarvinResponse } from '../services/geminiService';
 import { ttsService } from '../services/ttsService';
 import { wakeWordService } from '../services/wakeWordService';
@@ -18,11 +18,11 @@ declare global {
 
 interface MarvinProps {
   appData: AppData;
-  onCalendarAction: (event: CalendarEvent) => void;
+  onCalendarAction: (action: any) => Promise<any>;
   onNavigate: (destination: string) => void;
   onUpdateChecklist: (items: Omit<ChecklistItem, 'id' | 'completed'>[]) => void;
   onWakeWordDetected: () => void;
-  onBudgetAction?: (action: AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction) => void;
+  onBudgetAction?: (action: AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction) => Promise<any>;
 }
 
 const promptStarters = [
@@ -49,7 +49,8 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   
   // Wake Word State
   const [isWakeWordEnabled, setIsWakeWordEnabled] = useState(false);
-  const [wakeWordStatus, setWakeWordStatus] = useState<'idle' | 'initializing' | 'listening' | 'error'>('idle');
+  // Note: wakeWordStatus is kept in state for future use
+  const [, setWakeWordStatus] = useState<'idle' | 'initializing' | 'listening' | 'error'>('idle');
   const [picovoiceAccessKey, setPicovoiceAccessKey] = useState('');
   const [picovoiceModelPath, setPicovoiceModelPath] = useState('');
   const [showWakeWordSettings, setShowWakeWordSettings] = useState(false);
@@ -159,34 +160,69 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
       }
   }, []);
 
-  const handleAction = useCallback((action: AiAction): string => {
-    let confirmationText = '';
-    if (action.action === 'create_calendar_event') {
-      onCalendarAction(action);
-      confirmationText = `I've created a calendar event for "${action.event.title}" on ${action.event.date}.`;
-    } else if (action.action === 'create_checklist') {
-      onUpdateChecklist(action.items);
-      confirmationText = `I've added ${action.items.length} new tasks to your checklist.`;
-    } else if (action.action === 'navigate') {
-      onNavigate(action.destination);
-      confirmationText = `Here are the directions to ${action.destination}.`;
-    } else if (action.action === 'add_expense' || action.action === 'create_budget_category' || action.action === 'query_budget') {
-      if (onBudgetAction) {
-        onBudgetAction(action as AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction);
-        if (action.action === 'add_expense') {
-          const expenseAction = action as AddExpenseAction;
-          confirmationText = `I've added an expense of $${expenseAction.expense.amount} for ${expenseAction.expense.description}.`;
-        } else if (action.action === 'create_budget_category') {
-          const categoryAction = action as CreateBudgetCategoryAction;
-          confirmationText = `I've created a new budget category "${categoryAction.category.name}" with $${categoryAction.category.estimatedAmount}.`;
-        } else if (action.action === 'query_budget') {
-          confirmationText = `I've retrieved your budget information.`;
+  const handleAction = useCallback(async (action: AiAction): Promise<string> => {
+    console.log('Marvin handleAction called with:', action);
+    try {
+      if (action.action === 'create_calendar_event') {
+        console.log('Calling onCalendarAction with:', action);
+        try {
+          const result = await onCalendarAction(action);
+          console.log('onCalendarAction completed with result:', result);
+          
+          // Check if the result indicates success
+          if (result && (result.success || result.id)) {
+            return `I've created a calendar event for "${action.event.title}" on ${action.event.date}.`;
+          } else {
+            const errorMsg = result?.message || 'Unknown error occurred';
+            console.error('Calendar action failed:', errorMsg);
+            return `I couldn't create that event. ${errorMsg}`;
+          }
+        } catch (error) {
+          console.error('Error in calendar action:', error);
+          return `I encountered an error while creating your event: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        }
+      } else if (action.action === 'create_checklist') {
+        onUpdateChecklist(action.items);
+        return `I've added ${action.items.length} new tasks to your checklist.`;
+      } else if (action.action === 'navigate') {
+        onNavigate(action.destination);
+        return `Here are the directions to ${action.destination}.`;
+      } else if (action.action === 'add_expense' || action.action === 'create_budget_category' || action.action === 'query_budget') {
+        if (onBudgetAction) {
+          console.log('Calling onBudgetAction with:', action);
+          const result = await onBudgetAction(action as AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction);
+          console.log('onBudgetAction completed with result:', result);
+          if (action.action === 'add_expense') {
+            const expenseAction = action as AddExpenseAction;
+            return `I've added an expense of $${expenseAction.expense.amount} for ${expenseAction.expense.description}.`;
+          } else if (action.action === 'create_budget_category') {
+            const categoryAction = action as CreateBudgetCategoryAction;
+            return `I've created a new budget category "${categoryAction.category.name}" with $${categoryAction.category.estimatedAmount}.`;
+          } else if (action.action === 'query_budget') {
+            return `I've retrieved your budget information.`;
+          }
+        } else {
+          console.log('onBudgetAction not available');
+          return 'Budget functionality is not available right now.';
         }
       } else {
-        confirmationText = 'Budget functionality is not available right now.';
+        console.warn('Unknown action type:', action.action);
+        return 'I received your request but I\'m not sure how to handle that action yet.';
+      }
+      return '';
+    } catch (error) {
+      console.error('Error executing action:', action.action, error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      // Return a user-friendly error message instead of throwing
+      if (errorMessage.includes('authenticated')) {
+        return 'I need you to be logged in to perform this action. Please sign in and try again.';
+      } else if (errorMessage.includes('move selected')) {
+        return 'I need you to have an active move selected to perform this action. Please select or create a move first.';
+      } else {
+        return `I encountered an error: ${errorMessage}. Please try again.`;
       }
     }
-    return confirmationText;
   }, [onCalendarAction, onNavigate, onUpdateChecklist, onBudgetAction]);
 
   const sendMessage = useCallback(async (text: string) => {
@@ -232,8 +268,34 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
 
     try {
       const response = await getMarvinResponse(text, appData);
-      let aiTextResponse = response.action ? handleAction(response.action) : response.text;
-      if(aiTextResponse) {
+      let aiTextResponse = '';
+      
+      if (response.action) {
+        console.log('Executing primary action:', response.action.action);
+        const primaryResult = await handleAction(response.action);
+        let allResults = [primaryResult];
+        
+        // Handle additional actions if present
+        if (response.additionalActions && response.additionalActions.length > 0) {
+          console.log('Executing additional actions:', response.additionalActions.length);
+          for (const additionalAction of response.additionalActions) {
+            try {
+              const additionalResult = await handleAction(additionalAction);
+              allResults.push(additionalResult);
+            } catch (error) {
+              console.error('Error executing additional action:', additionalAction.action, error);
+              allResults.push(`Failed to ${additionalAction.action.replace('_', ' ')}.`);
+            }
+          }
+        }
+        
+        // Combine all results into a comprehensive response
+        aiTextResponse = allResults.filter(result => result && result.trim()).join(' ');
+      } else {
+        aiTextResponse = response.text;
+      }
+      
+      if (aiTextResponse) {
         const aiMessage: Message = { id: (Date.now() + 1).toString(), text: aiTextResponse, sender: MessageSender.AI, sources: response.sources };
         setMessages(prev => [...prev, aiMessage]);
         speak(aiTextResponse);

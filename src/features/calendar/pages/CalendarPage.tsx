@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Calendar, dateFnsLocalizer, View, Views } from 'react-big-calendar';
+import { useState, useMemo, useCallback } from 'react';
+import { Calendar, dateFnsLocalizer, View } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { Plus, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -50,10 +50,10 @@ export default function CalendarPage() {
     return events.map(event => ({
       ...event,
       assigneeDetails: event.assignees?.map(assigneeId => {
-        const owner = owners.find(o => o.id === assigneeId);
+        const owner = owners.find(o => o.uid === assigneeId);
         return owner ? {
-          id: owner.id,
-          name: owner.name,
+          id: owner.uid,
+          name: `${owner.firstName} ${owner.lastName}`,
           color: owner.color,
         } : {
           id: assigneeId,
@@ -71,48 +71,16 @@ export default function CalendarPage() {
         return ({ event }: { event: CalendarEventWithAssignees }) => (
           <AgendaEventComponent event={event} />
         );
+      case 'month':
       case 'week':
       case 'day':
         return ({ event }: { event: CalendarEventWithAssignees }) => (
           <TimeEventComponent event={event} />
         );
-      default: // month view
-        return ({ event }: { event: CalendarEventWithAssignees }) => {
-          const hasAssignees = event.assigneeDetails && event.assigneeDetails.length > 0;
-          const primaryColor = hasAssignees ? event.assigneeDetails[0].color : '#3b82f6';
-          
-          return (
-            <div 
-              className="rbc-event-content"
-              style={{
-                backgroundColor: primaryColor,
-                border: `1px solid ${primaryColor}`,
-                borderRadius: '4px',
-                padding: '2px 4px',
-                color: 'white',
-                fontSize: '12px',
-                fontWeight: '500',
-              }}
-            >
-              <div className="truncate">{event.title}</div>
-              {hasAssignees && (
-                <div className="flex items-center space-x-1 mt-1">
-                  {event.assigneeDetails.slice(0, 3).map((assignee) => (
-                    <div
-                      key={assignee.id}
-                      className="w-3 h-3 rounded-full border border-white"
-                      style={{ backgroundColor: assignee.color }}
-                      title={assignee.name}
-                    />
-                  ))}
-                  {event.assigneeDetails.length > 3 && (
-                    <span className="text-xs">+{event.assigneeDetails.length - 3}</span>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        };
+      default:
+        return ({ event }: { event: CalendarEventWithAssignees }) => (
+          <TimeEventComponent event={event} />
+        );
     }
   };
 
@@ -304,8 +272,77 @@ export default function CalendarPage() {
               toolbar={false}
               components={{
                 event: getEventComponent(currentView),
+                month: {
+                  event: (props: any) => {
+                    const event = props.event as CalendarEventWithAssignees;
+                    const hasAssignees = event.assigneeDetails && event.assigneeDetails.length > 0;
+                    const primaryColor = hasAssignees ? event.assigneeDetails[0].color : '#64748b';
+                    const isGeneral = !hasAssignees;
+                    
+                    return (
+                      <div 
+                        className="rbc-event-content group cursor-pointer relative"
+                        style={{
+                          backgroundColor: primaryColor,
+                          border: `1px solid ${primaryColor}`,
+                          borderRadius: '4px',
+                          padding: '3px 6px',
+                          color: 'white',
+                          fontSize: '11px',
+                          fontWeight: '500',
+                          margin: '1px 0',
+                          minHeight: '18px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                        title={`${event.title}${hasAssignees ? ` - Assigned to: ${event.assigneeDetails.map(a => a.name).join(', ')}` : ' - General event'}`}
+                      >
+                        <div className="flex items-center flex-1 min-w-0">
+                          {isGeneral && (
+                            <svg className="w-3 h-3 mr-1 flex-shrink-0 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                          <span className="truncate">{event.title}</span>
+                        </div>
+                        
+                        {hasAssignees && (
+                          <div className="flex items-center space-x-1 ml-2 flex-shrink-0">
+                            {event.assigneeDetails.slice(0, 2).map((assignee) => (
+                              <div
+                                key={assignee.id}
+                                className="w-2 h-2 rounded-full border border-white/50"
+                                style={{ backgroundColor: assignee.color }}
+                                title={assignee.name}
+                              />
+                            ))}
+                            {event.assigneeDetails.length > 2 && (
+                              <span className="text-xs opacity-75">+{event.assigneeDetails.length - 2}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  },
+                },
               }}
               className="dark:text-slate-200"
+              eventPropGetter={(event: any) => {
+                const hasAssignees = event.assigneeDetails && event.assigneeDetails.length > 0;
+                const primaryColor = hasAssignees ? event.assigneeDetails[0].color : '#64748b';
+                
+                return {
+                  style: {
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor,
+                    color: 'white',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  },
+                };
+              }}
             />
           </div>
         </div>

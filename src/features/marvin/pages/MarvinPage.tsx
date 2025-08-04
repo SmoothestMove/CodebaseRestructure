@@ -78,36 +78,42 @@ const MarvinPage: React.FC = () => {
 
   // Enhanced handler for calendar actions with actual integration
   const handleCalendarAction = async (action: CreateCalendarEventAction | UpdateCalendarEventAction | DeleteCalendarEventAction | QueryCalendarAction | MarvinCalendarEvent) => {
+    console.log('MarvinPage handleCalendarAction called with:', action);
     try {
       let result;
       
       switch (action.action) {
         case 'create_calendar_event':
+          console.log('Creating calendar event:', action.event);
           result = await handleCreateCalendarEvent(action);
+          console.log('Calendar event creation result:', result);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         case 'update_calendar_event':
           result = await handleUpdateCalendarEvent(action);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         case 'delete_calendar_event':
           result = await handleDeleteCalendarEvent(action);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         case 'query_calendar':
           result = await handleQueryCalendarEvents(action);
@@ -117,10 +123,11 @@ const MarvinPage: React.FC = () => {
             if (result.data && result.data.length > 0) {
               console.log('Calendar query results:', result.data);
             }
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         default:
           // Fallback for legacy single event format or direct event object
@@ -133,61 +140,73 @@ const MarvinPage: React.FC = () => {
             result = await handleCreateCalendarEvent(legacyAction);
             if (result.success) {
               toast.success(result.message);
+              return result;
             } else {
               toast.error(result.message);
+              throw new Error(result.message);
             }
           } else {
             console.error('Unknown calendar action format:', action);
             toast.error('Unknown calendar action format');
+            throw new Error('Unknown calendar action format');
           }
-          break;
       }
     } catch (error) {
       console.error('Calendar action error:', error);
-      toast.error('Failed to perform calendar action');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to perform calendar action';
+      toast.error(errorMessage);
+      throw error;
     }
   };
 
   // Enhanced handler for budget actions with actual integration
   const handleBudgetAction = async (action: AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction) => {
+    console.log('MarvinPage handleBudgetAction called with:', action);
     try {
       let result;
       
       switch (action.action) {
         case 'add_expense':
+          console.log('Adding expense:', action.expense);
           result = await handleAddExpense(action);
+          console.log('Expense addition result:', result);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         case 'create_budget_category':
           result = await handleCreateBudgetCategory(action);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         case 'query_budget':
           result = await handleQueryBudget(action);
           if (result.success) {
             toast.success(result.message);
+            return result;
           } else {
             toast.error(result.message);
+            throw new Error(result.message);
           }
-          break;
           
         default:
           toast.error('Unknown budget action');
-          break;
+          throw new Error('Unknown budget action');
       }
     } catch (error) {
       console.error('Budget action error:', error);
-      toast.error('Failed to perform budget action');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to perform budget action';
+      toast.error(errorMessage);
+      throw error;
     }
   };
 

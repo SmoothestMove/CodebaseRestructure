@@ -2,8 +2,8 @@
 
 ## Getting Started
 
-### 1. Set up your Smooth Moves account
-Create your account and set up your move in the **Smooth Moves app**. This digital platform will manage all your moving paperwork, receipts, inventory, and coordination in one secure location, eliminating the need for physical binders.
+### 1. Get Comfortable with the Smooth Moves app features and navigation
+Take some time to look around the **Smooth Moves app** and get familar and comfortable with the apps layout, features, and navigation. 
 
 ### 2. Configure app features and team settings
 * Set up owners/spaces with color coding.
