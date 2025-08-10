@@ -5,7 +5,9 @@ import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { ItemStatus } from '@/types';
 import { IconListBullet, IconCamera } from '@/lib/config/constants'; 
 import Button from '@/components/common/Button';
-import { MOVING_STATUS_LABELS } from '@/utils/statusUtils'; 
+import { MOVING_STATUS_LABELS } from '@/utils/statusUtils';
+import { StatsCard, ParticipantsSkeleton, QuickActionsSkeleton } from '@/components/design-system';
+import { AnimatedGrid, AnimatedListItem } from '@/components/common/AnimatedList'; 
 import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaQrcode, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
 import { FaHouseCircleCheck, FaUserPlus } from 'react-icons/fa6';
 
@@ -18,63 +20,6 @@ interface ParticipantPresence {
 const DashboardPage: React.FC = () => {
     const { boxes, isLoading } = useBoxes(); 
   const { move, presence, loading: moveLoading, error: moveError } = useMove(); 
-
-  const iconClass = "w-8 h-8 text-white opacity-90"; 
-
-  const stats = [
-    { 
-      label: 'Total Boxes Tracked', 
-      value: boxes.length, 
-      icon: <FaEquals className={iconClass} />,
-      gridPlacement: 'col-start-2 row-start-1 col-span-2 row-span-2 md:col-start-2 md:row-start-1 md:col-span-2 md:row-span-2' 
-    },
-    { 
-      label: MOVING_STATUS_LABELS[ItemStatus.PACKED], 
-      value: boxes.filter(box => box.currentStatus === ItemStatus.PACKED).length, 
-      icon: <FaBox className={iconClass} />,
-      gridPlacement: 'col-start-1 row-start-1 md:col-start-1 md:row-start-1 md:col-span-1 md:row-span-1' 
-    },
-    { 
-      label: MOVING_STATUS_LABELS[ItemStatus.LOADED], 
-      value: boxes.filter(box => box.currentStatus === ItemStatus.LOADED).length, 
-      icon: <FaTruckMoving className={iconClass} />,
-      gridPlacement: 'col-start-1 row-start-2 md:col-start-1 md:row-start-2 md:col-span-1 md:row-span-1' 
-    },
-    {
-      label: MOVING_STATUS_LABELS[ItemStatus.UNLOADED], 
-      value: boxes.filter(box => box.currentStatus === ItemStatus.UNLOADED).length,
-      icon: <FaDollyFlatbed className={iconClass} />, 
-      gridPlacement: 'col-start-2 row-start-3 md:col-start-2 md:row-start-3 md:col-span-1 md:row-span-1' 
-    },
-    { 
-      label: MOVING_STATUS_LABELS[ItemStatus.DELIVERED], 
-      value: boxes.filter(box => box.currentStatus === ItemStatus.DELIVERED).length, 
-      icon: <FaHouseCircleCheck className={iconClass} />,
-      gridPlacement: 'col-start-1 row-start-3 md:col-start-1 md:row-start-3 md:col-span-1 md:row-span-1' 
-    },
-    { 
-      label: MOVING_STATUS_LABELS[ItemStatus.UNPACKED], 
-      value: boxes.filter(box => box.currentStatus === ItemStatus.UNPACKED).length, 
-      icon: <FaCheck className={iconClass} />,
-      gridPlacement: 'col-start-3 row-start-3 row-span-2 md:col-start-3 md:row-start-3 md:col-span-1 md:row-span-2' 
-    },
-    { 
-      label: 'Labels Printed (PREP & Active)', 
-      value: boxes.length, 
-      icon: <FaQrcode className={iconClass} />,
-      gridPlacement: 'col-start-1 row-start-4 col-span-2 md:col-start-1 md:row-start-4 md:col-span-2 md:row-span-1' 
-    },
-  ];
-  
-  const orderedStats = [
-    stats.find(s => s.label === MOVING_STATUS_LABELS[ItemStatus.PACKED])!,
-    stats.find(s => s.label === MOVING_STATUS_LABELS[ItemStatus.LOADED])!,
-    stats.find(s => s.label === MOVING_STATUS_LABELS[ItemStatus.DELIVERED])!,
-    stats.find(s => s.label === 'Total Boxes Tracked')!,
-    stats.find(s => s.label === MOVING_STATUS_LABELS[ItemStatus.UNLOADED])!,
-    stats.find(s => s.label === MOVING_STATUS_LABELS[ItemStatus.UNPACKED])!,
-    stats.find(s => s.label === 'Labels Printed (PREP & Active)')!,
-  ].filter(Boolean); 
 
   const quickActions = [
     { to: "/app/owners", icon: <FaPrint className="h-10 w-10 text-brand-tertiary dark:text-orange-400 group-hover:text-brand-tertiary-dark dark:group-hover:text-orange-500 transition-colors" />, title: "Print Box Labels", description: "Generate batches of QR labels for owners.", bgColor: "bg-brand-secondary/10 dark:bg-slate-700/50 hover:bg-brand-secondary/20 dark:hover:bg-slate-700", area: "md:col-span-1 md:row-span-1" },
@@ -94,10 +39,10 @@ const DashboardPage: React.FC = () => {
           Move Participants
           {move && <span className="text-base font-normal text-slate-500 ml-2">(Code: {move.moveCode})</span>}
         </h2>
-        <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-          {moveLoading ? (
-            <p className="text-slate-500 dark:text-slate-400">Loading participants...</p>
-          ) : moveError ? (
+        {moveLoading ? (
+          <ParticipantsSkeleton count={3} />
+        ) : moveError ? (
+          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
             <div className="text-red-500">
               <p className="font-semibold">Error loading participants:</p>
               <p className="text-sm">{moveError.message}</p>
@@ -107,7 +52,9 @@ const DashboardPage: React.FC = () => {
                 </p>
               )}
             </div>
-          ) : move && move.participants ? (
+          </div>
+        ) : move && move.participants ? (
+          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
             <ul className="space-y-4">
               {Object.keys(move.participants || {}).map((userId) => {
                 const participantPresence: ParticipantPresence = presence?.[`${move.id}_${userId}`] || presence?.[userId] || {};
@@ -159,50 +106,83 @@ const DashboardPage: React.FC = () => {
                 );
               })}
             </ul>
-          ) : (
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
             <p className="text-slate-500 dark:text-slate-400">No participants found for this move.</p>
-          )}
-        </div>
+          </div>
+        )}
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-5">Your Moving Progress</h2>
-        <div className="grid grid-cols-3 grid-rows-4 gap-2">
-          {orderedStats.map(stat => (
-            <div 
-              key={stat.label} 
-              className={`${stat.gridPlacement || ''} 
-                         bg-gradient-to-r from-brand-primary to-brand-secondary dark:from-slate-800 dark:to-slate-700
-                         p-6 rounded-xl shadow-lg 
-                         flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:scale-105`}
-            >
-              <div className="flex justify-between items-start"> 
-                <div className="text-4xl lg:text-5xl font-bold text-white dark:text-slate-100">{stat.value}</div>
-                {React.cloneElement(stat.icon, { className: `${iconClass} dark:text-orange-400`})}
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="bg-slate-200 dark:bg-slate-700 h-32 rounded-xl"></div>
               </div>
-              <div className="mt-2 text-sm sm:text-base font-medium text-white dark:text-slate-200">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <AnimatedGrid columns={4} gap="md" variant="fadeUp" className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <StatsCard
+              title="Total Boxes"
+              value={boxes.length}
+              icon={<FaEquals className="w-6 h-6" />}
+              className="md:col-span-2 lg:col-span-1"
+            />
+            <StatsCard
+              title={MOVING_STATUS_LABELS[ItemStatus.PACKED]}
+              value={boxes.filter(box => box.currentStatus === ItemStatus.PACKED).length}
+              icon={<FaBox className="w-6 h-6" />}
+            />
+            <StatsCard
+              title={MOVING_STATUS_LABELS[ItemStatus.LOADED]}
+              value={boxes.filter(box => box.currentStatus === ItemStatus.LOADED).length}
+              icon={<FaTruckMoving className="w-6 h-6" />}
+            />
+            <StatsCard
+              title={MOVING_STATUS_LABELS[ItemStatus.DELIVERED]}
+              value={boxes.filter(box => box.currentStatus === ItemStatus.DELIVERED).length}
+              icon={<FaHouseCircleCheck className="w-6 h-6" />}
+            />
+            <StatsCard
+              title={MOVING_STATUS_LABELS[ItemStatus.UNLOADED]}
+              value={boxes.filter(box => box.currentStatus === ItemStatus.UNLOADED).length}
+              icon={<FaDollyFlatbed className="w-6 h-6" />}
+            />
+            <StatsCard
+              title={MOVING_STATUS_LABELS[ItemStatus.UNPACKED]}
+              value={boxes.filter(box => box.currentStatus === ItemStatus.UNPACKED).length}
+              icon={<FaCheck className="w-6 h-6" />}
+            />
+          </AnimatedGrid>
+        )}
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-5">Quick Actions for Your Move</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {quickActions.map(action => (
-            <Link 
-              key={action.title} 
-              to={action.to} 
-              className={`group block p-6 ${action.bgColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 ${action.area} flex flex-col items-start space-y-3`}
-            >
-              {action.icon}
-              <div>
-                <h3 className="text-xl font-semibold text-brand-primary dark:text-slate-100 group-hover:text-gradient-orange-peach">{action.title}</h3>
-                <p className="text-brand-secondary dark:text-slate-400 text-sm">{action.description}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {isLoading ? (
+          <QuickActionsSkeleton count={3} />
+        ) : (
+          <AnimatedGrid columns={2} gap="lg" variant="slideIn" className="grid-cols-1 md:grid-cols-2">
+            {quickActions.map((action, index) => (
+              <Link 
+                key={action.title} 
+                to={action.to} 
+                className={`group block p-6 ${action.bgColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-brand-tertiary focus:ring-opacity-50 dark:focus:ring-orange-400 ${action.area} flex flex-col items-start space-y-3 touch-manipulation min-h-[44px]`}
+                aria-label={`${action.title} - ${action.description}`}
+              >
+                {action.icon}
+                <div>
+                  <h3 className="text-xl font-semibold text-brand-primary dark:text-slate-100 group-hover:text-gradient-orange-peach">{action.title}</h3>
+                  <p className="text-brand-secondary dark:text-slate-400 text-sm">{action.description}</p>
+                </div>
+              </Link>
+            ))}
+          </AnimatedGrid>
+        )}
       </section>
 
       {isLoading && <p className="text-center text-brand-secondary dark:text-slate-400 py-8">Loading your boxes data...</p>}
