@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { FaPlus, FaEdit, FaInfoCircle, FaCamera } from 'react-icons/fa';
 import { Expense, Category, MoveType } from '../types/types';
-import { INITIAL_CATEGORIES, BUDGET_TEMPLATES } from '../constants/constants';
+import { INITIAL_CATEGORIES } from '../constants/constants';
 import { formatCurrency } from '../utils/formatCurrency';
 import Button from '@/components/common/Button';
 import usePersistentReducer from '../hooks/usePersistentReducer';
@@ -48,9 +48,20 @@ const Budgeting: React.FC = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [currentTab, setCurrentTab] = useState<'expenses' | 'categories' | 'charts'>('expenses');
 
-  // Setup states
-  const [setupBudgetAmount, setSetupBudgetAmount] = useState(0);
-  const [setupMoveType, setSetupMoveType] = useState<MoveType>(MoveType.LOCAL);
+
+  // Auto-open setup modal for first-time users
+  useEffect(() => {
+    if (!state.budget || !state.budget.totalEstimatedAmount || state.budget.totalEstimatedAmount === 0) {
+      setIsSetupBudgetModalOpen(true);
+    }
+  }, [state.budget]);
+
+  // Initialize with default categories if none exist
+  useEffect(() => {
+    if (state.categories.length === 0) {
+      dispatch({ type: 'SET_CATEGORIES', payload: [...INITIAL_CATEGORIES] });
+    }
+  }, []);
 
   // Calculated values
   const totalSpent = state.expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -126,19 +137,36 @@ const Budgeting: React.FC = () => {
     }
   };
 
-  const handleSetupBudget = (budgetData: { totalEstimatedAmount: number; moveType: MoveType }) => {
-    dispatch({ type: 'SET_BUDGET', payload: budgetData });
-    toast.success('Budget settings updated');
+  const handleSetupBudget = (totalBudget: number, moveType: MoveType, shouldAutoSetupCategories?: boolean) => {
+    dispatch({ type: 'SET_BUDGET', payload: { totalEstimatedAmount: totalBudget, moveType } });
+    
+    if (shouldAutoSetupCategories) {
+      // Auto-setup categories using budget templates for "Those That Don't"
+      setIsSetupExpensesModalOpen(true);
+      toast.success('Budget created! Setting up categories with recommended amounts...');
+    } else {
+      toast.success('Budget settings updated');
+    }
   };
 
-  const handleSetupCategories = (categoryBudgets: { [key: string]: number }) => {
-    dispatch({ type: 'SET_CATEGORY_BUDGETS', payload: categoryBudgets });
-    toast.success('Category budgets updated');
+  const handleSetupCategories = (categories: Category[], totalBudget: number) => {
+    // Replace all categories with the new ones from the setup modal
+    dispatch({ type: 'SET_CATEGORIES', payload: categories });
+    toast.success('Budget and category setup completed successfully!');
   };
 
   const handleReceiptScan = (expenseData: Omit<Expense, 'id'>) => {
     dispatch({ type: 'ADD_EXPENSE', payload: expenseData });
     toast.success('Expense added from receipt scan');
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setSelectedExpense(expense);
+    setIsAddExpenseModalOpen(true);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
   // Modal handlers
@@ -152,15 +180,6 @@ const Budgeting: React.FC = () => {
     setIsCategoryModalOpen(true);
   };
 
-  const closeAllModals = () => {
-    setIsAddExpenseModalOpen(false);
-    setIsCategoryModalOpen(false);
-    setIsSetupBudgetModalOpen(false);
-    setIsSetupExpensesModalOpen(false);
-    setIsReceiptScanModalOpen(false);
-    setSelectedExpense(null);
-    setSelectedCategory(null);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 md:p-6">
@@ -349,10 +368,9 @@ const Budgeting: React.FC = () => {
             setIsAddExpenseModalOpen(false);
             setSelectedExpense(null);
           }}
-          onAddExpense={selectedExpense ? handleUpdateExpense : handleAddExpense}
+          onSubmit={selectedExpense ? handleUpdateExpense : handleAddExpense}
           categories={state.categories}
-          expense={selectedExpense}
-          isEditing={!!selectedExpense}
+          initialData={selectedExpense}
         />
 
         <CategoryModal
@@ -361,37 +379,41 @@ const Budgeting: React.FC = () => {
             setIsCategoryModalOpen(false);
             setSelectedCategory(null);
           }}
-          onSave={selectedCategory ? handleUpdateCategory : handleAddCategory}
-          category={selectedCategory}
-          isEditing={!!selectedCategory}
+          onSubmit={selectedCategory ? handleUpdateCategory : handleAddCategory}
+          categories={state.categories}
+          categoryToEdit={selectedCategory}
         />
 
         <SetupBudgetModal
           isOpen={isSetupBudgetModalOpen}
           onClose={() => setIsSetupBudgetModalOpen(false)}
-          onSave={handleSetupBudget}
-          initialBudget={state.budget}
+          onSubmit={handleSetupBudget}
         />
 
         <SetupExpensesModal
           isOpen={isSetupExpensesModalOpen}
           onClose={() => setIsSetupExpensesModalOpen(false)}
-          onSetup={handleSetupCategories}
-          categories={state.categories}
+          onComplete={handleSetupCategories}
+          totalBudget={state.budget?.totalEstimatedAmount || 0}
+          moveType={state.budget?.moveType || 'local'}
         />
 
         <ExpenseDetailModal
           isOpen={!!selectedExpense && !isAddExpenseModalOpen}
           onClose={() => setSelectedExpense(null)}
           expense={selectedExpense}
-          category={selectedExpense ? state.categories.find(c => c.id === selectedExpense.categoryId) : undefined}
+          onEdit={handleEditExpense}
+          onDelete={handleDeleteExpense}
+          categories={state.categories}
+          formatDate={formatDate}
         />
 
         <ReceiptScanModal
           isOpen={isReceiptScanModalOpen}
           onClose={() => setIsReceiptScanModalOpen(false)}
-          onExpenseExtracted={handleReceiptScan}
+          onConfirm={handleReceiptScan}
           categories={state.categories}
+          apiKey={import.meta.env.VITE_MINDEE_API_KEY || ''}
         />
       </div>
     </div>

@@ -73,6 +73,7 @@ const SetupExpensesModal: React.FC<SetupExpensesModalProps> = ({
       }
 
       onComplete(categories, totalBudget);
+      onClose(); // Close the modal after successful completion
       toast.success('Budget setup completed successfully!');
     } catch (error) {
       console.error('Error completing budget setup:', error);

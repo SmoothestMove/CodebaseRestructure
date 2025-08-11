@@ -8,7 +8,7 @@ import Button from '@/components/common/Button';
 interface SetupBudgetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (totalBudget: number, moveType: MoveType) => void;
+  onSubmit: (totalBudget: number, moveType: MoveType, shouldAutoSetupCategories?: boolean) => void;
 }
 
 const SetupBudgetModal: React.FC<SetupBudgetModalProps> = ({ isOpen, onClose, onSubmit }) => {
@@ -53,9 +53,9 @@ const SetupBudgetModal: React.FC<SetupBudgetModalProps> = ({ isOpen, onClose, on
     try {
       if (selectedCard === 'do') {
         // For "Those That Do", use a default budget and let them set up categories manually
-        onSubmit(1000, MoveType.LOCAL); // Default $1000 budget, they'll adjust in next step
+        onSubmit(1000, MoveType.LOCAL, false); // Default $1000 budget, they'll adjust in next step
       } else if (selectedCard === 'dont') {
-        // For "Those That Don't", use their inputs
+        // For "Those That Don't", use their inputs and auto-setup categories
         const budgetAmount = parseFloat(totalBudget.replace(/[^0-9.]/g, ''));
         if (isNaN(budgetAmount) || budgetAmount <= 0) {
           toast.error('Please enter a valid budget amount');
@@ -63,7 +63,7 @@ const SetupBudgetModal: React.FC<SetupBudgetModalProps> = ({ isOpen, onClose, on
         }
         
         const moveType = selectedMoveType as MoveType;
-        onSubmit(budgetAmount, moveType);
+        onSubmit(budgetAmount, moveType, true); // true indicates auto-setup categories
       }
       
       onClose();
