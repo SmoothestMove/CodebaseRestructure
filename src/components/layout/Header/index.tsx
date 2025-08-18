@@ -5,7 +5,7 @@ import { IconHome, IconListBullet, IconSmoothMovesLogo, IconSettings } from '@/l
 import { FaTruck, FaSearch } from 'react-icons/fa'; 
 import { FaUserGroup, FaHouseUser, FaLandmark } from 'react-icons/fa6';
 import { BsQrCodeScan } from 'react-icons/bs';
-import { Mic, Calendar } from 'lucide-react';
+import { Mic, Calendar, MapPin } from 'lucide-react';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import Button from '@/components/common/Button'; 
 
@@ -16,6 +16,7 @@ const Navbar: React.FC = () => {
     { to: "/app", label: "Dashboard", icon: IconHome },
     { to: "/app/boxes", label: "Manifest", icon: IconListBullet }, 
     { to: "/app/budget", label: "Budget", icon: FaLandmark },
+    { to: "/app/planner", label: "Planner", icon: MapPin },
     { to: "/app/calendar", label: "Calendar", icon: Calendar },
     { to: "/app/marvin", label: "MARVIN", icon: Mic },
     { to: "/app/owners", label: "Owners", icon: FaUserGroup },
@@ -38,7 +39,7 @@ const Navbar: React.FC = () => {
     { to: "/app", label: "Home", icon: IconHome },
     { to: "/app/scan", label: "Scan", icon: BsQrCodeScan, special: true, state: { isQuickScanMode: true } }, 
     { to: "/app/boxes", label: "Boxes", icon: IconListBullet },
-    { to: "/app/budget", label: "Budget", icon: FaLandmark }, 
+    { to: "/app/planner", label: "Planner", icon: MapPin }, 
     { to: "/app/settings", label: "Settings", icon: IconSettings },
   ];
   

@@ -27,9 +27,12 @@ A comprehensive web application designed to help users efficiently manage and tr
 ## Features
 - 📦 **Box Management** - QR code generation, scanning, and status tracking
 - 👥 **Owner & Space Management** - Assign items to people or rooms
-- 💰 **Financial Navigator** - Comprehensive budget tracking with expense management
+- 💰 **Financial Navigator** - Comprehensive budget tracking with AI receipt scanning
+- 🧾 **AI Receipt Scanning** - Mindee OCR integration for automated expense extraction
+- 📋 **Planner System** - Comprehensive task management with drag-drop, timelines, and custom fields
 - 📅 **Calendar System** - Full calendar management with event scheduling and team collaboration
 - 🤖 **MARVIN AI Assistant** - Voice-enabled AI with budget, calendar, and navigation integration
+- 🛍️ **Product Management** - Comprehensive product catalog and tracking system
 - 📊 **Visual Analytics** - Charts and graphs for spending and inventory insights
 - 📱 **Mobile-First Design** - Responsive interface for all devices
 - 🔄 **Real-Time Sync** - Firebase-powered live data updates
@@ -43,7 +46,7 @@ A comprehensive web application designed to help users efficiently manage and tr
 - **Frontend:** React 19.1 + TypeScript
 - **Build Tool:** Vite 6.2
 - **Styling:** TailwindCSS 4.1
-- **Backend:** Firebase (Firestore + Auth)
+- **Backend:** Firebase (Firestore + Auth + Storage)
 - **Routing:** React Router DOM 7.6
 
 **Key Libraries:**
@@ -55,7 +58,7 @@ A comprehensive web application designed to help users efficiently manage and tr
 - **Notifications:** React Toastify 11.0
 - **Utilities:** UUID 11.1
 - **Server:** Express.js 4.19
-- **AI Integration:** Google Gemini API 1.10
+- **AI Integration:** Google Gemini API 1.10, Mindee OCR API
 - **Voice Processing:** Picovoice Porcupine 3.0, Web Voice Processor 4.0
 
 ## Installation & Setup
@@ -89,6 +92,9 @@ A comprehensive web application designed to help users efficiently manage and tr
    
    # MARVIN AI Assistant Configuration
    VITE_GEMINI_API_KEY=your_gemini_api_key
+   
+   # Mindee OCR API Configuration
+   VITE_MINDEE_API_KEY=your_mindee_api_key
    
    # Picovoice Wake Word Configuration (Optional)
    VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
@@ -149,11 +155,12 @@ src/
 │   │   ├── hooks/          # Box state management
 │   │   ├── pages/          # Box management pages
 │   │   └── services/       # Box API services
-│   ├── budget/             # Financial Navigator
-│   │   ├── components/     # Budget UI components
+│   ├── budget/             # Financial Navigator with AI receipt scanning
+│   │   ├── components/     # Budget UI components and receipt scanning
 │   │   ├── constants/      # Budget constants
 │   │   ├── hooks/          # Budget state management (including MARVIN integration)
 │   │   ├── pages/          # Budget tracking pages
+│   │   ├── services/       # Receipt scanning service (Mindee OCR)
 │   │   └── types/          # Budget type definitions
 │   ├── calendar/           # Calendar System
 │   │   ├── components/     # Calendar UI components and event modals
@@ -172,16 +179,34 @@ src/
 │   │   ├── hooks/          # Owner state management
 │   │   ├── pages/          # Owner management pages
 │   │   └── services/       # Owner API services
+│   ├── planner/            # Comprehensive task management system
+│   │   ├── components/     # Task cards, drag-drop, modals, timelines
+│   │   ├── hooks/          # Planner state management and Firebase integration
+│   │   ├── pages/          # Planner dashboard and task views
+│   │   ├── services/       # Firebase planner service and checklist parsing
+│   │   └── types/          # Planner and task type definitions
 │   ├── products/           # Product management
 │   │   ├── components/     # Product components
 │   │   ├── hooks/          # Product hooks
 │   │   ├── pages/          # Product pages
 │   │   ├── services/       # Product services
 │   │   └── types/          # Product types
-│   └── settings/           # App settings
-│       ├── hooks/          # Settings management
-│       ├── pages/          # Settings pages
-│       └── services/       # Settings services
+│   ├── settings/           # App settings
+│   │   ├── hooks/          # Settings management
+│   │   ├── pages/          # Settings pages
+│   │   └── services/       # Settings services
+│   ├── storage/            # Storage management
+│   │   ├── components/     # Storage components
+│   │   ├── hooks/          # Storage hooks
+│   │   ├── pages/          # Storage pages
+│   │   ├── services/       # Storage services
+│   │   └── types/          # Storage types
+│   └── timeline/           # Timeline and progress tracking
+│       ├── components/     # Timeline components and UI elements
+│       ├── hooks/          # Timeline state management
+│       ├── pages/          # Timeline views
+│       ├── services/       # Timeline services
+│       └── types/          # Timeline type definitions
 ├── hooks/                  # Shared custom hooks
 ├── lib/                    # Utilities and configuration
 │   ├── api/               # API utilities
@@ -198,13 +223,17 @@ src/
 
 ### Required API Keys
 1. **Firebase Project** - Create at https://console.firebase.google.com
-   - Enable Authentication and Firestore Database
+   - Enable Authentication, Firestore Database, and Storage
    - Copy configuration values to `.env.local`
 
 2. **Google Gemini API** - Get API key at https://aistudio.google.com/app/apikey
    - Required for MARVIN AI Assistant functionality
 
-3. **Picovoice Access Key** (Optional) - Get at https://console.picovoice.ai/
+3. **Mindee OCR API** - Get API key at https://platform.mindee.com/
+   - Required for AI receipt scanning functionality
+   - Free tier: 250 API calls/month, 20 calls/minute
+
+4. **Picovoice Access Key** (Optional) - Get at https://console.picovoice.ai/
    - Required for wake word detection ("Let's Move Marvin")
    - MARVIN works without this, but lacks wake word activation
 
@@ -222,6 +251,9 @@ VITE_FIREBASE_APP_ID=your_app_id
 
 # MARVIN AI Assistant (Required for AI features)
 VITE_GEMINI_API_KEY=your_gemini_api_key
+
+# Mindee OCR API (Required for receipt scanning)
+VITE_MINDEE_API_KEY=your_mindee_api_key
 
 # Picovoice Wake Word (Optional)
 VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
@@ -249,11 +281,12 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 
 ### 💰 **Financial Navigator (Budget Tracker)**
 - **Comprehensive Budget Management:** Set total moving budget with move type templates
+- **AI Receipt Scanning:** Automatic expense extraction from receipt photos using Mindee OCR
 - **Expense Tracking:** Record all moving-related expenses with categories
 - **Visual Analytics:** Interactive charts showing spending patterns and budget usage
 - **Category Management:** Customize expense categories with icons and colors
 - **Smart Insights:** Track budget vs actual spending with alerts and warnings
-- **Receipt Management:** Store merchant details and descriptions for all expenses
+- **Receipt Management:** Store merchant details, descriptions, and receipt images
 - **Export Capabilities:** Generate reports and track spending over time
 
 ### 📱 **QR Code Scanning & Mobile Features**
@@ -276,6 +309,27 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 - **MARVIN Integration:** AI-powered event creation and scheduling through natural language
 - **Event Details:** Rich event descriptions, time management, and assignee tracking
 - **Responsive Design:** Optimized calendar interface for all screen sizes
+
+### 🧾 **AI Receipt Scanning**
+- **Mindee OCR Integration:** Advanced receipt processing using computer vision
+- **Automated Data Extraction:** Merchant name, amount, date, and line items from receipt images
+- **Smart Category Mapping:** AI-suggested categories mapped to local budget categories
+- **Confidence Scoring:** Visual indicators showing extraction accuracy (High/Medium/Low)
+- **Multi-format Support:** JPEG, PNG, GIF, PDF files up to 5MB
+- **3-step Workflow:** Upload → AI Processing → Review & Edit extracted data
+- **Error Handling:** Comprehensive error handling with retry logic and user-friendly messages
+- **Receipt Storage:** Base64 image storage with expense records
+
+### 📋 **Planner System**
+- **Comprehensive Task Management:** Create, organize, and track moving-related tasks
+- **Drag & Drop Interface:** Intuitive task organization with timeframe columns
+- **Custom Fields Configuration:** Flexible task attributes and metadata
+- **Member Assignment:** Assign tasks to specific team members with tracking
+- **Timeline Management:** Visual timeline with milestones and deadlines
+- **Tag System:** Categorize and filter tasks with custom tags
+- **Task Attachments:** File attachments and detailed task documentation
+- **Firebase Integration:** Real-time synchronization across all devices
+- **Bulk Operations:** Import checklists and batch task creation
 
 ### 🤖 **MARVIN AI Assistant**
 - **Natural Language Processing:** Google Gemini API integration for contextual responses
@@ -347,18 +401,18 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 *   **Camera Permissions:** QR scanning requires explicit camera permissions from users
 *   **PDF Generation:** Complex layouts with many labels may have performance considerations
 *   **MARVIN Voice Limitations:** Voice quality depends on browser and platform (mobile browsers have limited voice options)
-*   **API Dependencies:** MARVIN requires external API keys (Gemini, Picovoice) for full functionality
+*   **API Dependencies:** MARVIN and receipt scanning require external API keys (Gemini, Mindee, Picovoice) for full functionality
 *   **MARVIN Wake Word:** Picovoice access key required for "Let's Move Marvin" activation (optional feature)
-*   **No Standalone Checklist System:** Task management currently handled through calendar events only
+*   **Receipt Scanning Rate Limits:** Mindee free tier limited to 250 API calls/month, 20 calls/minute
 
 ## Future Development Ideas
 
 ### 🚀 **Enhanced Features**
-*   **Receipt Scanning:** OCR integration for automatic expense entry from receipt photos
 *   **Document Vault:** Secure storage for moving-related documents and contracts
 *   **Advanced Analytics:** Predictive spending analysis and cost optimization suggestions
 *   **Bulk Operations:** Enhanced bulk editing and batch operations for boxes
 *   **Image Management:** Direct device uploads and image optimization
+*   **Enhanced Receipt Processing:** Multi-receipt detection and batch processing capabilities
 
 ### 🤖 **Enhanced AI Features**
 *   **Advanced MARVIN Capabilities:**
@@ -380,7 +434,7 @@ VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 ### 🗺️ **Location & Planning**
 *   **Google Maps Integration:** Route planning and moving day logistics
 *   **Google Calendar Integration:** External calendar sync with existing calendar system
-*   **Standalone Checklist System:** Dedicated task management separate from calendar events
+*   **Enhanced Timeline Features:** Advanced progress tracking and milestone management
 *   **Inventory Valuation:** Insurance and valuation tracking for belongings
 
 ### 🔧 **Technical Improvements**

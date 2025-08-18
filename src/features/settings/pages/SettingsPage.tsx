@@ -3,6 +3,7 @@ import { useSettings } from '@/features/settings/hooks/useSettings';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { useTheme } from '@/hooks/useTheme'; 
+import { useMove } from '@/features/settings/hooks/MoveContext';
 import { getMoveById } from '@/features/settings/services/moveService';
 import Button from '@/components/common/Button';
 import Input from '@/components/common/Input';
@@ -10,7 +11,7 @@ import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import { IconSettings, IconTrash } from '@/lib/config/constants';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
-import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner } from 'react-icons/fa'; 
+import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt } from 'react-icons/fa'; 
 
 interface AppMetadata {
   name: string;
@@ -22,7 +23,8 @@ const SettingsPage: React.FC = () => {
   const { settings, updateSettings, isLoading: isLoadingSettings } = useSettings();
   const { boxes } = useBoxes();
   const { owners } = useOwners();
-  const { theme, toggleTheme, isDarkMode } = useTheme(); 
+  const { theme, toggleTheme, isDarkMode } = useTheme();
+  const { move, updateMove } = useMove(); 
 
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isClearDataModalOpen, setIsClearDataModalOpen] = useState(false);
@@ -30,6 +32,7 @@ const SettingsPage: React.FC = () => {
   const [appMetadata, setAppMetadata] = useState<AppMetadata | null>(null);
   const [moveCode, setMoveCode] = useState<string | null>(null);
   const [isLoadingMoveCode, setIsLoadingMoveCode] = useState(true);
+  const [moveDateInput, setMoveDateInput] = useState<string>('');
 
   // Set default batch print count to 9 on initial load if not set
   useEffect(() => {
@@ -74,6 +77,23 @@ const SettingsPage: React.FC = () => {
 
     fetchMoveCode();
   }, [settings.currentMoveId]);
+
+  // Initialize move date input when move data loads
+  useEffect(() => {
+    if (move?.moveDate) {
+      // Handle both Date objects and Firebase Timestamps
+      const date = move.moveDate instanceof Date 
+        ? move.moveDate 
+        : move.moveDate.toDate ? move.moveDate.toDate() 
+        : new Date(move.moveDate);
+      
+      // Format date for input field (YYYY-MM-DD)
+      const dateString = date.toISOString().split('T')[0];
+      setMoveDateInput(dateString);
+    } else {
+      setMoveDateInput('');
+    }
+  }, [move?.moveDate]);
 
   const handleExportData = () => {
     const personalOwners = owners.filter(owner => 
@@ -156,6 +176,27 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  const handleMoveDateUpdate = async () => {
+    if (!move) {
+      setFeedbackMessage({ type: 'error', message: 'No move found to update.' });
+      return;
+    }
+
+    try {
+      const moveDate = moveDateInput ? new Date(moveDateInput) : undefined;
+      await updateMove({ moveDate });
+      setFeedbackMessage({ 
+        type: 'success', 
+        message: moveDate 
+          ? `Move date set to ${moveDate.toLocaleDateString()}` 
+          : 'Move date cleared successfully!' 
+      });
+    } catch (error) {
+      console.error('Error updating move date:', error);
+      setFeedbackMessage({ type: 'error', message: 'Failed to update move date.' });
+    }
+  };
+
   useEffect(() => {
     if(feedbackMessage) {
         const timer = setTimeout(() => setFeedbackMessage(null), 5000);
@@ -223,6 +264,85 @@ const SettingsPage: React.FC = () => {
             No active Move ID found. Please start a new move or join an existing one via the authentication page.
           </p>
         )}
+      </section>
+
+      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
+        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3 flex items-center">
+          <FaCalendarAlt className="w-6 h-6 mr-3 text-brand-tertiary dark:text-orange-400" />
+          Move Date & Timeline
+        </h2>
+        <div className="space-y-4">
+          <p className="text-brand-secondary dark:text-slate-300">
+            Set your official move date to enable timeline planning in the Move Planner. This date helps calculate when to complete tasks relative to your moving day.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-3 sm:space-y-0">
+            <div className="flex-1 max-w-md">
+              <label htmlFor="moveDate" className="block text-sm font-medium text-brand-secondary dark:text-slate-300 mb-2">
+                Move Date
+              </label>
+              <Input
+                id="moveDate"
+                type="date"
+                value={moveDateInput}
+                onChange={(e) => setMoveDateInput(e.target.value)}
+                className="w-full"
+                placeholder="Select your move date"
+              />
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                onClick={handleMoveDateUpdate}
+                variant="primary"
+                className="whitespace-nowrap"
+              >
+                {moveDateInput ? 'Update Date' : 'Clear Date'}
+              </Button>
+              {moveDateInput && (
+                <Button 
+                  onClick={() => setMoveDateInput('')}
+                  variant="outline"
+                  className="whitespace-nowrap"
+                >
+                  Clear
+                </Button>
+              )}
+            </div>
+          </div>
+          
+          {move?.moveDate && (
+            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <p className="text-sm text-green-700 dark:text-green-300">
+                <strong>Current Move Date:</strong> {(() => {
+                  // Handle both Date objects and Firebase Timestamps
+                  const date = move.moveDate instanceof Date 
+                    ? move.moveDate 
+                    : move.moveDate.toDate ? move.moveDate.toDate() 
+                    : new Date(move.moveDate);
+                  
+                  return date.toLocaleDateString('en-US', { 
+                    weekday: 'long',
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  });
+                })()}
+              </p>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                The Move Planner will use this date to calculate task timelines and deadlines.
+              </p>
+            </div>
+          )}
+          
+          {!move?.moveDate && (
+            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                <strong>No move date set.</strong> Set a move date to enable timeline planning features in the Move Planner.
+              </p>
+            </div>
+          )}
+        </div>
       </section>
 
       <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">

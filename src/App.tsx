@@ -14,6 +14,7 @@ import AuthPage from '@/features/auth/pages/AuthPage';
 import BudgetPage from './features/budget/pages/BudgetPage';
 import MarvinPage from '@/features/marvin/pages/MarvinPage';
 import CalendarPage from '@/features/calendar/pages/CalendarPage';
+import PlannerPage from '@/features/planner/pages/PlannerPage';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { BoxesProvider } from '@/features/boxes/hooks/useBoxes';
 import { OwnersProvider } from '@/features/owners/hooks/useOwners';
@@ -125,6 +126,7 @@ const App: React.FC = () => {
             <Route path="budget" element={<BudgetPage />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="marvin" element={<MarvinPage />} />
+            <Route path="planner" element={<PlannerPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>

@@ -8,6 +8,7 @@ export interface Move {
   createdAt: Date;
   updatedAt: Date;
   participants: Record<string, boolean>;
+  moveDate?: Date; // Optional move date for timeline planning
 }
 
 const generateMoveCode = (): string => {
