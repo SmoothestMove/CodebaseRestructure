@@ -3,7 +3,32 @@
     "allow": [
       "Bash(rm:*)",
       "Bash(mkdir:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Read(/D:\\Planner\\planner\\lib/**)",
+      "Read(/D:\\Planner\\planner\\components/**)",
+      "Read(/D:\\Planner\\planner/**)",
+      "Read(/D:\\Planner\\planner/**)",
+      "Read(/D:\\Planner\\planner/**)",
+      "Read(/D:\\Planner\\planner\\features\\moving-planner\\lib/**)",
+      "Read(/D:\\Planner\\planner\\src\\lib/**)",
+      "Read(/D:\\Planner/**)",
+      "Read(/D:\\Planner/**)",
+      "Read(/D:\\Planner/**)",
+      "Bash(find:*)",
+      "Bash(for file in button.tsx dialog.tsx select.tsx tooltip.tsx)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then sed -i 's/\"\"use client\"\"//g; /^$/d' \"$file\")",
+      "Bash(echo \"Processed $file\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for file in *.tsx)",
+      "Bash(do sed -i 's/\"\"use client\"\"//g' \"$file\")",
+      "Bash(for:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
