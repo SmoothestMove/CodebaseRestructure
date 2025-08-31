@@ -2,10 +2,11 @@ import type React from "react"
 
 import { useState, useCallback, useMemo } from "react"
 import { Input } from "@/components/ui/input"
-import { Search, Settings } from "lucide-react"
+import { Search, Settings, Plus } from "lucide-react"
 import { TaskList } from "./task-list"
 import { Frame } from "./frame"
 import { TaskModal } from "./task-modal"
+import { FrameHeaderModal } from "./frame-header-modal"
 import { GlobalSettings } from "./global-settings"
 import type { Task, Frame as FrameType } from "../lib/types"
 import { defaultFrames, defaultTasks } from "../lib/default-data"
@@ -43,6 +44,12 @@ interface PlannerBoardProps {
     icon?: string
   }>
   
+  // Move participants for assignments
+  moveParticipants?: Record<string, boolean>
+  
+  // Presence data for displayName
+  presence?: Record<string, any> | null
+  
   // UI configuration
   showGlobalSettings?: boolean
   showSearch?: boolean
@@ -62,6 +69,8 @@ export function PlannerBoard({
   onFrameDelete,
   owners = [],
   spaces = [],
+  moveParticipants = {},
+  presence = null,
   showGlobalSettings: externalShowGlobalSettings = true,
   showSearch = true,
   className = ""
@@ -84,8 +93,11 @@ export function PlannerBoard({
   // UI state
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [isCreatingTask, setIsCreatingTask] = useState(false)
+  const [newTaskFrameId, setNewTaskFrameId] = useState<string | undefined>(undefined)
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   const [showGlobalSettingsModal, setShowGlobalSettingsModal] = useState(false)
+  const [showCreateFrameModal, setShowCreateFrameModal] = useState(false)
 
   const taskListTasks = useMemo(() => {
     return tasks // Show all tasks in Task List
@@ -99,12 +111,32 @@ export function PlannerBoard({
   )
 
   const handleCreateTask = useCallback((task: Task, frameId?: string) => {
-    setTasks((prevTasks) => [...prevTasks, { ...task, id: Date.now().toString(), frameId }])
+    if (onTaskCreate) {
+      onTaskCreate({ ...task, frameId })
+    } else if (setTasks) {
+      setTasks((prevTasks) => [...prevTasks, { ...task, id: task.id || Date.now().toString(), frameId }])
+    }
+  }, [onTaskCreate, setTasks])
+
+  const handleShowCreateTaskModal = useCallback((frameId?: string) => {
+    setNewTaskFrameId(frameId)
+    setIsCreatingTask(true)
   }, [])
 
+  const handleCreateTaskFromModal = useCallback((task: Task) => {
+    const taskWithFrame = { ...task, frameId: newTaskFrameId }
+    handleCreateTask(taskWithFrame, newTaskFrameId)
+    setIsCreatingTask(false)
+    setNewTaskFrameId(undefined)
+  }, [handleCreateTask, newTaskFrameId])
+
   const handleUpdateTask = useCallback((updatedTask: Task) => {
-    setTasks((prevTasks) => prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)))
-  }, [])
+    if (onTaskUpdate) {
+      onTaskUpdate(updatedTask.id, updatedTask)
+    } else if (setTasks) {
+      setTasks((prevTasks) => prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)))
+    }
+  }, [onTaskUpdate, setTasks])
 
   const handleDragStart = useCallback((e: React.DragEvent, task: Task) => {
     setDraggedTask(task)
@@ -147,8 +179,31 @@ export function PlannerBoard({
   }, [])
 
   const handleUpdateFrame = useCallback((frameId: string, updates: Partial<FrameType>) => {
-    setFrames((prevFrames) => prevFrames.map((frame) => (frame.id === frameId ? { ...frame, ...updates } : frame)))
-  }, [])
+    if (onFrameUpdate) {
+      onFrameUpdate(frameId, updates)
+    } else if (setFrames) {
+      setFrames((prevFrames) => prevFrames.map((frame) => (frame.id === frameId ? { ...frame, ...updates } : frame)))
+    }
+  }, [onFrameUpdate, setFrames])
+
+  const handleCreateFrame = useCallback((frameData: Partial<FrameType>) => {
+    const newFrame: FrameType = {
+      id: frameData.id || `frame-${Date.now()}`,
+      title: frameData.title || 'New Frame',
+      description: frameData.description || '',
+      color: frameData.color || '#64748b',
+      offsetStart: frameData.offsetStart || 0,
+      offsetEnd: frameData.offsetEnd || 7,
+      startDate: frameData.startDate,
+      endDate: frameData.endDate
+    }
+    
+    if (onFrameCreate) {
+      onFrameCreate(newFrame)
+    } else if (setFrames) {
+      setFrames((prevFrames) => [...prevFrames, newFrame])
+    }
+  }, [onFrameCreate, setFrames])
 
   const frameColors = useMemo(() => frames.map((frame) => ({ id: frame.id, color: frame.color })), [frames])
 
@@ -180,11 +235,15 @@ export function PlannerBoard({
             tasks={taskListTasks}
             onTaskClick={setSelectedTask}
             onCreateTask={handleCreateTask}
+            onShowCreateTaskModal={() => handleShowCreateTaskModal()}
             searchQuery={searchQuery}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, undefined)}
             frames={frameColors}
+            owners={owners}
+            moveParticipants={moveParticipants}
+            presence={presence}
           />
         </div>
 
@@ -203,8 +262,23 @@ export function PlannerBoard({
                 onDrop={(e) => handleDrop(e, frame.id)}
                 onToggleComplete={handleToggleComplete}
                 onUpdateFrame={handleUpdateFrame}
+                onShowCreateTaskModal={() => handleShowCreateTaskModal(frame.id)}
+                owners={owners}
+                moveParticipants={moveParticipants}
+                presence={presence}
               />
             ))}
+            
+            {/* Add Frame Button */}
+            <div className="w-80 flex-shrink-0 flex items-center justify-center">
+              <button
+                onClick={() => setShowCreateFrameModal(true)}
+                className="w-full h-32 border-2 border-dashed border-slate-600 rounded-lg hover:border-slate-500 hover:bg-slate-700/50 transition-all duration-200 flex flex-col items-center justify-center text-slate-400 hover:text-slate-300"
+              >
+                <Plus className="h-8 w-8 mb-2" />
+                <span className="text-sm font-medium">Add Frame</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -218,8 +292,27 @@ export function PlannerBoard({
         />
       )}
 
+      {isCreatingTask && (
+        <TaskModal
+          task={null}
+          isOpen={isCreatingTask}
+          onClose={() => { setIsCreatingTask(false); setNewTaskFrameId(undefined); }}
+          onUpdate={handleCreateTaskFromModal}
+          isCreating={true}
+        />
+      )}
+
       {showGlobalSettingsModal && (
         <GlobalSettings isOpen={showGlobalSettingsModal} onClose={() => setShowGlobalSettingsModal(false)} />
+      )}
+      
+      {showCreateFrameModal && (
+        <FrameHeaderModal
+          isOpen={showCreateFrameModal}
+          onClose={() => setShowCreateFrameModal(false)}
+          onSave={handleCreateFrame}
+          isCreating={true}
+        />
       )}
     </div>
   )

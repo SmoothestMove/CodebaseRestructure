@@ -29,6 +29,12 @@ export interface Label {
   color: string
 }
 
+export interface TaskAssignments {
+  members?: string[]     // Move participant user IDs
+  owners?: string[]      // Owner UIDs (personal owners and communal rooms)
+  spaces?: string[]      // Communal room UIDs (subset of owners)
+}
+
 export interface Task {
   id: string
   title: string
@@ -44,7 +50,8 @@ export interface Task {
   checklist?: ChecklistItem[]
   comments?: Comment[]
   attachments?: Array<{ id: string; name: string; url: string }>
-  assignees?: string[]
+  assignees?: string[]   // Legacy field - keeping for compatibility
+  assignments?: TaskAssignments
   customFields?: CustomField[]
   createdAt?: Date
   updatedAt?: Date

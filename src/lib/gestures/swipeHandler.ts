@@ -48,7 +48,7 @@ export class SwipeHandler {
   private config: Required<SwipeConfig>;
   private callbacks: SwipeCallbacks;
   private startPoint: TouchPoint | null = null;
-  private currentPoint: TouchPoint | null = null;
+  // private currentPoint: TouchPoint | null = null;
   private isTracking = false;
   private element: HTMLElement;
 
@@ -155,7 +155,7 @@ export class SwipeHandler {
 
   private startTracking(x: number, y: number) {
     this.startPoint = this.createTouchPoint(x, y);
-    this.currentPoint = this.startPoint;
+    // this.currentPoint = this.startPoint;
     this.isTracking = true;
     
     this.callbacks.onSwipeStart?.(x, y);
@@ -164,7 +164,7 @@ export class SwipeHandler {
   private updateTracking(x: number, y: number) {
     if (!this.startPoint || !this.isTracking) return;
     
-    this.currentPoint = this.createTouchPoint(x, y);
+    // this.currentPoint = this.createTouchPoint(x, y);
     
     const deltaX = x - this.startPoint.x;
     const deltaY = y - this.startPoint.y;
@@ -230,7 +230,7 @@ export class SwipeHandler {
 
   private resetTracking() {
     this.startPoint = null;
-    this.currentPoint = null;
+    // this.currentPoint = null;
     this.isTracking = false;
   }
 

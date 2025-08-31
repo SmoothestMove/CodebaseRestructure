@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   updateDoc,
@@ -26,7 +27,9 @@ import type {
   TemplateSearchFilters,
   TemplateSearchResult,
   TemplateShare,
-  TemplateReview,
+  TemplateReview
+} from '../lib/template-types'
+import {
   TEMPLATE_COLLECTIONS,
   USER_TEMPLATE_COLLECTIONS,
   MOVE_TEMPLATE_COLLECTIONS
@@ -323,7 +326,7 @@ export class TemplateService {
    */
   static async getPopularTemplates(
     templateType: 'task' | 'frame' | 'project',
-    limit: number = 10
+    limitCount: number = 10
   ): Promise<(TaskTemplate | FrameTemplate | ProjectTemplate)[]> {
     const collections = {
       task: TEMPLATE_COLLECTIONS.TASK_TEMPLATES,
@@ -335,7 +338,7 @@ export class TemplateService {
       collection(db, collections[templateType]),
       where('isPublic', '==', true),
       orderBy('usageCount', 'desc'),
-      limit(limit)
+      limit(limitCount)
     )
 
     const snapshot = await getDocs(q)
@@ -374,18 +377,18 @@ export class TemplateService {
   static async applyTaskTemplate(
     moveId: string,
     templateId: string,
+    userId: string,
     customizations?: {
       title?: string
       frameId?: string
       priority?: string
       assignees?: string[]
-    },
-    userId: string
+    }
   ): Promise<TemplateApplicationResult> {
     try {
       // Get the template
       const templateDoc = doc(db, TEMPLATE_COLLECTIONS.TASK_TEMPLATES, templateId)
-      const templateSnapshot = await templateDoc.get()
+      const templateSnapshot = await getDoc(templateDoc)
       
       if (!templateSnapshot.exists()) {
         return {
@@ -466,17 +469,17 @@ export class TemplateService {
   static async applyFrameTemplate(
     moveId: string,
     templateId: string,
+    userId: string,
     customizations?: {
       title?: string
       color?: string
       offsetStart?: number
       offsetEnd?: number
-    },
-    userId: string
+    }
   ): Promise<TemplateApplicationResult> {
     try {
       const templateDoc = doc(db, TEMPLATE_COLLECTIONS.FRAME_TEMPLATES, templateId)
-      const templateSnapshot = await templateDoc.get()
+      const templateSnapshot = await getDoc(templateDoc)
       
       if (!templateSnapshot.exists()) {
         return {
@@ -558,28 +561,28 @@ export class TemplateService {
   static async applyProjectTemplate(
     moveId: string,
     templateId: string,
-    customizations?: {
+    userId: string,
+    _customizations?: {
       projectName?: string
       startDate?: Date
       skipExistingFrames?: boolean
-    },
-    userId: string
+    }
   ): Promise<TemplateApplicationResult> {
     try {
       const templateDoc = doc(db, TEMPLATE_COLLECTIONS.PROJECT_TEMPLATES, templateId)
-      const templateSnapshot = await templateDoc.get()
+      const templateSnapshot = await getDoc(templateDoc)
       
       if (!templateSnapshot.exists()) {
         return {
           success: false,
           itemsCreated: { tasks: [], frames: [], labels: [] },
-          errors: [{ type: 'project', templateId, error: 'Template not found' }],
+          errors: [{ type: 'frame', templateId, error: 'Template not found' }],
           warnings: []
         }
       }
 
       const template = { id: templateSnapshot.id, ...templateSnapshot.data() } as ProjectTemplate
-      const batch = writeBatch(db)
+      // const batch = writeBatch(db)
       const result: TemplateApplicationResult = {
         success: true,
         itemsCreated: { tasks: [], frames: [], labels: [] },
@@ -660,7 +663,7 @@ export class TemplateService {
       return {
         success: false,
         itemsCreated: { tasks: [], frames: [], labels: [] },
-        errors: [{ type: 'project' as const, templateId, error: (error as Error).message }],
+        errors: [{ type: 'frame' as const, templateId, error: (error as Error).message }],
         warnings: []
       }
     }
@@ -736,7 +739,7 @@ export class TemplateService {
 
     // We would need to determine template type or pass it as parameter
     // For now, we'll search across all collections
-    for (const [type, collectionPath] of Object.entries(collections)) {
+    for (const [_type, collectionPath] of Object.entries(collections)) {
       try {
         const templateRef = doc(db, collectionPath, templateId)
         const templateDoc = await templateRef.get()

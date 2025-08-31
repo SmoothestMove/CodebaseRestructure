@@ -9,6 +9,7 @@ interface TaskListProps {
   tasks: Task[]
   onTaskClick: (task: Task) => void
   onCreateTask: (task: Task) => void
+  onShowCreateTaskModal?: () => void
   searchQuery?: string
   onDragStart: (e: React.DragEvent, task: Task) => void
   onDragOver: (e: React.DragEvent) => void
@@ -20,6 +21,7 @@ export function TaskList({
   tasks,
   onTaskClick,
   onCreateTask,
+  onShowCreateTaskModal,
   searchQuery = "",
   onDragStart,
   onDragOver,
@@ -29,20 +31,25 @@ export function TaskList({
   const filteredTasks = tasks.filter((task) => task.title.toLowerCase().includes(searchQuery.toLowerCase()))
 
   const handleCreateTask = () => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title: "New Task",
-      description: "",
-      status: "not-started",
-      priority: "medium",
-      labels: [],
-      checklist: [],
-      comments: [],
-      customFields: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    // If modal handler is available, use it; otherwise fall back to old behavior
+    if (onShowCreateTaskModal) {
+      onShowCreateTaskModal()
+    } else {
+      const newTask: Task = {
+        id: Date.now().toString(),
+        title: "New Task",
+        description: "",
+        status: "not-started",
+        priority: "medium",
+        labels: [],
+        checklist: [],
+        comments: [],
+        customFields: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      onCreateTask(newTask)
     }
-    onCreateTask(newTask)
   }
 
   return (

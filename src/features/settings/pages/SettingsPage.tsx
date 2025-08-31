@@ -11,7 +11,7 @@ import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import { IconSettings, IconTrash } from '@/lib/config/constants';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
-import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt } from 'react-icons/fa'; 
+import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable } from 'react-icons/fa'; 
 
 interface AppMetadata {
   name: string;
@@ -82,10 +82,11 @@ const SettingsPage: React.FC = () => {
   useEffect(() => {
     if (move?.moveDate) {
       // Handle both Date objects and Firebase Timestamps
-      const date = move.moveDate instanceof Date 
-        ? move.moveDate 
-        : move.moveDate.toDate ? move.moveDate.toDate() 
-        : new Date(move.moveDate);
+      const moveDate = move.moveDate as any;
+      const date = moveDate instanceof Date 
+        ? moveDate 
+        : moveDate.toDate ? moveDate.toDate() 
+        : new Date(moveDate);
       
       // Format date for input field (YYYY-MM-DD)
       const dateString = date.toISOString().split('T')[0];
@@ -123,6 +124,52 @@ const SettingsPage: React.FC = () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setFeedbackMessage({ type: 'success', message: 'Data exported successfully!' });
+  };
+
+  const handleExportToSpreadsheet = () => {
+    // Create CSV data with specified headers
+    const headers = ['Owner', 'BoxID', 'Box name', 'Contents', 'Status', 'Location', 'Destination', 'truck zone and position'];
+    
+    // Map boxes to CSV rows
+    const csvRows = boxes.map(box => {
+      // Find owner name
+      const owner = owners.find(o => o.uid === box.ownerUid);
+      const ownerName = owner ? `${owner.firstName} ${owner.lastName}` : 'Unknown';
+      
+      // Combine truck zone and position
+      const truckInfo = box.truckZone && box.truckVerticalPosition 
+        ? `${box.truckZone} - ${box.truckVerticalPosition}`
+        : box.truckZone || '';
+
+      return [
+        ownerName,
+        box.id,
+        box.name || '',
+        box.contents || '',
+        box.currentStatus,
+        box.currentLocation || '',
+        box.destinationRoom || '',
+        truckInfo
+      ];
+    });
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inventory-manifest-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setFeedbackMessage({ type: 'success', message: 'Inventory spreadsheet exported successfully!' });
   };
 
   const handleClearAllData = async () => {
@@ -302,7 +349,7 @@ const SettingsPage: React.FC = () => {
               {moveDateInput && (
                 <Button 
                   onClick={() => setMoveDateInput('')}
-                  variant="outline"
+                  variant="secondary"
                   className="whitespace-nowrap"
                 >
                   Clear
@@ -316,10 +363,11 @@ const SettingsPage: React.FC = () => {
               <p className="text-sm text-green-700 dark:text-green-300">
                 <strong>Current Move Date:</strong> {(() => {
                   // Handle both Date objects and Firebase Timestamps
-                  const date = move.moveDate instanceof Date 
-                    ? move.moveDate 
-                    : move.moveDate.toDate ? move.moveDate.toDate() 
-                    : new Date(move.moveDate);
+                  const moveDate = move.moveDate as any;
+                  const date = moveDate instanceof Date 
+                    ? moveDate 
+                    : moveDate.toDate ? moveDate.toDate() 
+                    : new Date(moveDate);
                   
                   return date.toLocaleDateString('en-US', { 
                     weekday: 'long',
@@ -381,18 +429,33 @@ const SettingsPage: React.FC = () => {
       <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
         <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3">Data Management</h2>
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
-            <Button 
-              onClick={handleExportData} 
-              variant="secondary" 
-              leftIcon={<FaFileExport />}
-              className="text-white dark:text-white hover:bg-brand-tertiary/90 dark:hover:bg-orange-600"
-            >
-              Export All Data (JSON)
-            </Button>
-            <p className="text-sm text-brand-secondary/80 dark:text-slate-400">
-              Download all boxes, personal owners, custom spaces, and settings.
-            </p>
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+              <Button 
+                onClick={handleExportToSpreadsheet} 
+                variant="primary" 
+                leftIcon={<FaTable />}
+                className="text-white dark:text-white"
+              >
+                Export to Spreadsheet
+              </Button>
+              <p className="text-sm text-brand-secondary/80 dark:text-slate-400">
+                Download inventory manifest as CSV for physical tracking.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+              <Button 
+                onClick={handleExportData} 
+                variant="secondary" 
+                leftIcon={<FaFileExport />}
+                className="text-white dark:text-white hover:bg-brand-tertiary/90 dark:hover:bg-orange-600"
+              >
+                Export All Data (JSON)
+              </Button>
+              <p className="text-sm text-brand-secondary/80 dark:text-slate-400">
+                Download all boxes, personal owners, custom spaces, and settings.
+              </p>
+            </div>
           </div>
         </div>
       </section>

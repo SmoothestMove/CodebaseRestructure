@@ -1,7 +1,7 @@
 // utils/pdfGenerator.ts
 
 import { jsPDF } from 'jspdf';
-import { Box, Owner } from '@/types'; 
+import { Owner } from '@/types'; 
 
 // Declare QRious globally as it's loaded via CDN in index.html
 declare global {
@@ -115,8 +115,8 @@ export const generateLabelPdf = async (labelsData: LabelDataForPdf[], owner: Own
     doc.setFontSize(fontSizePt); 
     doc.setTextColor('#000000'); 
 
-    const textBlockX = labelX + (labelWidth - qrCodeRenderSize) / 2; // Centering text block similar to QR if textWidth is used
-    const textBlockActualWidth = qrCodeRenderSize; // Text centered within the QR code's width
+    // const textBlockX = labelX + (labelWidth - qrCodeRenderSize) / 2; // Centering text block similar to QR if textWidth is used
+    // const textBlockActualWidth = qrCodeRenderSize; // Text centered within the QR code's width
 
     const textYPosition = labelY + qrCodePaddingTop + qrCodeRenderSize + textMarginTopFromQR;
     

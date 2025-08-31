@@ -28,22 +28,22 @@ export const showToast = (
     case 'success':
       return toast.success(message, {
         ...defaultOptions,
-        icon: ICONS.CheckCircle,
+        icon: () => ICONS.CheckCircle,
       });
     case 'error':
       return toast.error(message, {
         ...defaultOptions,
-        icon: ICONS.AlertCircle,
+        icon: () => ICONS.AlertCircle,
       });
     case 'warning':
       return toast.warning(message, {
         ...defaultOptions,
-        icon: ICONS.AlertTriangle,
+        icon: () => ICONS.AlertTriangle,
       });
     case 'info':
       return toast.info(message, {
         ...defaultOptions,
-        icon: ICONS.Info,
+        icon: () => ICONS.Info,
       });
     default:
       return toast(message, defaultOptions);
@@ -65,7 +65,7 @@ export const ToastNotifications: React.FC = () => {
       pauseOnHover
       theme="light"
       toastClassName="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700"
-      bodyClassName="p-4 text-sm"
+      className="p-4 text-sm"
       closeButton={({ closeToast }) => (
         <button 
           onClick={closeToast}

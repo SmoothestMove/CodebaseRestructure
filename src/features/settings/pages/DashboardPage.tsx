@@ -7,8 +7,8 @@ import { IconListBullet, IconCamera } from '@/lib/config/constants';
 import Button from '@/components/common/Button';
 import { MOVING_STATUS_LABELS } from '@/utils/statusUtils';
 import { StatsCard, ParticipantsSkeleton, QuickActionsSkeleton } from '@/components/design-system';
-import { AnimatedGrid, AnimatedListItem } from '@/components/common/AnimatedList'; 
-import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaQrcode, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
+import { AnimatedGrid } from '@/components/common/AnimatedList'; 
+import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
 import { FaHouseCircleCheck, FaUserPlus } from 'react-icons/fa6';
 
 interface ParticipantPresence {
@@ -167,7 +167,7 @@ const DashboardPage: React.FC = () => {
           <QuickActionsSkeleton count={3} />
         ) : (
           <AnimatedGrid columns={2} gap="lg" variant="slideIn" className="grid-cols-1 md:grid-cols-2">
-            {quickActions.map((action, index) => (
+            {quickActions.map((action) => (
               <Link 
                 key={action.title} 
                 to={action.to} 

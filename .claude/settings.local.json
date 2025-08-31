@@ -29,7 +29,7 @@
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
       "Bash(grep:*)",
-      "Bash(move:*)"
+      "Bash(python3:*)"
     ],
     "deny": []
   }

@@ -4,7 +4,9 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { TimelineTaskCard } from "./timeline-task-card"
+import { FrameHeaderModal } from "./frame-header-modal"
 import type { Task, Frame as FrameType } from "../lib/types"
+import type { Owner } from '@/types'
 
 interface FrameProps {
   frame: FrameType
@@ -17,6 +19,10 @@ interface FrameProps {
   onDrop: (e: React.DragEvent) => void
   onToggleComplete?: (taskId: string) => void
   onUpdateFrame?: (frameId: string, updates: Partial<FrameType>) => void
+  onShowCreateTaskModal?: (frameId?: string) => void
+  owners?: Owner[]
+  moveParticipants?: Record<string, boolean>
+  presence?: Record<string, any> | null
 }
 
 export function Frame({
@@ -30,11 +36,16 @@ export function Frame({
   onDrop,
   onToggleComplete,
   onUpdateFrame,
+  onShowCreateTaskModal,
+  owners = [],
+  moveParticipants = {},
+  presence = null,
 }: FrameProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [isEditingSubtitle, setIsEditingSubtitle] = useState(false)
   const [editTitle, setEditTitle] = useState(frame.title)
   const [editSubtitle, setEditSubtitle] = useState(frame.description || "")
+  const [showFrameModal, setShowFrameModal] = useState(false)
 
   const completedTasks = tasks.filter((task) => task.completed).length
   const totalTasks = tasks.length
@@ -135,24 +146,87 @@ export function Frame({
   const colors = getFrameColors(frame.id)
 
   const handleCreateTask = () => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title: "New Task",
-      description: "",
-      status: "not-started",
-      priority: "medium",
-      labels: [],
-      checklist: [],
-      comments: [],
-      customFields: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    // If a modal handler is provided, use it to show the create task modal
+    // Otherwise, fall back to the old behavior
+    if (onShowCreateTaskModal) {
+      onShowCreateTaskModal(frame.id)
+    } else {
+      const newTask: Task = {
+        id: Date.now().toString(),
+        title: "New Task",
+        description: "",
+        status: "not-started",
+        priority: "medium",
+        labels: [],
+        checklist: [],
+        comments: [],
+        customFields: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+      onCreateTask(newTask)
     }
-    onCreateTask(newTask)
   }
 
   const handleTaskClick = (task: Task) => {
     onTaskClick(task)
+  }
+
+  // Frame header editing handlers
+  const handleTitleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsEditingTitle(true)
+  }
+
+  const handleTitleSave = () => {
+    if (onUpdateFrame && editTitle.trim() !== frame.title && editTitle.trim().length > 0) {
+      onUpdateFrame(frame.id, { title: editTitle.trim() })
+    }
+    setIsEditingTitle(false)
+  }
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleTitleSave()
+    } else if (e.key === 'Escape') {
+      setEditTitle(frame.title)
+      setIsEditingTitle(false)
+    }
+  }
+
+  const handleSubtitleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsEditingSubtitle(true)
+  }
+
+  const handleSubtitleSave = () => {
+    if (onUpdateFrame && editSubtitle.trim() !== (frame.description || '')) {
+      onUpdateFrame(frame.id, { description: editSubtitle.trim() })
+    }
+    setIsEditingSubtitle(false)
+  }
+
+  const handleSubtitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubtitleSave()
+    } else if (e.key === 'Escape') {
+      setEditSubtitle(frame.description || '')
+      setIsEditingSubtitle(false)
+    }
+  }
+
+  const handleHeaderClick = (e: React.MouseEvent) => {
+    // If clicking on interactive elements, don't open modal
+    if ((e.target as HTMLElement).closest('[data-interactive]')) {
+      return
+    }
+    setShowFrameModal(true)
+  }
+
+  const handleFrameModalSave = (frameData: Partial<FrameType>) => {
+    if (onUpdateFrame) {
+      onUpdateFrame(frame.id, frameData)
+    }
   }
 
   return (
@@ -161,19 +235,59 @@ export function Frame({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      <div className={`${colors.bg} ${colors.text} p-4`}>
+      <div 
+        className={`${colors.bg} ${colors.text} p-4 cursor-pointer hover:brightness-110 transition-all`}
+        onClick={handleHeaderClick}
+      >
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold text-sm">
-            {frame.title}
-          </h3>
+          {isEditingTitle ? (
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onBlur={handleTitleSave}
+              onKeyDown={handleTitleKeyDown}
+              className="bg-transparent border-b border-white/50 text-sm font-semibold outline-none flex-1 mr-2 text-white placeholder-white/70"
+              autoFocus
+              data-interactive="true"
+            />
+          ) : (
+            <h3 
+              className="font-semibold text-sm hover:bg-white/20 rounded px-1 py-0.5 transition-colors cursor-pointer"
+              onClick={handleTitleClick}
+              title="Click to edit frame title"
+              data-interactive="true"
+            >
+              {frame.title}
+            </h3>
+          )}
           <span className="text-xs opacity-90 font-medium">
             {completedTasks}/{totalTasks}
           </span>
         </div>
 
-        <div className="text-xs opacity-90 mb-3">
-          {frame.description}
-        </div>
+        {isEditingSubtitle ? (
+          <textarea
+            value={editSubtitle}
+            onChange={(e) => setEditSubtitle(e.target.value)}
+            onBlur={handleSubtitleSave}
+            onKeyDown={handleSubtitleKeyDown}
+            className="w-full bg-transparent border-b border-white/50 text-xs opacity-90 outline-none resize-none mb-3 text-white placeholder-white/70"
+            rows={2}
+            placeholder="Add frame description..."
+            autoFocus
+            data-interactive="true"
+          />
+        ) : (
+          <div 
+            className="text-xs opacity-90 mb-3 hover:bg-white/20 rounded px-1 py-0.5 transition-colors cursor-pointer min-h-[20px]"
+            onClick={handleSubtitleClick}
+            title="Click to edit frame description"
+            data-interactive="true"
+          >
+            {frame.description || 'Click to add description...'}
+          </div>
+        )}
 
         <div className="relative">
           <Progress value={progress} className={`h-2 ${colors.progressBg} rounded-full overflow-hidden`} />
@@ -194,6 +308,9 @@ export function Frame({
             onDragStart={(e) => onDragStart(e, task)}
             onToggleComplete={onToggleComplete}
             frameColor={colors.cssColor}
+            owners={owners}
+            moveParticipants={moveParticipants}
+            presence={presence}
           />
         ))}
       </div>
@@ -208,6 +325,14 @@ export function Frame({
           Add Task
         </Button>
       </div>
+      
+      {/* Frame Header Modal */}
+      <FrameHeaderModal
+        frame={frame}
+        isOpen={showFrameModal}
+        onClose={() => setShowFrameModal(false)}
+        onSave={handleFrameModalSave}
+      />
     </div>
   )
 }

@@ -1,9 +1,11 @@
 import type React from "react"
 import { useState } from "react"
-import { CheckSquare, Users, User, Building, Calendar } from "lucide-react"
+import { CheckSquare, Users, User, Building, Calendar, Home } from "lucide-react"
 import { FaArrowCircleRight, FaCheckCircle } from "react-icons/fa"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import type { Task } from "../lib/types"
+import type { Owner } from '@/types'
+import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants'
 
 interface TaskListCardProps {
   task: Task
@@ -11,9 +13,12 @@ interface TaskListCardProps {
   onDragStart: (e: React.DragEvent) => void
   frames?: Array<{ id: string; color: string }>
   onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
+  owners?: Owner[]
+  moveParticipants?: Record<string, boolean>
+  presence?: Record<string, any> | null
 }
 
-export function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdateTask }: TaskListCardProps) {
+export function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdateTask, owners = [], moveParticipants = {}, presence }: TaskListCardProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editTitle, setEditTitle] = useState(task.title)
   const [isEditingDescription, setIsEditingDescription] = useState(false)
@@ -101,14 +106,117 @@ export function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdate
     }
   }
 
+  // Get assignment information
+  const assignedMembers = task.assignments?.members || []
+  const assignedOwners = task.assignments?.owners || []
+  const assignedSpaces = task.assignments?.spaces || []
+  
+  const getOwnerByUid = (uid: string) => {
+    return owners.find(o => o.uid === uid)
+  }
+  
+  const getSpaceByUid = (uid: string) => {
+    return PREDEFINED_COMMUNAL_ROOMS.find(r => r.uid === uid)
+  }
+  
+  // Helper function to get participant display name
+  const getParticipantDisplayName = (userId: string) => {
+    const displayName = presence?.[userId]?.displayName
+    return displayName && displayName.trim() !== '' ? displayName : userId
+  }
+
+  const getAssignmentIndicators = () => {
+    const indicators = []
+    
+    // Member avatar (upper-right)
+    if (assignedMembers.length > 0) {
+      const member = assignedMembers[0] // Show first member
+      const displayName = getParticipantDisplayName(member)
+      indicators.push(
+        <Tooltip key="member-indicator">
+          <TooltipTrigger asChild>
+            <div className="absolute top-2 right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+              {displayName.substring(0, 2).toUpperCase()}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div>
+              <p className="font-medium">Assigned Members:</p>
+              {assignedMembers.map(m => {
+                const memberDisplayName = getParticipantDisplayName(m)
+                return <p key={m} className="text-sm">{memberDisplayName}</p>
+              })}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      )
+    }
+    
+    // Owner icon (middle-right)
+    if (assignedOwners.length > 0) {
+      const owner = getOwnerByUid(assignedOwners[0])
+      indicators.push(
+        <Tooltip key="owner-indicator">
+          <TooltipTrigger asChild>
+            <div 
+              className="absolute top-8 right-2 w-5 h-5 rounded-sm flex items-center justify-center"
+              style={{ backgroundColor: owner?.color || '#6B7280' }}
+            >
+              <Home className="h-3 w-3 text-white" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div>
+              <p className="font-medium">Assigned Owners:</p>
+              {assignedOwners.map(uid => {
+                const o = getOwnerByUid(uid)
+                return <p key={uid} className="text-sm">{o?.firstName} {o?.lastName}</p>
+              })}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      )
+    }
+    
+    // Space icon (bottom-right)
+    if (assignedSpaces.length > 0) {
+      const space = getSpaceByUid(assignedSpaces[0])
+      indicators.push(
+        <Tooltip key="space-indicator">
+          <TooltipTrigger asChild>
+            <div 
+              className="absolute bottom-2 right-2 w-5 h-5 rounded-sm flex items-center justify-center"
+              style={{ backgroundColor: space?.color || '#6B7280' }}
+            >
+              <Building className="h-3 w-3 text-white" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div>
+              <p className="font-medium">Assigned Spaces:</p>
+              {assignedSpaces.map(uid => {
+                const s = getSpaceByUid(uid)
+                return <p key={uid} className="text-sm">{s?.firstName}</p>
+              })}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      )
+    }
+    
+    return indicators
+  }
+
   return (
     <TooltipProvider>
       <div
         draggable
         onDragStart={onDragStart}
         onClick={handleCardClick}
-        className="task-card rounded-lg p-3 cursor-pointer hover:task-card transition-colors border border-slate-600 active:scale-95"
+        className="task-card rounded-lg p-3 cursor-pointer hover:task-card transition-colors border border-slate-600 active:scale-95 relative"
       >
+        {/* Assignment Indicators */}
+        {getAssignmentIndicators()}
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2 flex-1">
             <Tooltip>

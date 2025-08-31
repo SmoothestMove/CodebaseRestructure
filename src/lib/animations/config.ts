@@ -26,16 +26,16 @@ export const DURATIONS = {
 // Easing curves optimized for different interaction types
 export const EASINGS = {
   // Natural bounce for attention-grabbing elements
-  bounce: [0.68, -0.55, 0.265, 1.55],
+  bounce: [0.68, -0.55, 0.265, 1.55] as const,
   
   // Smooth ease for page transitions
-  smooth: [0.4, 0, 0.2, 1],
+  smooth: [0.4, 0, 0.2, 1] as const,
   
   // Sharp ease for quick feedback
-  sharp: [0.4, 0, 0.6, 1],
+  sharp: [0.4, 0, 0.6, 1] as const,
   
   // Linear for loading animations
-  linear: [0, 0, 1, 1],
+  linear: [0, 0, 1, 1] as const,
 };
 
 // Animation variants for common patterns

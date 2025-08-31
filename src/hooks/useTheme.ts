@@ -44,7 +44,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Provide a way to listen to system preference changes
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
+    const handleChange = (_e: MediaQueryListEvent) => {
       // Only change if no theme is explicitly set by user yet OR if user wants to follow system
       // For simplicity here, if local storage is cleared, it might follow system.
       // Or, add a "system" theme option. For now, user toggle overrides system.

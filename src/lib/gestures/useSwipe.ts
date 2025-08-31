@@ -3,7 +3,7 @@
  * React hook for easy swipe gesture integration
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { SwipeHandler, SwipeCallbacks, SwipeConfig } from './swipeHandler';
 
 export interface UseSwipeOptions extends SwipeConfig {
@@ -106,9 +106,9 @@ export const useSwipeToDelete = (
     enabled = true,
   } = options;
 
-  const swipeCallbacks: SwipeCallbacks = useCallback(
-    {
-      onSwipeLeft: (distance: number, velocity: number) => {
+  const swipeCallbacks: SwipeCallbacks = useMemo(
+    () => ({
+      onSwipeLeft: (distance: number, _velocity: number) => {
         if (distance >= deleteThreshold) {
           if (confirmationRequired) {
             // Show confirmation dialog
@@ -127,7 +127,7 @@ export const useSwipeToDelete = (
       onSwipeCancel: () => {
         onSwipeCancel?.();
       },
-    },
+    }),
     [onDelete, deleteThreshold, confirmationRequired, onSwipeStart, onSwipeCancel]
   );
 
@@ -160,9 +160,9 @@ export const usePullToRefresh = (
 
   const isRefreshingRef = useRef(false);
 
-  const swipeCallbacks: SwipeCallbacks = useCallback(
-    {
-      onSwipeDown: async (distance: number, velocity: number) => {
+  const swipeCallbacks: SwipeCallbacks = useMemo(
+    () => ({
+      onSwipeDown: async (distance: number, _velocity: number) => {
         if (distance >= triggerThreshold && !isRefreshingRef.current) {
           isRefreshingRef.current = true;
           
@@ -173,14 +173,14 @@ export const usePullToRefresh = (
           }
         }
       },
-      onSwipeMove: (deltaX: number, deltaY: number) => {
+      onSwipeMove: (_deltaX: number, deltaY: number) => {
         // Only allow downward scrolling when at top of page
         if (deltaY > 0 && window.scrollY === 0) {
           // Visual feedback could be added here
           // For example, show a loading indicator when deltaY > pullThreshold
         }
       },
-    },
+    }),
     [onRefresh, triggerThreshold, pullThreshold]
   );
 
@@ -205,15 +205,15 @@ export const useSwipeNavigation = (
 ) => {
   const { navigationThreshold = 50, enabled = true } = options;
 
-  const swipeCallbacks: SwipeCallbacks = useCallback(
-    {
+  const swipeCallbacks: SwipeCallbacks = useMemo(
+    () => ({
       onSwipeLeft: () => {
         onNavigate('left');
       },
       onSwipeRight: () => {
         onNavigate('right');
       },
-    },
+    }),
     [onNavigate]
   );
 

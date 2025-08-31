@@ -17,9 +17,12 @@ import type {
   FirebasePlannerSettings,
   FirebasePlannerComment,
   FirebasePlannerAttachment,
-  FirebasePlannerActivity
+  FirebasePlannerActivity,
+  FirebasePlannerBox,
+  FirebasePlannerOwner
 } from '../lib/firebase-types'
 import type { Task, Frame, Label } from '../lib/types'
+import type { Box, Owner } from '@/features/budget/types/types'
 import { AnalyticsService } from './AnalyticsService'
 
 // ===============================================
@@ -40,6 +43,8 @@ export interface PlannerExportData {
     tasks: Task[]
     frames: Frame[]
     labels: Label[]
+    boxes: Box[]
+    owners: Owner[]
     settings?: any
     comments?: Array<{
       id: string
@@ -63,6 +68,8 @@ export interface PlannerExportData {
     taskCount: number
     frameCount: number
     labelCount: number
+    boxCount: number
+    ownerCount: number
     checksum: string
   }
 }
@@ -196,17 +203,21 @@ export class DataPortabilityService {
     userId: string
   ): Promise<PlannerExportData> {
     // Fetch base data
-    const [tasks, frames, labels, settings] = await Promise.all([
+    const [tasks, frames, labels, settings, boxes, owners] = await Promise.all([
       this.getTasksForExport(moveId, options),
       this.getFramesForExport(moveId),
       this.getLabelsForExport(moveId),
-      this.getSettingsForExport(moveId)
+      this.getSettingsForExport(moveId),
+      this.getBoxesForExport(moveId),
+      this.getOwnersForExport(moveId)
     ])
 
     // Convert Firebase documents to exportable format
     const exportTasks = tasks.map(this.convertFirebaseTaskToExportTask)
     const exportFrames = frames.map(this.convertFirebaseFrameToExportFrame)
     const exportLabels = labels.map(this.convertFirebaseLabelToExportLabel)
+    const exportBoxes = boxes.map(this.convertFirebaseBoxToExportBox)
+    const exportOwners = owners.map(this.convertFirebaseOwnerToExportOwner)
 
     const exportData: PlannerExportData = {
       metadata: {
@@ -221,13 +232,17 @@ export class DataPortabilityService {
         tasks: exportTasks,
         frames: exportFrames,
         labels: exportLabels,
+        boxes: exportBoxes,
+        owners: exportOwners,
         settings
       },
       integrity: {
         taskCount: exportTasks.length,
         frameCount: exportFrames.length,
         labelCount: exportLabels.length,
-        checksum: await this.generateChecksum(exportTasks, exportFrames, exportLabels)
+        boxCount: exportBoxes.length,
+        ownerCount: exportOwners.length,
+        checksum: await this.generateChecksum(exportTasks, exportFrames, exportLabels, exportBoxes, exportOwners)
       }
     }
 
@@ -603,6 +618,18 @@ export class DataPortabilityService {
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FirebasePlannerLabel))
   }
 
+  private static async getBoxesForExport(moveId: string): Promise<FirebasePlannerBox[]> {
+    const boxesRef = collection(db, `moves/${moveId}/boxes`)
+    const snapshot = await getDocs(boxesRef)
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FirebasePlannerBox))
+  }
+
+  private static async getOwnersForExport(moveId: string): Promise<FirebasePlannerOwner[]> {
+    const ownersRef = collection(db, `moves/${moveId}/owners`)
+    const snapshot = await getDocs(ownersRef)
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FirebasePlannerOwner))
+  }
+
   private static async getSettingsForExport(moveId: string): Promise<any> {
     const settingsDoc = doc(db, `moves/${moveId}/plannerSettings/config`)
     const snapshot = await settingsDoc.get()
@@ -662,8 +689,37 @@ export class DataPortabilityService {
     }
   }
 
-  private static async generateChecksum(tasks: Task[], frames: Frame[], labels: Label[]): Promise<string> {
-    const data = JSON.stringify({ tasks, frames, labels })
+  private static convertFirebaseBoxToExportBox(firebaseBox: FirebasePlannerBox): Box {
+    return {
+      id: firebaseBox.id,
+      name: firebaseBox.name,
+      contents: firebaseBox.contents,
+      qrCodeValue: firebaseBox.qrCodeValue,
+      currentStatus: firebaseBox.currentStatus,
+      currentLocation: firebaseBox.currentLocation,
+      destinationRoom: firebaseBox.destinationRoom,
+      imageUrl: firebaseBox.imageUrl,
+      ownerUid: firebaseBox.ownerUid,
+      history: firebaseBox.history,
+      createdAt: firebaseBox.createdAt?.toDate(),
+      updatedAt: firebaseBox.updatedAt?.toDate(),
+      truckZone: firebaseBox.truckZone,
+      truckVerticalPosition: firebaseBox.truckVerticalPosition
+    }
+  }
+
+  private static convertFirebaseOwnerToExportOwner(firebaseOwner: FirebasePlannerOwner): Owner {
+    return {
+      uid: firebaseOwner.uid,
+      firstName: firebaseOwner.firstName,
+      lastName: firebaseOwner.lastName,
+      color: firebaseOwner.color,
+      createdAt: firebaseOwner.createdAt?.toDate()
+    }
+  }
+
+  private static async generateChecksum(tasks: Task[], frames: Frame[], labels: Label[], boxes: Box[], owners: Owner[]): Promise<string> {
+    const data = JSON.stringify({ tasks, frames, labels, boxes, owners })
     const encoder = new TextEncoder()
     const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data))
     const hashArray = Array.from(new Uint8Array(hashBuffer))
