@@ -2,13 +2,13 @@ Planner Notes
 
 [ ] Task Details Modal
 
-    [ ] Assignments: The assignment feature for tasks should allow users to assign tasks to:
+    [X] Assignments: The assignment feature for tasks should allow users to assign tasks to:
 
-        [ ] Members: Any participant in a move can be assigned a task.
+        [X] Members: Any participant in a move can be assigned a task.
 
-        [ ] Owners: Any created owner can be assigned to a task.
+        [X] Owners: Any created owner can be assigned to a task.
 
-        [ ] Spaces: Rooms can be assigned to a task.
+        [X] Spaces: Rooms can be assigned to a task.
 
     [ ] Non-Exclusive Assignments: Assignments are not exclusive; any combination of the three assignees (Members, Owners, and Spaces) can be assigned to a single task.
 

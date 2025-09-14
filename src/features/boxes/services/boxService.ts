@@ -50,7 +50,7 @@ async function generateUniqueBoxIdInTransaction(
   const ownerBoxes = ownerBoxesSnap.docs.map((d: any) => d.data());
 
   let maxNumericPart = 0;
-  ownerBoxes.forEach((box: Box) => {
+  (ownerBoxes || []).forEach((box: Box) => {
     if (box.id.startsWith(ownerPrefix)) {
       const numericStr = box.id.substring(ownerPrefix.length);
       if (/^\d+$/.test(numericStr)) {
@@ -117,7 +117,7 @@ function generateIdForBatch(ownerUid: string, ownerPrefix: string, existingBoxes
     const ownerBoxes = allKnownBoxes.filter(box => box.ownerUid === ownerUid && box.id.startsWith(ownerPrefix));
 
     let maxNumericPart = 0;
-    ownerBoxes.forEach(box => {
+    (ownerBoxes || []).forEach(box => {
         const numericStr = box.id.substring(ownerPrefix.length);
         if (/^\d+$/.test(numericStr)) {
             const numericVal = parseInt(numericStr, 10);

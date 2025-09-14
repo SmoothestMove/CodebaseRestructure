@@ -1,24 +1,16 @@
 import React, { useMemo } from 'react';
-import type { Box, Owner } from '@/types';
-import { ItemStatus } from '@/types';
 import { FaTruck } from 'react-icons/fa';
-
-interface TruckZone {
-  id: string;
-  name: string;
-  boxes: Box[];
-  capacity: number;
-  position: { x: number; y: number; width: number; height: number };
-}
+import type { Box, OwnerOrSpace } from '@/types';
+import { ItemStatus, getDisplayName } from '@/types';
 
 interface TruckLayoutVisualizationProps {
   boxes: Box[];
-  owners: Owner[];
+  entities: OwnerOrSpace[];
 }
 
 export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> = ({
   boxes,
-  owners
+  entities = []
 }) => {
   // Filter loaded boxes and organize by truck zones
   const { loadedBoxes, truckZones } = useMemo(() => {
@@ -64,7 +56,7 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
     ];
 
     // Distribute boxes among zones (mock distribution based on box index)
-    loaded.forEach((box, index) => {
+    (loaded || []).forEach((box, index) => {
       const zoneIndex = index % zones.length;
       zones[zoneIndex].boxes.push(box);
     });
@@ -73,8 +65,8 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
   }, [boxes]);
 
   // Get owner by UID for color coding
-  const getOwnerById = (ownerId: string) => {
-    return owners.find(owner => owner.uid === ownerId);
+  const getEntityById = (entityId: string) => {
+    return entities.find(entity => entity.uid === entityId);
   };
 
   // Calculate zone fill percentage
@@ -173,15 +165,15 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
                 {/* Box Icons */}
                 <div className="flex flex-wrap justify-center gap-1 mt-1 max-w-full overflow-hidden">
                   {zone.boxes.slice(0, 8).map((box, index) => {
-                    const owner = getOwnerById(box.ownerUid || '');
+                    const entity = getEntityById(box.ownerUid || '');
                     return (
                       <div
                         key={`${box.id}-${index}`}
                         className="w-2 h-2 rounded-sm"
                         style={{ 
-                          backgroundColor: owner?.color || '#64748b',
+                          backgroundColor: entity?.color || '#64748b',
                         }}
-                        title={`${box.name} - ${owner ? `${owner.firstName} ${owner.lastName}` : 'Unknown Owner'}`}
+                        title={`${box.name} - ${entity ? getDisplayName(entity) : 'Unknown Owner'}`}
                       />
                     );
                   })}
@@ -228,15 +220,15 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
 
                 <div className="space-y-2">
                   {Object.entries(boxesByOwner).map(([ownerId, ownerBoxes]) => {
-                    const owner = getOwnerById(ownerId);
+                    const entity = getEntityById(ownerId);
                     return (
                       <div key={ownerId} className="flex items-center space-x-2">
                         <div
                           className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: owner?.color || '#64748b' }}
+                          style={{ backgroundColor: entity?.color || '#64748b' }}
                         />
                         <span className="text-sm text-slate-700 dark:text-slate-300">
-                          {owner ? `${owner.firstName} ${owner.lastName}` : 'Unknown'}
+                          {entity ? getDisplayName(entity) : 'Unknown'}
                         </span>
                         <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto">
                           {ownerBoxes.length} boxes
@@ -260,25 +252,25 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
       </div>
 
       {/* Owner Legend */}
-      {owners.length > 0 && (
+      {entities.length > 0 && (
         <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
           <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
             Owner Color Legend
           </h5>
           <div className="flex flex-wrap gap-4">
-            {owners
-              .filter(owner => loadedBoxes.some(box => box.ownerUid === owner.uid))
-              .map((owner) => (
-                <div key={owner.uid} className="flex items-center space-x-2">
+            {entities
+              .filter(entity => loadedBoxes.some(box => box.ownerUid === entity.uid))
+              .map((entity) => (
+                <div key={entity.uid} className="flex items-center space-x-2">
                   <div
                     className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: owner.color }}
+                    style={{ backgroundColor: entity.color }}
                   />
                   <span className="text-sm text-slate-700 dark:text-slate-300">
-                    {owner.firstName} {owner.lastName}
+                    {getDisplayName(entity)}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">
-                    ({loadedBoxes.filter(box => box.ownerUid === owner.uid).length} boxes)
+                    ({loadedBoxes.filter(box => box.ownerUid === entity.uid).length} boxes)
                   </span>
                 </div>
               ))}

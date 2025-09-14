@@ -289,14 +289,14 @@ export class TemplateService {
     const categoryGroups = new Map<string, number>()
     const tagGroups = new Map<string, number>()
 
-    allTemplates.forEach(template => {
+    (allTemplates || []).forEach(template => {
       // Count categories
       const category = (template as any).category
       categoryGroups.set(category, (categoryGroups.get(category) || 0) + 1)
 
       // Count tags
       const tags = (template as any).tags || []
-      tags.forEach((tag: string) => {
+      (tags || []).forEach((tag: string) => {
         tagGroups.set(tag, (tagGroups.get(tag) || 0) + 1)
       })
     })

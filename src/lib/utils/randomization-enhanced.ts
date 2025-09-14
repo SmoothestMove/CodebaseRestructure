@@ -187,7 +187,7 @@ export function randomizeBoxesWithSeparation(entitiesData: {
   
   // First, ensure each owner/space gets at least 1-3 boxes
   const guaranteedBoxes: Box[] = [];
-  combined.forEach(entity => {
+  (combined || []).forEach(entity => {
     const minBoxesPerEntity = randomInt(1, 3);
     for (let i = 0; i < minBoxesPerEntity; i++) {
       guaranteedBoxes.push(generateRandomBoxWithSpecificOwner(entity));

@@ -160,38 +160,64 @@ const AuthPage: React.FC = () => {
       // Check if user already has an active move
       const existingMoves = await getUserMoves(user.uid);
       let moveIdToUse: string | null = null;
+      let moveOperationFailed = false;
+      let moveErrorMessage = '';
 
       if (existingMoves.length > 0) {
         // User already has a move, use the most recent one
         moveIdToUse = existingMoves[0].id;
         console.log('Found existing move for user:', moveIdToUse);
       } else if (activeTab === 'register' || moveMode === 'new' || moveMode === 'join') {
-        // Only create/join a move if this is a new user or they're explicitly trying to join a move
-        moveIdToUse = await handleMoveOperation(user.uid);
+        // Try to create/join a move, but don't fail the entire auth flow if it fails
+        try {
+          moveIdToUse = await handleMoveOperation(user.uid);
+        } catch (moveError: any) {
+          console.warn('Move operation failed during registration:', moveError);
+          moveOperationFailed = true;
+          moveErrorMessage = moveError.message;
+          
+          // Don't throw the error - let registration complete successfully
+          // The user can create/join a move later from the dashboard
+        }
       }
       
       // Update settings with move ID if we have one
       if (moveIdToUse) {
-        await updateSettings({ currentMoveId: moveIdToUse });
-        setMoveId(moveIdToUse);
+        try {
+          await updateSettings({ currentMoveId: moveIdToUse });
+          setMoveId(moveIdToUse);
+        } catch (settingsError: any) {
+          console.warn('Settings update failed:', settingsError);
+          // Continue with auth flow even if settings update fails
+        }
       }
 
-      // Show success and redirect
+      // Show appropriate success message based on move operation result
+      let successMessage = '';
+      if (moveOperationFailed) {
+        successMessage = `${actionType} successful! You can create or join a move from your dashboard.`;
+      } else if (existingMoves.length > 0) {
+        successMessage = `${actionType} successful! Returning to your move...`;
+      } else if (moveIdToUse) {
+        successMessage = `${actionType} successful! ${moveMode === 'new' ? 'Move created!' : 'Joined move successfully!'}`;
+      } else {
+        successMessage = `${actionType} successful! Welcome to Smooth Moves!`;
+      }
+
       updateAuthState({
-        successMessage: existingMoves.length > 0 
-          ? `${actionType} successful! Returning to your move...`
-          : `${actionType} successful! ${moveIdToUse ? 'Creating/joining move...' : 'Redirecting to dashboard...'}`,
-        isLoading: false
+        successMessage,
+        isLoading: false,
+        error: moveOperationFailed ? `Note: ${moveErrorMessage}` : null
       });
       
       setRedirectPath('/app');
       
       // Navigate after a brief delay to show success message
-      setTimeout(() => navigate('/app'), 1000);
+      setTimeout(() => navigate('/app'), 1500);
     } catch (error: any) {
       console.error('Auth flow completion error:', error);
       updateAuthState({
-        error: error.message,
+        error: `${actionType} failed: ${error.message}`,
         isLoading: false
       });
     }

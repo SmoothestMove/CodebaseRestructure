@@ -1,244 +1,51 @@
-
 # Smooth Moves
 
-A comprehensive web application designed to help users efficiently manage and track their belongings during a move using QR codes, owner assignments, status updates, and comprehensive budget tracking.
+[![React](https://img.shields.io/badge/React-19.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-11.8-orange.svg)](https://firebase.google.com/)
+[![Vite](https://img.shields.io/badge/Vite-6.2-646CFF.svg)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-38B2AC.svg)](https://tailwindcss.com/)
 
-## Table of Contents
-1.  [Overview](#overview)
-2.  [Features](#features)
-3.  [Tech Stack](#tech-stack)
-4.  [Installation & Setup](#installation--setup)
-5.  [Development Commands](#development-commands)
-6.  [Folder Structure](#folder-structure)
-7.  [Core Features & Use Cases](#core-features--use-cases)
-8.  [Configuration](#configuration)
-9.  [UI/UX Design Reference](#uiux-design-reference)
-10. [Known Issues / Limitations](#known-issues--limitations)
-11. [Future Development Ideas](#future-development-ideas)
-12. [Credits & Licensing](#credits--licensing)
-
-## Overview
-**Purpose:** Smooth Moves is a comprehensive digital moving management platform that revolutionizes the relocation experience. It combines QR code-based box tracking, AI-powered assistance, comprehensive budget management, and real-time collaboration to make moving organized, efficient, and stress-free.
-
-**Audience:** Individuals, families, or anyone planning and executing a residential or office move who want to stay organized, on budget, and leverage modern technology for a smoother moving experience.
-
-**Development Status:** Active development with production-ready features. The application leverages Firebase for real-time collaboration, Google Gemini AI for intelligent assistance, and modern React architecture for optimal performance across all devices.
+A web application to manage moving projects: QR-labeled box tracking, owners/spaces, planner and calendar, budgeting with receipt OCR, and the MARVIN AI assistant — built with React + TypeScript and Firebase.
 
 ## Features
-- 📦 **Box Management** - QR code generation, scanning, and status tracking
-- 👥 **Owner & Space Management** - Assign items to people or rooms
-- 💰 **Financial Navigator** - Comprehensive budget tracking with AI receipt scanning
-- 🧾 **AI Receipt Scanning** - Mindee OCR integration for automated expense extraction
-- 📋 **Planner System** - Comprehensive task management with drag-drop, timelines, and custom fields
-- 📅 **Calendar System** - Full calendar management with event scheduling and team collaboration
-- 🤖 **MARVIN AI Assistant** - Voice-enabled AI with budget, calendar, and navigation integration
-- 🛍️ **Product Management** - Comprehensive product catalog and tracking system
-- 📊 **Visual Analytics** - Charts and graphs for spending and inventory insights
-- 📱 **Mobile-First Design** - Responsive interface for all devices
-- 🔄 **Real-Time Sync** - Firebase-powered live data updates
-- 🎨 **Dark/Light Mode** - Customizable themes
-- 📄 **PDF Generation** - Printable QR code labels and reports
-- 🚛 **Truck Loading** - Visual truck loading management
-- 🔐 **Secure Authentication** - Firebase Auth integration
+
+- Box Management: QR code generation, scanning, statuses, contents, photos
+- Owners & Spaces: Assign boxes to people or rooms, color-coded
+- Financial Navigator: Budget, categories, expenses, charts; optional OCR import
+- Calendar: Event scheduling and views; move-aware
+- Planner: Tasks, timeframes, drag-and-drop
+- MARVIN Assistant: Gemini-powered assistant; optional wake-word with Porcupine
+- Mobile-First UI: Responsive, with camera integration for scanning
 
 ## Tech Stack
-**Core Technologies:**
-- **Frontend:** React 19.1 + TypeScript
-- **Build Tool:** Vite 6.2
-- **Styling:** TailwindCSS 4.1
-- **Backend:** Firebase (Firestore + Auth + Storage)
-- **Routing:** React Router DOM 7.6
 
-**Key Libraries:**
-- **UI Components:** Lucide React, React Icons
-- **Calendar:** React Big Calendar 1.19, Date-fns 4.1
-- **Animations:** Framer Motion 12.18
-- **Charts:** Recharts 3.1
-- **PDF Generation:** jsPDF 3.0
-- **Notifications:** React Toastify 11.0
-- **Utilities:** UUID 11.1
-- **Server:** Express.js 4.19
-- **AI Integration:** Google Gemini API 1.10, Mindee OCR API
-- **Voice Processing:** Picovoice Porcupine 3.0, Web Voice Processor 4.0
+- Frontend: React 19.1, TypeScript 5.7
+- Build: Vite 6.2
+- Styling: TailwindCSS 4.1
+- Backend: Firebase (Auth, Firestore, Storage, Hosting)
+- Routing: React Router DOM 7.6
+- Key Libraries: `@hello-pangea/dnd`, `date-fns`, `framer-motion`, `recharts`, `react-toastify`, `jspdf`, `lucide-react`, `uuid`
 
-## Installation & Setup
-**Prerequisites:**
-- Node.js 18+ and npm
-- Modern web browser with JavaScript enabled
-- Firebase project (for backend services)
+## Quick Start
 
-**Steps:**
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd CodebaseRestructure
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**
-   Create a `.env.local` file in the project root:
-   ```bash
-   # Firebase Configuration
-   VITE_FIREBASE_API_KEY=your_firebase_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-   
-   # MARVIN AI Assistant Configuration
-   VITE_GEMINI_API_KEY=your_gemini_api_key
-   
-   # Mindee OCR API Configuration
-   VITE_MINDEE_API_KEY=your_mindee_api_key
-   
-   # Picovoice Wake Word Configuration (Optional)
-   VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
-   ```
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open in browser**
-   - Navigate to `http://localhost:5173`
-
-## Development Commands
 ```bash
+# Clone the repository
+git clone https://github.com/SmoothestMove/CodebaseRestructure.git
+cd CodebaseRestructure
+
+# Install dependencies
+npm install
+
 # Start development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Start production server
-npm start
-
-# Deploy to Firebase (requires configuration)
-npm run deploy
 ```
 
-## Folder Structure
-```
-src/
-├── components/               # Reusable UI components
-│   ├── common/              # Basic UI elements
-│   │   ├── Alert/           # Alert component
-│   │   ├── Button/          # Button component
-│   │   ├── Card/            # Card component
-│   │   ├── Input/           # Input component
-│   │   ├── Modal/           # Modal component
-│   │   ├── QRCodeDisplay/   # QR code display
-│   │   ├── Select/          # Select component
-│   │   ├── Textarea/        # Textarea component
-│   │   └── TruckDiagram/    # Truck visualization
-│   └── layout/              # Layout components
-│       ├── Header/          # Navigation header
-│       └── Footer/          # Application footer
-├── features/                # Feature-based modules
-│   ├── auth/               # Authentication
-│   │   ├── components/     # Auth-specific components
-│   │   ├── hooks/          # Auth context and hooks
-│   │   ├── pages/          # Login/register pages
-│   │   ├── services/       # Auth API services
-│   │   └── types/          # Auth type definitions
-│   ├── boxes/              # Box management
-│   │   ├── components/     # Box-related components
-│   │   ├── hooks/          # Box state management
-│   │   ├── pages/          # Box management pages
-│   │   └── services/       # Box API services
-│   ├── budget/             # Financial Navigator with AI receipt scanning
-│   │   ├── components/     # Budget UI components and receipt scanning
-│   │   ├── constants/      # Budget constants
-│   │   ├── hooks/          # Budget state management (including MARVIN integration)
-│   │   ├── pages/          # Budget tracking pages
-│   │   ├── services/       # Receipt scanning service (Mindee OCR)
-│   │   └── types/          # Budget type definitions
-│   ├── calendar/           # Calendar System
-│   │   ├── components/     # Calendar UI components and event modals
-│   │   ├── hooks/          # Calendar state management (including MARVIN integration)
-│   │   ├── pages/          # Calendar view pages
-│   │   ├── services/       # Calendar API services
-│   │   └── types/          # Calendar type definitions
-│   ├── marvin/             # MARVIN AI Assistant
-│   │   ├── adapters/       # Data transformation for AI context
-│   │   ├── components/     # AI chat interface and voice components
-│   │   ├── pages/          # MARVIN assistant page
-│   │   ├── services/       # Gemini API, TTS, wake word services
-│   │   └── types/          # AI assistant type definitions
-│   ├── owners/             # Owner management
-│   │   ├── components/     # Owner-related components
-│   │   ├── hooks/          # Owner state management
-│   │   ├── pages/          # Owner management pages
-│   │   └── services/       # Owner API services
-│   ├── planner/            # Comprehensive task management system
-│   │   ├── components/     # Task cards, drag-drop, modals, timelines
-│   │   ├── hooks/          # Planner state management and Firebase integration
-│   │   ├── pages/          # Planner dashboard and task views
-│   │   ├── services/       # Firebase planner service and checklist parsing
-│   │   └── types/          # Planner and task type definitions
-│   ├── products/           # Product management
-│   │   ├── components/     # Product components
-│   │   ├── hooks/          # Product hooks
-│   │   ├── pages/          # Product pages
-│   │   ├── services/       # Product services
-│   │   └── types/          # Product types
-│   ├── settings/           # App settings
-│   │   ├── hooks/          # Settings management
-│   │   ├── pages/          # Settings pages
-│   │   └── services/       # Settings services
-│   ├── storage/            # Storage management
-│   │   ├── components/     # Storage components
-│   │   ├── hooks/          # Storage hooks
-│   │   ├── pages/          # Storage pages
-│   │   ├── services/       # Storage services
-│   │   └── types/          # Storage types
-│   └── timeline/           # Timeline and progress tracking
-│       ├── components/     # Timeline components and UI elements
-│       ├── hooks/          # Timeline state management
-│       ├── pages/          # Timeline views
-│       ├── services/       # Timeline services
-│       └── types/          # Timeline type definitions
-├── hooks/                  # Shared custom hooks
-├── lib/                    # Utilities and configuration
-│   ├── api/               # API utilities
-│   ├── config/            # App configuration
-│   ├── helpers/           # Helper functions
-│   └── utils/             # Utility functions
-├── types/                  # Global type definitions
-├── utils/                  # Additional utilities
-├── main.tsx               # Application entry point
-└── App.tsx                # Root component with routing
-```
+Visit `http://localhost:5173` in your browser.
 
-## Configuration
+## Environment Configuration
 
-### Required API Keys
-1. **Firebase Project** - Create at https://console.firebase.google.com
-   - Enable Authentication, Firestore Database, and Storage
-   - Copy configuration values to `.env.local`
-
-2. **Google Gemini API** - Get API key at https://aistudio.google.com/app/apikey
-   - Required for MARVIN AI Assistant functionality
-
-3. **Mindee OCR API** - Get API key at https://platform.mindee.com/
-   - Required for AI receipt scanning functionality
-   - Free tier: 250 API calls/month, 20 calls/minute
-
-4. **Picovoice Access Key** (Optional) - Get at https://console.picovoice.ai/
-   - Required for wake word detection ("Let's Move Marvin")
-   - MARVIN works without this, but lacks wake word activation
-
-### Environment Variables
-All configuration is handled through environment variables in `.env.local`:
+Create a `.env.local` file in the project root with the following keys:
 
 ```bash
 # Firebase Configuration (Required)
@@ -255,195 +62,48 @@ VITE_GEMINI_API_KEY=your_gemini_api_key
 # Mindee OCR API (Required for receipt scanning)
 VITE_MINDEE_API_KEY=your_mindee_api_key
 
-# Picovoice Wake Word (Optional)
+# Picovoice Wake Word (Optional - enhances MARVIN)
 VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 ```
 
-## Core Features & Use Cases
+The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
 
-### 🔐 **Authentication & User Management**
-- **Firebase Authentication:** Secure sign-up and sign-in with email/password
-- **Move Management:** Create new moves or join existing ones with Move ID
-- **Protected Routes:** Secure access to application features
-- **User Onboarding:** Guided setup for new users
+## Scripts
 
-### 📦 **Box Management System**
-- **QR Code Generation:** Unique QR codes for each box with automatic generation
-- **Status Tracking:** Complete lifecycle tracking from Prepared → Packed → Loaded → Unloaded → Delivered → Unpacked
-- **Box Details:** Comprehensive information including contents, photos, destination rooms
-- **Real-time Updates:** Live synchronization across all connected devices
+- Dev: `npm run dev`
+- Build: `npm run build` (outputs `dist/`)
+- Preview: `npm run preview`
+- Start (local prod preview): set package.json `"start": "vite preview --port 4173"`, then run `npm start`.
+- Deploy (Vercel): connect repo in Vercel or use CLI (`vercel`, then `vercel --prod`).
 
-### 👥 **Owner & Space Management**
-- **Personal Owners:** Assign boxes to specific individuals with color-coded identification
-- **Shared Spaces:** Manage communal areas (kitchen, living room) and custom spaces
-- **Visual Organization:** Color-coded system for easy identification
-- **Bulk Operations:** Batch printing and management of multiple boxes
+## Hosting
 
-### 💰 **Financial Navigator (Budget Tracker)**
-- **Comprehensive Budget Management:** Set total moving budget with move type templates
-- **AI Receipt Scanning:** Automatic expense extraction from receipt photos using Mindee OCR
-- **Expense Tracking:** Record all moving-related expenses with categories
-- **Visual Analytics:** Interactive charts showing spending patterns and budget usage
-- **Category Management:** Customize expense categories with icons and colors
-- **Smart Insights:** Track budget vs actual spending with alerts and warnings
-- **Receipt Management:** Store merchant details, descriptions, and receipt images
-- **Export Capabilities:** Generate reports and track spending over time
+- Production: Vercel (Static site)
+  - Build command: `npm run build`
+  - Output directory: `dist/`
+  - Framework preset: Vite
+- Optional (not used for prod): Firebase Hosting config exists at `firebase/firebase.json` with SPA rewrites to `/index.html`.
+- Firebase backend security: Firestore rules at `firebase/firestore.rules`; indexes at `firebase/firestore.indexes.json`.
+- Firebase Storage rules file is missing — add `firebase/storage.rules` and reference it to secure uploaded files.
 
-### 📱 **QR Code Scanning & Mobile Features**
-- **Camera Integration:** Use device camera to scan QR codes for quick updates
-- **Progressive Status Updates:** Smart scanning that suggests next logical status
-- **Mobile-First Design:** Optimized interface for mobile devices
-- **Offline Capability:** Core scanning features work without internet
+## Development Notes
 
-### 🚛 **Truck Loading Visualization**
-- **Interactive Truck Diagram:** Visual representation of truck loading zones
-- **Zone Assignment:** Assign boxes to specific truck zones and positions
-- **Load Optimization:** Visual feedback for efficient truck loading
-- **Loading Progress:** Track loading status in real-time
+- Path alias: `@/*` → `./src/*` (configured in `vite.config.ts` and `tsconfig.json`)
+- Strict TypeScript is enabled; no root ESLint/Prettier config yet
+- Accessibility tooling present (`@axe-core/react`, `jest-axe`) but not wired
+- Tests: no configured test runner at root
 
-### 📅 **Calendar System**
-- **Interactive Calendar Views:** Month, week, day, and agenda views using React Big Calendar
-- **Event Management:** Create, edit, and delete moving-related events with full CRUD operations
-- **Team Collaboration:** Assign events to specific team members with real-time updates
-- **Firebase Integration:** Real-time synchronization across all connected devices
-- **MARVIN Integration:** AI-powered event creation and scheduling through natural language
-- **Event Details:** Rich event descriptions, time management, and assignee tracking
-- **Responsive Design:** Optimized calendar interface for all screen sizes
+## Security & Privacy
 
-### 🧾 **AI Receipt Scanning**
-- **Mindee OCR Integration:** Advanced receipt processing using computer vision
-- **Automated Data Extraction:** Merchant name, amount, date, and line items from receipt images
-- **Smart Category Mapping:** AI-suggested categories mapped to local budget categories
-- **Confidence Scoring:** Visual indicators showing extraction accuracy (High/Medium/Low)
-- **Multi-format Support:** JPEG, PNG, GIF, PDF files up to 5MB
-- **3-step Workflow:** Upload → AI Processing → Review & Edit extracted data
-- **Error Handling:** Comprehensive error handling with retry logic and user-friendly messages
-- **Receipt Storage:** Base64 image storage with expense records
+- Do not commit API keys. Use `.env.local` which is gitignored.
+- Firestore access is restricted to move owners/participants; see `firebase/firestore.rules`.
+- Documentation under `docs/development/MindeeOCR/` contains example API references; ensure no real secrets are committed.
 
-### 📋 **Planner System**
-- **Comprehensive Task Management:** Create, organize, and track moving-related tasks
-- **Drag & Drop Interface:** Intuitive task organization with timeframe columns
-- **Custom Fields Configuration:** Flexible task attributes and metadata
-- **Member Assignment:** Assign tasks to specific team members with tracking
-- **Timeline Management:** Visual timeline with milestones and deadlines
-- **Tag System:** Categorize and filter tasks with custom tags
-- **Task Attachments:** File attachments and detailed task documentation
-- **Firebase Integration:** Real-time synchronization across all devices
-- **Bulk Operations:** Import checklists and batch task creation
+## Screenshots (optional)
 
-### 🤖 **MARVIN AI Assistant**
-- **Natural Language Processing:** Google Gemini API integration for contextual responses
-- **Voice Interaction:** Speech recognition and text-to-speech capabilities
-- **Wake Word Detection:** "Let's Move Marvin" activation using Picovoice technology
-- **Moving Context Awareness:** Real-time access to your boxes, owners, budget, and calendar data
-- **Smart Actions:** Create calendar events, manage budget expenses, and navigate app features
-- **Budget Integration:** Add expenses, create categories, and query spending through voice commands
-- **Calendar Integration:** Schedule events, check availability, and manage move timeline
-- **Web Search Integration:** Real-time search for moving-related queries
-- **Mobile Optimized:** Cross-platform voice support for mobile browsers
+- Add images under `docs/assets/` and reference here once available.
 
-### 📄 **PDF Label Generation**
-- **Batch Printing:** Generate multiple QR code labels at once
-- **Color-Coded Labels:** Labels match owner/space color schemes
-- **Professional Layout:** Clean, printable PDF format
-- **Customizable Batches:** Choose number of labels per batch
+## License
 
-### 🎨 **User Experience Features**
-- **Dark/Light Mode:** System-wide theme switching with persistence
-- **Responsive Design:** Seamless experience across all device sizes
-- **Animated Transitions:** Smooth Framer Motion animations
-- **Toast Notifications:** Real-time feedback for all user actions
-- **Loading States:** Comprehensive loading indicators throughout the app
+No LICENSE file is present in this repository. Add one if you intend to open-source.
 
-## UI/UX Design Reference
-**Color Palette (from Tailwind Config):**
-*   **Primary Branding:**
-    *   `brand-primary`: `#1e3a5f` (Dark Blue) - Headers, Footers, backgrounds
-    *   `brand-secondary`: `#708090` (Slate Gray) - Text, secondary elements
-    *   `brand-tertiary`: `#ff7e00` (Bright Orange) - CTAs, highlights, active states
-    *   `brand-accent`: `#e1a95f` (Muted Peach/Orange) - Warnings, accents
-*   **Backgrounds:**
-    *   Light Mode: `bg-slate-100` (body), `bg-white` (cards/modals)
-    *   Dark Mode: `dark:bg-slate-900` (body), `dark:bg-slate-800` (cards/modals), `dark:bg-slate-700`
-*   **Text:**
-    *   Light Mode: `text-brand-primary`, `text-brand-secondary`, `text-slate-900`
-    *   Dark Mode: `dark:text-slate-100`, `dark:text-slate-300`, `dark:text-slate-400`
-*   **Status Specific (Dark Mode Values from Tailwind config):**
-    *   Error: `dark-red-error: #f87171`
-    *   Success: `dark-green-success: #4ade80`
-    *   Delivered: `dark-purple-delivered: #c084fc`
-
-**Fonts:**
-*   Primary Font: `Inter` (sans-serif)
-*   Fallback: `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `'Segoe UI'`, `Roboto`, `Oxygen`, `Ubuntu`, `Cantarell`, `'Open Sans'`, `'Helvetica Neue'`, `sans-serif`.
-
-**Button States:**
-*   **Default:** Styled with background color, shadow.
-*   **Hover:** Darker shade of background, increased shadow, potential scale transform.
-*   **Active/Clicked:** `active:scale-95` transform.
-*   **Focus:** Ring outline matching the button's theme color.
-*   **Disabled:** Reduced opacity, cursor-not-allowed, no shadow.
-*   **Loading/Success:** Shows spinner or checkmark icon, text changes (e.g., "Processing...", "Success!").
-
-**Animations / Transitions (from Tailwind Config & Observed):**
-*   `pulse-bg-once`: Gentle background pulse, e.g., for quick scan mode active banner.
-*   `fade-in`, `fade-out`: Used for modals, alerts, and content visibility changes.
-*   `slide-up`: Used for modal appearance.
-*   `scan-line-vertical`: Animated line in the QR scanner overlay.
-*   Standard Tailwind transitions for colors, transforms (`duration-150`, `duration-200`, `duration-300`).
-
-## Known Issues / Limitations
-*   **Missing Error Boundaries:** No global error handling for component failures
-*   **Large Components:** Budget component (673 lines) could benefit from splitting into smaller components
-*   **Budget Firebase Integration:** Budget feature uses localStorage only, not synced with Firebase
-*   **Testing Framework:** No test suite currently configured
-*   **Performance:** Large datasets in budget tracking may impact performance
-*   **Camera Permissions:** QR scanning requires explicit camera permissions from users
-*   **PDF Generation:** Complex layouts with many labels may have performance considerations
-*   **MARVIN Voice Limitations:** Voice quality depends on browser and platform (mobile browsers have limited voice options)
-*   **API Dependencies:** MARVIN and receipt scanning require external API keys (Gemini, Mindee, Picovoice) for full functionality
-*   **MARVIN Wake Word:** Picovoice access key required for "Let's Move Marvin" activation (optional feature)
-*   **Receipt Scanning Rate Limits:** Mindee free tier limited to 250 API calls/month, 20 calls/minute
-
-## Future Development Ideas
-
-### 🚀 **Enhanced Features**
-*   **Document Vault:** Secure storage for moving-related documents and contracts
-*   **Advanced Analytics:** Predictive spending analysis and cost optimization suggestions
-*   **Bulk Operations:** Enhanced bulk editing and batch operations for boxes
-*   **Image Management:** Direct device uploads and image optimization
-*   **Enhanced Receipt Processing:** Multi-receipt detection and batch processing capabilities
-
-### 🤖 **Enhanced AI Features**
-*   **Advanced MARVIN Capabilities:**
-    *   Smart suggestions for box contents based on room/context
-    *   Voice commands for hands-free box updates
-    *   AI-powered move progress summaries and insights
-    *   Enhanced inventory management integration
-*   **Smart Categorization:** Automatic expense categorization using AI
-*   **Workload Distribution:** AI-powered task delegation among move participants
-*   **Computer Vision:** Box content identification through camera
-*   **Predictive Analytics:** Moving timeline optimization and delay prediction
-
-### 📱 **Enhanced Mobile & Collaboration**
-*   **Progressive Web App:** Enhanced offline capabilities with Service Workers
-*   **Push Notifications:** Real-time alerts for move updates and budget warnings
-*   **In-App Messaging:** Team communication system for move coordination
-*   **Video Calls:** Integrated video chat for remote collaboration
-
-### 🗺️ **Location & Planning**
-*   **Google Maps Integration:** Route planning and moving day logistics
-*   **Google Calendar Integration:** External calendar sync with existing calendar system
-*   **Enhanced Timeline Features:** Advanced progress tracking and milestone management
-*   **Inventory Valuation:** Insurance and valuation tracking for belongings
-
-### 🔧 **Technical Improvements**
-*   **Enhanced PDF Customization:** Advanced label design and layout options
-*   **Advanced Reporting:** Comprehensive move analytics and export capabilities
-*   **API Integration:** Third-party integrations with moving services and vendors
-*   **Multi-language Support:** Internationalization for global users
-
-## Credits & Licensing
-**Developed by:** AI Assistant (as part of a development exercise)
-**Special Thanks To:** N/A
-**License:** To be determined (Currently proprietary/for demonstration purposes).

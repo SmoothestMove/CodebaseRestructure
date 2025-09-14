@@ -51,7 +51,14 @@ const Budgeting: React.FC = () => {
 
   // Auto-open setup modal for first-time users
   useEffect(() => {
-    if (!state.budget || !state.budget.totalEstimatedAmount || state.budget.totalEstimatedAmount === 0) {
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBudgetPage');
+    
+    if (!hasVisitedBefore) {
+      // First-time visit, show the setup modal
+      setIsSetupBudgetModalOpen(true);
+      localStorage.setItem('hasVisitedBudgetPage', 'true');
+    } else if (!state.budget?.totalEstimatedAmount || state.budget.totalEstimatedAmount === 0) {
+      // Returning user but no budget set up yet
       setIsSetupBudgetModalOpen(true);
     }
   }, [state.budget]);

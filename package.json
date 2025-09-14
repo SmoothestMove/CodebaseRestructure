@@ -1,14 +1,13 @@
 {
-  "name": "scanner-fix-attempt",
+  "name": "smooth-move-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "type": "module",
-  "main": "server.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node server.cjs",
+    "start": "vite preview --port 4173",
     "deploy": "npm run build && firebase deploy --only hosting"
   },
   "dependencies": {
@@ -28,7 +27,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "express": "^4.19.2",
     "firebase": "^11.8.1",
     "framer-motion": "^12.18.1",
     "jspdf": "^3.0.1",

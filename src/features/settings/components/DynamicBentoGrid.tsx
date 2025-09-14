@@ -1,37 +1,22 @@
 import React, { useMemo } from 'react';
-import type { Box, Owner } from '@/types';
-import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
-import { FaHome, FaBuilding, FaUser } from 'react-icons/fa';
-
-interface BoxCountByEntity {
-  uid: string;
-  name: string;
-  color: string;
-  boxCount: number;
-  entityType: 'Personal' | 'Communal';
-  isPersonal: boolean;
-  icon: React.ReactNode;
-}
+import { FaUser, FaBuilding, FaHome } from 'react-icons/fa';
+import { isPersonalOwner, separateOwnersAndSpaces } from '@/types';
 
 interface DynamicBentoGridProps {
   boxes: Box[];
-  owners: Owner[];
+  entities: (PersonalOwner | CommunalSpace)[];
 }
 
-/**
- * ENHANCED VERSION: Demonstrates clear separation of Owners vs Spaces
- * This version uses the separation hook to cleanly separate personal owners from communal spaces
- */
 export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({ 
   boxes, 
-  owners 
+  entities = []
 }) => {
-  const { personalOwners, communalSpaces } = useOwnersSpacesSeparation();
+  const { owners: personalOwners = [], spaces: communalSpaces = [] } = useMemo(() => separateOwnersAndSpaces(entities || []), [entities]);
   
   const entityData = useMemo(() => {
     // Count boxes per entity
     const boxCounts: Record<string, number> = {};
-    boxes.forEach(box => {
+    (boxes || []).forEach(box => {
       if (box.ownerUid) {
         boxCounts[box.ownerUid] = (boxCounts[box.ownerUid] || 0) + 1;
       }
@@ -41,7 +26,7 @@ export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({
     const entities: BoxCountByEntity[] = [];
     
     // Add Personal Owners
-    personalOwners.forEach(owner => {
+    (personalOwners || []).forEach(owner => {
       const boxCount = boxCounts[owner.uid] || 0;
       if (boxCount > 0 || personalOwners.length + communalSpaces.length <= 12) {
         entities.push({
@@ -57,7 +42,7 @@ export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({
     });
     
     // Add Communal Spaces
-    communalSpaces.forEach(space => {
+    (communalSpaces || []).forEach(space => {
       const boxCount = boxCounts[space.uid] || 0;
       if (boxCount > 0) {
         entities.push({

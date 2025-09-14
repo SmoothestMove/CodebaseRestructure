@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useMove } from '@/features/settings/hooks/MoveContext';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
 import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
-import { ItemStatus } from '@/types';
+import { ItemStatus, legacyOwnerToModern } from '@/types';
 import { BoxPackingProgressChart } from '../components/BoxPackingProgressChart';
 import { ProgressBarComponent } from '../components/ProgressBarComponent';
 import { DynamicBentoGrid } from '../components/DynamicBentoGrid';
@@ -45,58 +45,75 @@ const DashboardPage: React.FC = () => {
 
   // Use randomized data when available, otherwise use real data
   const displayBoxes = isRandomized && randomizedData ? randomizedData.boxes : boxes;
-  
-  // Create legacy-compatible owners array for components that still need it
-  const displayOwners = useMemo(() => {
+  const displayEntities = useMemo(() => {
     if (isRandomized && randomizedData) {
-      // Convert enhanced data back to legacy format
-      return [
-        ...randomizedData.personalOwners.map(owner => ({
-          uid: owner.uid,
-          firstName: owner.firstName,
-          lastName: owner.lastName,
-          color: owner.color,
-          createdAt: owner.createdAt
-        })),
-        ...randomizedData.communalSpaces.map(space => ({
-          uid: space.uid,
-          firstName: space.name,
-          lastName: '(Communal)',
-          color: space.color,
-          createdAt: space.createdAt
-        }))
-      ];
+      return [...randomizedData.personalOwners, ...randomizedData.communalSpaces];
     }
-    return owners;
+    return owners.map(legacyOwnerToModern);
   }, [isRandomized, randomizedData, owners]);
 
-  // Aggregate box packing progress data
-  const progressData = useMemo(() => {
-    if (!displayBoxes.length) return null;
-    
-    const statusCounts = displayBoxes.reduce((acc, box) => {
+  const { progressData, individualProgressData } = useMemo(() => {
+    if (!displayBoxes.length) return { progressData: null, individualProgressData: {} };
+
+    const overallStatusCounts = displayBoxes.reduce((acc, box) => {
       acc[box.currentStatus] = (acc[box.currentStatus] || 0) + 1;
       return acc;
     }, {} as Record<ItemStatus, number>);
 
-    // Calculate overall progress
     const totalBoxes = displayBoxes.length;
-    const packedBoxes = statusCounts[ItemStatus.PACKED] || 0;
-    const loadedBoxes = statusCounts[ItemStatus.LOADED] || 0;
-    const deliveredBoxes = statusCounts[ItemStatus.DELIVERED] || 0;
-    const unpackedBoxes = statusCounts[ItemStatus.UNPACKED] || 0;
+    const unpackedBoxes = overallStatusCounts[ItemStatus.UNPACKED] || 0;
 
-    return {
+    const progressData = {
       total: totalBoxes,
-      prepared: statusCounts[ItemStatus.PREPARED] || 0,
-      packed: packedBoxes,
-      loaded: loadedBoxes,
-      delivered: deliveredBoxes,
-      unloaded: statusCounts[ItemStatus.UNLOADED] || 0,
+      prepared: overallStatusCounts[ItemStatus.PREPARED] || 0,
+      packed: overallStatusCounts[ItemStatus.PACKED] || 0,
+      loaded: overallStatusCounts[ItemStatus.LOADED] || 0,
+      delivered: overallStatusCounts[ItemStatus.DELIVERED] || 0,
+      unloaded: overallStatusCounts[ItemStatus.UNLOADED] || 0,
       unpacked: unpackedBoxes,
-      overallProgress: totalBoxes > 0 ? Math.round((unpackedBoxes / totalBoxes) * 100) : 0
+      overallProgress: totalBoxes > 0 ? Math.round((unpackedBoxes / totalBoxes) * 100) : 0,
     };
-  }, [displayBoxes]);
+
+    const individualData = displayBoxes.reduce((acc, box) => {
+      const owner = displayEntities.find(e => e.id === box.ownerId);
+      const space = displayEntities.find(e => e.id === box.spaceId);
+      const entity = owner || space;
+
+      if (entity) {
+        if (!acc[entity.id]) {
+          acc[entity.id] = {
+            name: entity.name,
+            type: (entity as any).isCommunal ? 'Space' : 'Owner',
+            counts: {},
+            total: 0,
+          };
+        }
+        acc[entity.id].counts[box.currentStatus] = (acc[entity.id].counts[box.currentStatus] || 0) + 1;
+        acc[entity.id].total += 1;
+      }
+      return acc;
+    }, {} as Record<string, { name: string; type: string; counts: Record<ItemStatus, number>; total: number }>);
+
+    const individualProgressData = Object.entries(individualData).reduce((acc, [id, data]) => {
+      const total = data.total;
+      const unpacked = data.counts[ItemStatus.UNPACKED] || 0;
+      acc[id] = {
+        name: data.name,
+        type: data.type,
+        total: total,
+        prepared: data.counts[ItemStatus.PREPARED] || 0,
+        packed: data.counts[ItemStatus.PACKED] || 0,
+        loaded: data.counts[ItemStatus.LOADED] || 0,
+        delivered: data.counts[ItemStatus.DELIVERED] || 0,
+        unloaded: data.counts[ItemStatus.UNLOADED] || 0,
+        unpacked: unpacked,
+        overallProgress: total > 0 ? Math.round((unpacked / total) * 100) : 0,
+      };
+      return acc;
+    }, {} as Record<string, any>);
+
+    return { progressData, individualProgressData };
+  }, [displayBoxes, displayEntities]);
 
   // Check if any boxes are loaded for truck visualization
   const hasLoadedBoxes = useMemo(() => {
@@ -198,7 +215,7 @@ const DashboardPage: React.FC = () => {
             Box Packing Progress
           </h2>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-            <BoxPackingProgressChart data={progressData} owners={displayOwners} />
+            <BoxPackingProgressChart boxes={displayBoxes} owners={displayEntities} />
           </div>
         </section>
       )}
@@ -206,7 +223,7 @@ const DashboardPage: React.FC = () => {
       {/* Progress Bar */}
       {progressData && (
         <section>
-          <ProgressBarComponent data={progressData} />
+          <ProgressBarComponent data={progressData} individualData={individualProgressData} />
         </section>
       )}
 
@@ -225,7 +242,7 @@ const DashboardPage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
           Spaces Overview
         </h2>
-        <DynamicBentoGrid boxes={displayBoxes} owners={displayOwners} />
+        <DynamicBentoGrid boxes={displayBoxes} entities={displayEntities} />
       </section>
 
       {/* Truck Layout Visualization - Conditional */}
@@ -234,7 +251,7 @@ const DashboardPage: React.FC = () => {
           <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
             Truck Load Status
           </h2>
-          <TruckLayoutVisualization boxes={displayBoxes} owners={displayOwners} />
+          <TruckLayoutVisualization boxes={displayBoxes} entities={displayEntities} />
         </section>
       )}
 

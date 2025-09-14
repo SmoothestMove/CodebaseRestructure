@@ -23,7 +23,7 @@ export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({ boxes, owner
     const counts: Record<string, number> = {};
     
     // Count boxes per owner
-    boxes.forEach(box => {
+    (boxes || []).forEach(box => {
       if (box.ownerUid) {
         counts[box.ownerUid] = (counts[box.ownerUid] || 0) + 1;
       }
@@ -33,7 +33,7 @@ export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({ boxes, owner
     const allSpaces: BoxCountByOwner[] = [];
 
     // Add personal owners
-    owners.forEach(owner => {
+    (owners || []).forEach(owner => {
       const boxCount = counts[owner.uid] || 0;
       if (boxCount > 0 || owners.length <= 8) { // Show all if few owners, otherwise only those with boxes
         allSpaces.push({
@@ -48,7 +48,7 @@ export const DynamicBentoGrid: React.FC<DynamicBentoGridProps> = ({ boxes, owner
     });
 
     // Add communal rooms with boxes
-    PREDEFINED_COMMUNAL_ROOMS.forEach(room => {
+    (PREDEFINED_COMMUNAL_ROOMS || []).forEach(room => {
       const boxCount = counts[room.uid] || 0;
       if (boxCount > 0) {
         allSpaces.push({

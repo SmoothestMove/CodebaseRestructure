@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, ReactNode } from 'react';
 import {
   AreaChart,
   Area,
@@ -9,97 +9,178 @@ import {
   Legend,
   ResponsiveContainer,
   BarChart,
-  Bar
+  Bar,
 } from 'recharts';
-import { ItemStatus } from '@/types';
-import type { Owner } from '@/types';
+import { ItemStatus, Box } from '@/types';
+import { PersonalOwner, CommunalSpace, isPersonalOwner } from '@/types/owners-spaces';
 
-interface ProgressData {
+interface OwnerBoxCounts {
   total: number;
-  prepared: number;
-  packed: number;
-  loaded: number;
-  delivered: number;
-  unloaded: number;
-  unpacked: number;
-  overallProgress: number;
+  [ItemStatus.PREPARED]: number;
+  [ItemStatus.PACKED]: number;
+  [ItemStatus.LOADED]: number;
+  [ItemStatus.DELIVERED]: number;
+  [ItemStatus.UNLOADED]: number;
+  [ItemStatus.UNPACKED]: number;
+  [ItemStatus.UNKNOWN]?: number;
+  ownerId: string;
+  name: string;
+  color: string;
 }
 
+// Progress data is calculated in the useMemo hook and not used as a type
+
 interface BoxPackingProgressChartProps {
-  data: ProgressData;
-  owners?: Owner[];
+  boxes: Box[];
+  owners: (PersonalOwner | CommunalSpace)[];
 }
 
 export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = ({
-  data,
+  boxes = [],
   owners = []
 }) => {
-  const [viewMode, setViewMode] = useState<'overall' | 'individual'>('overall');
-
-  // Transform data for area chart with owner breakdown
-  const chartData = useMemo(() => {
-    if (!owners?.length) {
-      // Fallback to single data source if no owners
-      const phases = [
-        { phase: 'Prepared', value: data.prepared, color: '#64748b' },
-        { phase: 'Packed', value: data.packed, color: '#3b82f6' },
-        { phase: 'Loaded', value: data.loaded, color: '#f59e0b' },
-        { phase: 'Delivered', value: data.delivered, color: '#10b981' },
-        { phase: 'Unloaded', value: data.unloaded, color: '#8b5cf6' },
-        { phase: 'Unpacked', value: data.unpacked, color: '#22c55e' }
-      ];
-      return phases;
+  // Helper function to get display name for an owner or space
+  const getOwnerDisplayName = (entity: PersonalOwner | CommunalSpace): string => {
+    if (isPersonalOwner(entity)) {
+      return `${entity.firstName} ${entity.lastName}`.trim();
     }
+    return entity.name || 'Unnamed Space';
+  };
 
-    // Create data structure with each owner as a separate data source
-    const phases = ['Prepared', 'Packed', 'Loaded', 'Delivered', 'Unloaded', 'Unpacked'];
-    
+  const [viewMode, setViewMode] = useState<'overall' | 'individual'>('overall');
+  
+  // Calculate progress data based on boxes and owners
+  const progressData = useMemo(() => {
+    if (!owners || owners.length === 0) {
+      return {
+        total: 0,
+        prepared: 0,
+        packed: 0,
+        loaded: 0,
+        delivered: 0,
+        unloaded: 0,
+        unpacked: 0,
+        overallProgress: 0,
+        ownerBoxCounts: {},
+      };
+    }
+    const statusCounts = boxes.reduce((acc, box) => {
+      acc[box.currentStatus] = (acc[box.currentStatus] || 0) + 1;
+      return acc;
+    }, {} as Record<ItemStatus, number>);
+
+    const ownerBoxCounts = owners.reduce<Record<string, OwnerBoxCounts>>((acc, owner) => {
+      acc[owner.uid] = {
+        total: 0,
+        [ItemStatus.PREPARED]: 0,
+        [ItemStatus.PACKED]: 0,
+        [ItemStatus.LOADED]: 0,
+        [ItemStatus.DELIVERED]: 0,
+        [ItemStatus.UNLOADED]: 0,
+        [ItemStatus.UNPACKED]: 0,
+        [ItemStatus.UNKNOWN]: 0,
+        ownerId: owner.uid,
+        name: getOwnerDisplayName(owner),
+        color: owner.color
+      };
+      return acc;
+    }, {});
+
+    (boxes || []).forEach(box => {
+      if (box.ownerUid && ownerBoxCounts[box.ownerUid]) {
+        ownerBoxCounts[box.ownerUid].total++;
+        ownerBoxCounts[box.ownerUid][box.currentStatus]++;
+      }
+    });
+
+    const totalBoxes = boxes.length;
+    const unpackedBoxes = statusCounts[ItemStatus.UNPACKED] || 0;
+
+    return {
+      total: totalBoxes,
+      prepared: statusCounts[ItemStatus.PREPARED] || 0,
+      packed: statusCounts[ItemStatus.PACKED] || 0,
+      loaded: statusCounts[ItemStatus.LOADED] || 0,
+      delivered: statusCounts[ItemStatus.DELIVERED] || 0,
+      unloaded: statusCounts[ItemStatus.UNLOADED] || 0,
+      unpacked: unpackedBoxes,
+      overallProgress: totalBoxes > 0 ? Math.round((unpackedBoxes / totalBoxes) * 100) : 0,
+      ownerBoxCounts,
+    };
+  }, [boxes, owners]);
+
+  const chartData = useMemo(() => {
+    const phases: { name: string, key: ItemStatus }[] = [
+      { name: 'Prepared', key: ItemStatus.PREPARED },
+      { name: 'Packed', key: ItemStatus.PACKED },
+      { name: 'Loaded', key: ItemStatus.LOADED },
+      { name: 'Delivered', key: ItemStatus.DELIVERED },
+      { name: 'Unloaded', key: ItemStatus.UNLOADED },
+      { name: 'Unpacked', key: ItemStatus.UNPACKED },
+    ];
+
     return phases.map(phase => {
-      const phaseData: any = { phase };
-      
-      // Add each owner's count for this phase
-      owners.forEach(owner => {
-        const ownerKey = `${owner.firstName}_${owner.lastName}`.replace(/\s+/g, '_');
-        // In a real implementation, we would filter boxes by owner and phase
-        // For now, distribute the total proportionally based on owner count
-        const ownerPortion = Math.floor((data[phase.toLowerCase() as keyof typeof data] as number || 0) / owners.length);
-        phaseData[ownerKey] = ownerPortion;
-        phaseData[`${ownerKey}_color`] = owner.color;
+      const phaseData: Record<string, string | number> = { phase: phase.name };
+      (owners || []).forEach(owner => {
+        const ownerName = getOwnerDisplayName(owner);
+        const count = progressData.ownerBoxCounts[owner.uid]?.[phase.key] ?? 0;
+        phaseData[ownerName] = typeof count === 'number' ? count : 0;
       });
-      
       return phaseData;
     });
-  }, [data, owners]);
+  }, [progressData, owners]);
 
-  // Calculate individual owner progress (mock data for now)
+  const ownerBoxCounts = useMemo(() => {
+    // The ownerBoxCounts already contains all necessary data
+    return Object.values(progressData.ownerBoxCounts);
+  }, [progressData, owners]);
+
   const individualData = useMemo(() => {
     if (!owners.length || viewMode === 'overall') return [];
 
-    return owners.slice(0, 6).map((owner, index) => {
-      // Mock individual progress data - in real implementation, 
-      // this would come from box assignments by owner
-      const mockProgress = Math.floor(Math.random() * 100);
-      return {
-        name: `${owner.firstName} ${owner.lastName}`,
-        progress: mockProgress,
-        packed: Math.floor(mockProgress * 0.8),
-        unpacked: Math.floor(mockProgress * 0.2),
-        color: owner.color
-      };
-    });
-  }, [owners, viewMode]);
+    return ownerBoxCounts.map(counts => {
+        const total = counts.total || 0;
+        const packed = counts[ItemStatus.PACKED] || 0;
+        const unpacked = counts[ItemStatus.UNPACKED] || 0;
+        const owner = owners.find(o => o.uid === counts.ownerId);
+        
+        return {
+          name: counts.name,
+          progress: total > 0 ? Math.round(((packed + unpacked) / total) * 100) : 0,
+          packed,
+          unpacked,
+          color: owner?.color || '#000000',
+        };
+      });
+  }, [owners, viewMode, ownerBoxCounts]);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload?.length) return null;
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ name: string; value: number; color: string; payload: Record<string, unknown> }>;
+    label?: string;
+  }): ReactNode => {
+    if (!active || !payload || !payload.length) return null;
 
     return (
-      <div className="bg-white dark:bg-slate-800 p-3 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg">
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
         <p className="font-semibold text-slate-900 dark:text-slate-100">{label}</p>
-        {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm" style={{ color: entry.color }}>
-            {`${entry.name}: ${entry.value} boxes`}
-          </p>
-        ))}
+        <div className="mt-2 space-y-1">
+          {payload.map((entry, index) => (
+            <div key={`item-${index}`} className="flex items-center">
+              <div 
+                className="w-3 h-3 rounded-full mr-2" 
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-slate-600 dark:text-slate-300">
+                {entry.name}: {entry.value}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -134,7 +215,7 @@ export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = (
         {/* Progress Summary */}
         <div className="text-right">
           <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {data.overallProgress}%
+            {progressData.overallProgress}%
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-400">Overall Complete</p>
         </div>
@@ -147,8 +228,9 @@ export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = (
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 {/* Create gradients for each owner */}
-                {owners?.map((owner, index) => {
-                  const ownerKey = `${owner.firstName}_${owner.lastName}`.replace(/\s+/g, '_');
+                {owners?.map((owner) => {
+                  const ownerName = getOwnerDisplayName(owner);
+                  const ownerKey = ownerName.replace(/\s+/g, '_');
                   return (
                     <linearGradient key={ownerKey} id={`gradient_${ownerKey}`} x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor={owner.color} stopOpacity={0.8}/>
@@ -173,8 +255,11 @@ export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = (
               
               {owners?.length ? (
                 // Render stacked areas for each owner
-                owners.map((owner, index) => {
-                  const ownerKey = `${owner.firstName}_${owner.lastName}`.replace(/\s+/g, '_');
+                ownerBoxCounts.map((ownerCounts) => {
+                  const owner = owners.find(o => o.uid === ownerCounts.ownerId);
+                  if (!owner) return null;
+                  const ownerName = getOwnerDisplayName(owner);
+                  const ownerKey = ownerName.replace(/\s+/g, '_');
                   return (
                     <Area
                       key={ownerKey}
@@ -183,7 +268,7 @@ export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = (
                       stackId="1"
                       stroke={owner.color}
                       fill={`url(#gradient_${ownerKey})`}
-                      name={`${owner.firstName} ${owner.lastName}`}
+                      name={ownerName}
                     />
                   );
                 })
@@ -226,28 +311,31 @@ export const BoxPackingProgressChart: React.FC<BoxPackingProgressChartProps> = (
             Owner Progress Breakdown
           </h5>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {owners.map((owner) => {
-              const ownerKey = `${owner.firstName}_${owner.lastName}`.replace(/\s+/g, '_');
-              // Calculate total boxes for this owner across all phases
-              const totalOwnerBoxes = chartData.reduce((sum, phase) => sum + (phase[ownerKey] || 0), 0);
-              
-              return (
-                <div key={owner.uid} className="flex items-center space-x-2">
-                  <div 
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: owner.color }}
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                      {owner.firstName} {owner.lastName}
-                    </p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      {totalOwnerBoxes} boxes
-                    </p>
+              {ownerBoxCounts.map((owner) => {
+                const ownerName = owner.name;
+                // Calculate total boxes for this owner across all phases
+                const totalOwnerBoxes = chartData.reduce((sum, phase) => {
+                  const phaseValue = phase[ownerName];
+                  return sum + (typeof phaseValue === 'number' ? phaseValue : 0);
+                }, 0);
+                
+                return (
+                  <div key={owner.ownerId} className="flex items-center space-x-2">
+                    <div 
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: owner.color }}
+                    />
+                    <div>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        {ownerName}
+                      </p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                        {totalOwnerBoxes} boxes
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
       )}
