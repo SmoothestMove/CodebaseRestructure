@@ -230,22 +230,20 @@ export function PlannerBoard({
       </div>
 
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        <div className="flex-shrink-0">
-          <TaskList
-            tasks={taskListTasks}
-            onTaskClick={setSelectedTask}
-            onCreateTask={handleCreateTask}
-            onShowCreateTaskModal={() => handleShowCreateTaskModal()}
-            searchQuery={searchQuery}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, undefined)}
-            frames={frameColors}
-            owners={owners}
-            moveParticipants={moveParticipants}
-            presence={presence}
-          />
-        </div>
+        <TaskList
+          tasks={taskListTasks}
+          onTaskClick={setSelectedTask}
+          onCreateTask={handleCreateTask}
+          onShowCreateTaskModal={() => handleShowCreateTaskModal()}
+          searchQuery={searchQuery}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, undefined)}
+          frames={frameColors}
+          owners={owners}
+          moveParticipants={moveParticipants}
+          presence={presence}
+        />
 
         <div className="flex-1 overflow-x-auto custom-scrollbar">
           <div className="flex gap-4 min-w-max h-full">

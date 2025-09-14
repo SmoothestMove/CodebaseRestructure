@@ -11,7 +11,13 @@ import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import { IconSettings, IconTrash } from '@/lib/config/constants';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
-import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable } from 'react-icons/fa'; 
+import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable, FaUndo, FaBomb } from 'react-icons/fa';
+import { 
+  resetMoveToDefault, 
+  clearAllApplicationData, 
+  validateResetPermissions
+} from '../services/dataResetService';
+import { useAuth } from '@/features/auth/hooks/AuthContext'; 
 
 interface AppMetadata {
   name: string;
@@ -24,7 +30,8 @@ const SettingsPage: React.FC = () => {
   const { boxes } = useBoxes();
   const { owners } = useOwners();
   const { theme, toggleTheme, isDarkMode } = useTheme();
-  const { move, updateMove } = useMove(); 
+  const { move, updateMove } = useMove();
+  const { user } = useAuth(); 
 
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isClearDataModalOpen, setIsClearDataModalOpen] = useState(false);
@@ -33,6 +40,11 @@ const SettingsPage: React.FC = () => {
   const [moveCode, setMoveCode] = useState<string | null>(null);
   const [isLoadingMoveCode, setIsLoadingMoveCode] = useState(true);
   const [moveDateInput, setMoveDateInput] = useState<string>('');
+  
+  // Enhanced reset functionality state
+  const [isResetMoveModalOpen, setIsResetMoveModalOpen] = useState(false);
+  const [resetConfirmationText, setResetConfirmationText] = useState('');
+  const [resetInProgress, setResetInProgress] = useState(false);
 
   // Set default batch print count to 9 on initial load if not set
   useEffect(() => {
@@ -172,32 +184,87 @@ const SettingsPage: React.FC = () => {
     setFeedbackMessage({ type: 'success', message: 'Inventory spreadsheet exported successfully!' });
   };
 
+  // Enhanced reset move to default state
+  const handleResetMoveToDefault = async () => {
+    if (resetConfirmationText.toUpperCase() !== 'RESET') {
+      return;
+    }
+
+    if (!move || !user) {
+      setFeedbackMessage({
+        type: 'error',
+        message: 'No active move or user found.'
+      });
+      return;
+    }
+
+    // Validate permissions
+    const validation = validateResetPermissions(move, user.uid);
+    if (!validation.canReset) {
+      setFeedbackMessage({
+        type: 'error',
+        message: validation.reason || 'You do not have permission to reset this move.'
+      });
+      return;
+    }
+
+    setResetInProgress(true);
+
+    try {
+      const result = await resetMoveToDefault(move.id, user.uid, {
+        resetFirebaseData: true,
+        resetLocalStorageData: true,
+        resetCaches: true,
+        preserveMove: true
+      });
+
+      if (result.success) {
+        setFeedbackMessage({
+          type: 'success',
+          message: result.message
+        });
+        
+        // Small delay before reload to show success message
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        setFeedbackMessage({
+          type: 'error',
+          message: result.message
+        });
+      }
+    } catch (error) {
+      console.error('Error resetting move data:', error);
+      setFeedbackMessage({
+        type: 'error',
+        message: 'Failed to reset move data. Please try again.'
+      });
+    } finally {
+      setResetInProgress(false);
+      setIsResetMoveModalOpen(false);
+      setResetConfirmationText('');
+    }
+  };
+
+  // Legacy clear all data function (nuclear option)
   const handleClearAllData = async () => {
     if (clearDataConfirmationText.toUpperCase() !== 'DELETE') {
       return;
     }
 
     try {
-      // Clear all data from local storage
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // Clear all data from IndexedDB
-      const databases = await window.indexedDB.databases();
-      for (const dbInfo of databases) {
-        if (dbInfo.name) {
-          window.indexedDB.deleteDatabase(dbInfo.name);
-        }
+      const result = await clearAllApplicationData();
+      
+      if (result.success) {
+        // Refresh the page to ensure clean state
+        window.location.reload();
+      } else {
+        setFeedbackMessage({
+          type: 'error',
+          message: result.message
+        });
       }
-
-      // Clear all caches
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-      }
-
-      // Refresh the page to ensure clean state
-      window.location.reload();
     } catch (error) {
       console.error('Error clearing application data:', error);
       setFeedbackMessage({
@@ -465,8 +532,37 @@ const SettingsPage: React.FC = () => {
           <FaExclamationTriangle className="w-6 h-6 mr-2" />
           DANGER ZONE
         </h2>
-        <div className="space-y-4">
-          <div>
+        <div className="space-y-6">
+          {/* Reset Move to Default */}
+          {move && user && (
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2 flex items-center">
+                <FaUndo className="w-5 h-5 mr-2" />
+                Reset Move to Default State
+              </h3>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+                Reset this move back to its original state when first created. This will delete all boxes, owners, budget data, calendar events, and planner tasks, but preserve the move structure and participants.
+              </p>
+              <Button 
+                onClick={() => setIsResetMoveModalOpen(true)}
+                variant="secondary"
+                leftIcon={<FaUndo />}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white border-yellow-600 hover:border-yellow-700"
+              >
+                Reset Move Data
+              </Button>
+            </div>
+          )}
+          
+          {/* Nuclear Option - Clear Everything */}
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+            <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2 flex items-center">
+              <FaBomb className="w-5 h-5 mr-2" />
+              Nuclear Option: Clear Everything
+            </h3>
+            <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+              Completely wipe all application data including moves, settings, and preferences. This will return the app to its initial state as if freshly installed.
+            </p>
             <Button 
               onClick={() => setIsClearDataModalOpen(true)} 
               variant="danger" 
@@ -475,17 +571,85 @@ const SettingsPage: React.FC = () => {
             >
               Clear All Application Data
             </Button>
-            <p className="text-sm text-red-600/90 dark:text-red-400/90 mt-2">
-              Warning: This action is irreversible and will permanently delete all boxes, owners, and settings.
-            </p>
           </div>
         </div>
       </section>
 
+      {/* Reset Move to Default Modal */}
+      <Modal
+        isOpen={isResetMoveModalOpen}
+        onClose={() => setIsResetMoveModalOpen(false)}
+        title="Reset Move to Default State"
+        size="md"
+        footer={
+          <div className="w-full flex justify-end space-x-3">
+            <Button 
+              variant="secondary" 
+              onClick={() => setIsResetMoveModalOpen(false)}
+              disabled={resetInProgress}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="secondary"
+              onClick={handleResetMoveToDefault}
+              disabled={resetConfirmationText.toUpperCase() !== 'RESET' || resetInProgress}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white border-yellow-600 hover:border-yellow-700"
+              leftIcon={resetInProgress ? <FaSpinner className="animate-spin" /> : <FaUndo />}
+            >
+              {resetInProgress ? 'Resetting...' : 'Reset Move Data'}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <Alert 
+            type="warning" 
+            message="This will reset your move back to its original state when first created. All boxes, owners, budget data, calendar events, and planner tasks will be deleted, but the move structure and participants will be preserved."
+          />
+          
+          {move && (
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">What will be reset:</h4>
+              <ul className="text-sm text-blue-700 dark:text-blue-300 list-disc list-inside space-y-1">
+                <li>All boxes and tracking data</li>
+                <li>Personal owners and custom spaces (communal rooms will be restored)</li>
+                <li>Budget expenses and categories</li>
+                <li>Calendar events</li>
+                <li>Planner tasks and timelines</li>
+                <li>Move date (if set)</li>
+              </ul>
+            </div>
+          )}
+          
+          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">What will be preserved:</h4>
+            <ul className="text-sm text-green-700 dark:text-green-300 list-disc list-inside space-y-1">
+              <li>Move code and structure</li>
+              <li>All participants and permissions</li>
+              <li>Creation date and basic move information</li>
+            </ul>
+          </div>
+          
+          <p className="text-brand-secondary dark:text-slate-300">
+            To confirm, please type "<strong className="text-yellow-600 dark:text-yellow-400">RESET</strong>" in the box below.
+          </p>
+          <Input
+            id="resetConfirmText"
+            value={resetConfirmationText}
+            onChange={(e) => setResetConfirmationText(e.target.value)}
+            placeholder='Type RESET here'
+            autoFocus
+            disabled={resetInProgress}
+          />
+        </div>
+      </Modal>
+
+      {/* Nuclear Clear All Data Modal */}
       <Modal
         isOpen={isClearDataModalOpen}
         onClose={() => setIsClearDataModalOpen(false)}
-        title="Confirm Clear All Data"
+        title="Nuclear Option: Clear All Application Data"
         size="md"
         footer={
             <div className="w-full flex justify-end space-x-3">
@@ -495,7 +659,7 @@ const SettingsPage: React.FC = () => {
                     onClick={handleClearAllData}
                     disabled={clearDataConfirmationText.toUpperCase() !== 'DELETE'}
                 >
-                    Yes, Clear All Data
+                    Yes, Clear Everything
                 </Button>
             </div>
         }
@@ -503,10 +667,10 @@ const SettingsPage: React.FC = () => {
         <div className="space-y-4">
             <Alert 
                 type="error" 
-                message="This action is permanent and cannot be undone. All your tracked boxes, owner profiles (excluding predefined communal rooms), custom spaces, and settings will be deleted." 
+                message="⚠️ NUCLEAR OPTION: This will completely wipe ALL application data including moves, settings, and preferences. The app will return to its initial state as if freshly installed." 
             />
             <p className="text-brand-secondary dark:text-slate-300">
-                To confirm, please type "<strong className="text-red-600 dark:text-red-400">DELETE</strong>" in the box below.
+                To confirm this destructive action, please type "<strong className="text-red-600 dark:text-red-400">DELETE</strong>" in the box below.
             </p>
             <Input
                 id="clearDataConfirmText"

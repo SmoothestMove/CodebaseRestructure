@@ -24,6 +24,27 @@ export interface Owner {
   createdAt: number;
 }
 
+// NEW: Enhanced separation types - re-export from owners-spaces module
+export type { 
+  PersonalOwner, 
+  CommunalSpace, 
+  OwnerOrSpace,
+  LegacyOwner
+} from './owners-spaces';
+
+export { 
+  isPersonalOwner,
+  isCommunalSpace,
+  isLegacyOwner,
+  legacyOwnerToModern,
+  modernToLegacyOwner,
+  getDisplayName,
+  getShortName,
+  getEntityType,
+  separateOwnersAndSpaces,
+  combineOwnersAndSpaces
+} from './owners-spaces';
+
 export type NewOwnerData = Omit<Owner, 'uid' | 'createdAt'>;
 
 export type VerticalPosition = 'Bottom' | 'Middle' | 'Top';

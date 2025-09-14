@@ -1,7 +1,7 @@
 
 
 import type React from "react"
-import { useState } from "react"
+import { useState, memo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { FaAlignLeft, FaCheckSquare } from "react-icons/fa"
@@ -23,7 +23,7 @@ interface TimelineTaskCardProps {
   presence?: Record<string, any> | null
 }
 
-export function TimelineTaskCard({
+export const TimelineTaskCard = memo(function TimelineTaskCard({
   task,
   onClick,
   onDragStart,
@@ -401,4 +401,4 @@ export function TimelineTaskCard({
       </div>
     </TooltipProvider>
   )
-}
+})

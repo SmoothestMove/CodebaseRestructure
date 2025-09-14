@@ -1,5 +1,5 @@
 import type React from "react"
-import { useState } from "react"
+import { useState, memo, useMemo } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -25,7 +25,7 @@ interface FrameProps {
   presence?: Record<string, any> | null
 }
 
-export function Frame({
+export const Frame = memo(function Frame({
   frame,
   tasks,
   onTaskClick,
@@ -47,9 +47,16 @@ export function Frame({
   const [editSubtitle, setEditSubtitle] = useState(frame.description || "")
   const [showFrameModal, setShowFrameModal] = useState(false)
 
-  const completedTasks = tasks.filter((task) => task.completed).length
-  const totalTasks = tasks.length
-  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
+  // Memoize expensive calculations
+  const { completedTasks, totalTasks, progress } = useMemo(() => {
+    const completed = tasks.filter((task) => task.completed).length
+    const total = tasks.length
+    return {
+      completedTasks: completed,
+      totalTasks: total,
+      progress: total > 0 ? (completed / total) * 100 : 0
+    }
+  }, [tasks])
 
   const getFrameColors = (frameId: string) => {
     const colorMap: Record<string, { bg: string; text: string; border: string; cssColor: string; progressBg: string }> =
@@ -143,7 +150,8 @@ export function Frame({
     )
   }
 
-  const colors = getFrameColors(frame.id)
+  // Memoize frame colors
+  const colors = useMemo(() => getFrameColors(frame.id), [frame.id])
 
   const handleCreateTask = () => {
     // If a modal handler is provided, use it to show the create task modal
@@ -335,4 +343,4 @@ export function Frame({
       />
     </div>
   )
-}
+})

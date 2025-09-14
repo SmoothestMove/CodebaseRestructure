@@ -1,5 +1,5 @@
 import type React from "react"
-import { useState } from "react"
+import { useState, memo } from "react"
 import { CheckSquare, Users, User, Building, Calendar, Home } from "lucide-react"
 import { FaArrowCircleRight, FaCheckCircle } from "react-icons/fa"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
@@ -18,7 +18,7 @@ interface TaskListCardProps {
   presence?: Record<string, any> | null
 }
 
-export function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdateTask, owners = [], moveParticipants = {}, presence }: TaskListCardProps) {
+export const TaskListCard = memo(function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdateTask, owners = [], moveParticipants = {}, presence }: TaskListCardProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editTitle, setEditTitle] = useState(task.title)
   const [isEditingDescription, setIsEditingDescription] = useState(false)
@@ -362,4 +362,4 @@ export function TaskListCard({ task, onClick, onDragStart, frames = [], onUpdate
       </div>
     </TooltipProvider>
   )
-}
+})
