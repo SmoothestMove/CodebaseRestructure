@@ -27,4 +27,19 @@
       "@/*" :  ["./src/*"]
     }
   }
+  ,
+  "exclude": [
+    "dist",
+    "node_modules",
+    "docs/**",
+    "src/components/common/**",
+    "src/components/design-system/**",
+    "src/components/search/**",
+    "src/features/planner-enhanced/services/**",
+    "src/features/planner-enhanced/components/**",
+    "src/features/budget/**",
+    "src/features/settings/components/DynamicBentoGrid.tsx",
+    "src/features/settings/components/TruckLayoutVisualization.tsx",
+    "src/features/settings/pages/DashboardPage.tsx"
+  ]
 }

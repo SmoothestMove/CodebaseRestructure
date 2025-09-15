@@ -10,12 +10,9 @@ import {
   where,
   orderBy,
   limit,
-  startAfter,
-  onSnapshot,
-  serverTimestamp,
-  writeBatch,
+  startAfter
+  serverTimestamp
   increment,
-  Unsubscribe,
   DocumentSnapshot
 } from 'firebase/firestore'
 import { firestore as db } from '@/main'
@@ -742,8 +739,8 @@ export class TemplateService {
     for (const [_type, collectionPath] of Object.entries(collections)) {
       try {
         const templateRef = doc(db, collectionPath, templateId)
-        const templateDoc = await templateRef.get()
-        if (templateDoc.exists()) {
+        const templateSnap = await getDoc(templateRef)
+        if (templateSnap.exists()) {
           await updateDoc(templateRef, {
             [`reviews.${reviewDoc.id}`]: reviewData
           })
@@ -855,3 +852,4 @@ export class TemplateService {
     // Implementation would create these templates with isSystem: true
   }
 }
+

@@ -73,7 +73,7 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
 - Dev: `npm run dev`
 - Build: `npm run build` (outputs `dist/`)
 - Preview: `npm run preview`
-- Start (local prod preview): set package.json `"start": "vite preview --port 4173"`, then run `npm start`.
+- Start: `npm start` (vite preview)
 - Deploy (Vercel): connect repo in Vercel or use CLI (`vercel`, then `vercel --prod`).
 
 ## Hosting
@@ -106,4 +106,3 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
 ## License
 
 No LICENSE file is present in this repository. Add one if you intend to open-source.
-

@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { shouldReduceMotion } from '@/lib/animations';
+// Using plain input element; focus animations handled via CSS classes
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -11,7 +10,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input: React.FC<InputProps> = ({ label, id, error, containerClassName = '', className = '', leftIcon, ...props }) => {
-  const [isFocused, setIsFocused] = React.useState(false);
+  // Plain input; rely on CSS focus styles
   
   const baseClasses = "block w-full px-4 py-3 min-h-[44px] bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 sm:text-sm placeholder-slate-400 dark:placeholder-slate-300 text-slate-900 dark:text-slate-100 touch-manipulation";
   const errorClasses = error 
@@ -19,11 +18,7 @@ const Input: React.FC<InputProps> = ({ label, id, error, containerClassName = ''
     : "focus:ring-brand-tertiary dark:focus:ring-orange-400 focus:border-brand-tertiary dark:focus:border-orange-400";
   const paddingLeftClass = leftIcon ? "pl-10" : "px-4";
 
-  // Animation variants for input focus
-  const inputVariants = {
-    unfocused: { scale: 1, borderColor: 'rgba(148, 163, 184, 1)' },
-    focused: { scale: 1.02, borderColor: 'rgba(249, 115, 22, 1)' },
-  };
+  // No JS animations; rely on Tailwind focus:ring and transitions
 
   return (
     <div className={`mb-4 ${containerClassName}`}>
@@ -34,30 +29,14 @@ const Input: React.FC<InputProps> = ({ label, id, error, containerClassName = ''
                 {leftIcon}
             </div>
         )}
-        <motion.input
+        <input
             id={id}
             className={`${baseClasses} ${errorClasses} ${paddingLeftClass} ${className}`}
             aria-describedby={error ? `${id}-error` : undefined}
             aria-invalid={error ? 'true' : 'false'}
-            // Animation props
-            variants={shouldReduceMotion() ? undefined : inputVariants}
-            initial="unfocused"
-            animate={isFocused ? "focused" : "unfocused"}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
             // Focus handlers
-            onFocus={(e) => {
-              setIsFocused(true);
-              props.onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setIsFocused(false);
-              props.onBlur?.(e);
-            }}
-            // Performance optimization
-            style={{
-              transformOrigin: 'center',
-              willChange: isFocused ? 'transform' : 'auto',
-            }}
+            onFocus={props.onFocus}
+            onBlur={props.onBlur}
             {...props}
         />
       </div>

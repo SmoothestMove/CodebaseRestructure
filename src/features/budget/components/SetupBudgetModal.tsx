@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaInfoCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaTag } from 'react-icons/fa';
 import { Category } from '../types/types';

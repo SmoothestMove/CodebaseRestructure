@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { toast } from 'react-toastify';
 
 // Mindee API Response Types

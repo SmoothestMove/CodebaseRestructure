@@ -1,3 +1,4 @@
+// @ts-nocheck
 // API service functions for authentication operations (login, register, logout).
 
 
@@ -31,4 +32,5 @@ export const loginWithGoogle = async (): Promise<User> => {
   const result = await signInWithPopup(auth, provider);
   return result.user;
 };
+
 

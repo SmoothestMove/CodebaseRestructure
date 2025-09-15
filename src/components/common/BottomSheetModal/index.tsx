@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import Button from '@/components/common/Button';
 import { IconXMark } from '@/lib/config/constants';
-import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
+import { shouldReduceMotion } from '@/lib/animations';
 
 interface BottomSheetModalProps {
   isOpen: boolean;
@@ -88,7 +88,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   };
 
   // Handle drag to dismiss
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     setIsDragging(false);
     
     if (!dismissOnSwipe) return;
@@ -113,61 +113,9 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   };
 
   // Animation variants for mobile vs desktop
-  const modalVariants = {
-    hidden: isMobile ? { y: '100%', opacity: 1 } : { scale: 0.9, opacity: 0 },
-    visible: isMobile 
-      ? { 
-          y: 0, 
-          opacity: 1,
-          transition: {
-            type: 'spring',
-            damping: 25,
-            stiffness: 300,
-          }
-        }
-      : { 
-          scale: 1, 
-          opacity: 1,
-          transition: {
-            type: 'spring',
-            damping: 20,
-            stiffness: 300,
-          }
-        },
-    exit: isMobile 
-      ? { 
-          y: '100%', 
-          opacity: 0.8,
-          transition: {
-            type: 'spring',
-            damping: 30,
-            stiffness: 400,
-          }
-        }
-      : { 
-          scale: 0.9, 
-          opacity: 0,
-          transition: {
-            duration: 0.2,
-          }
-        },
-  };
-
-  const backdropVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: {
-        duration: 0.3,
-      }
-    },
-    exit: { 
-      opacity: 0,
-      transition: {
-        duration: 0.2,
-      }
-    },
-  };
+  const initialBackdrop = { opacity: 0 } as const;
+  const animateBackdrop = { opacity: 1, transition: { duration: 0.3 } } as const;
+  const exitBackdrop = { opacity: 0, transition: { duration: 0.2 } } as const;
 
   if (!isOpen) return null;
 
@@ -184,7 +132,9 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
       >
         {/* Backdrop */}
         <motion.div
-          variants={shouldReduceMotion() ? undefined : backdropVariants}
+          initial={shouldReduceMotion() ? undefined : initialBackdrop}
+          animate={shouldReduceMotion() ? undefined : animateBackdrop}
+          exit={shouldReduceMotion() ? undefined : exitBackdrop}
           className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70"
           onClick={handleBackdropClick}
         />
@@ -193,12 +143,14 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         <div className={`fixed inset-0 z-10 ${isMobile ? 'flex items-end' : 'flex items-center justify-center p-4'}`}>
           <motion.div
             ref={containerRef}
-            variants={shouldReduceMotion() ? undefined : modalVariants}
+            initial={shouldReduceMotion() ? undefined : (isMobile ? { y: '100%', opacity: 1 } : { scale: 0.9, opacity: 0 })}
+            animate={shouldReduceMotion() ? undefined : (isMobile ? { y: 0, opacity: 1, transition: { duration: 0.2 } } : { scale: 1, opacity: 1, transition: { duration: 0.2 } })}
+            exit={shouldReduceMotion() ? undefined : (isMobile ? { y: '100%', opacity: 0.8, transition: { duration: 0.2 } } : { scale: 0.9, opacity: 0, transition: { duration: 0.2 } })}
             drag={isMobile && dismissOnSwipe ? "y" : false}
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={0.1}
             onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
+            onDragEnd={handleDragEnd as any}
             className={`
               ${isMobile 
                 ? 'w-full rounded-t-2xl max-h-[90vh] min-h-[50vh]' 
@@ -274,3 +226,4 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
 };
 
 export default BottomSheetModal;
+

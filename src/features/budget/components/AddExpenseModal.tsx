@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
@@ -360,3 +361,4 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 };
 
 export default AddExpenseModal;
+

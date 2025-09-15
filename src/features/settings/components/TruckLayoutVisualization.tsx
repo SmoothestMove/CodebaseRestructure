@@ -13,6 +13,14 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
   entities = []
 }) => {
   // Filter loaded boxes and organize by truck zones
+  interface TruckZone {
+    id: string;
+    name: string;
+    boxes: Box[];
+    capacity: number;
+    position: { x: number; y: number; width: number; height: number };
+  }
+
   const { loadedBoxes, truckZones } = useMemo(() => {
     const loaded = boxes.filter(box => box.currentStatus === ItemStatus.LOADED);
     
@@ -56,7 +64,7 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
     ];
 
     // Distribute boxes among zones (mock distribution based on box index)
-    (loaded || []).forEach((box, index) => {
+    (loaded || []).forEach((box: Box, index: number) => {
       const zoneIndex = index % zones.length;
       zones[zoneIndex].boxes.push(box);
     });
@@ -164,7 +172,7 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
 
                 {/* Box Icons */}
                 <div className="flex flex-wrap justify-center gap-1 mt-1 max-w-full overflow-hidden">
-                  {zone.boxes.slice(0, 8).map((box, index) => {
+                  {zone.boxes.slice(0, 8).map((box: any, index: number) => {
                     const entity = getEntityById(box.ownerUid || '');
                     return (
                       <div
@@ -198,7 +206,7 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
             const statusColor = getZoneStatusColor(fillPercentage);
             
             // Group boxes by owner
-            const boxesByOwner = zone.boxes.reduce((acc, box) => {
+            const boxesByOwner = zone.boxes.reduce((acc: any, box: any) => {
               const ownerId = box.ownerUid || 'unknown';
               if (!acc[ownerId]) {
                 acc[ownerId] = [];
@@ -219,7 +227,7 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
                 </div>
 
                 <div className="space-y-2">
-                  {Object.entries(boxesByOwner).map(([ownerId, ownerBoxes]) => {
+                  {Object.entries(boxesByOwner as Record<string, Box[]>).map(([ownerId, ownerBoxes]: [string, Box[]]) => {
                     const entity = getEntityById(ownerId);
                     return (
                       <div key={ownerId} className="flex items-center space-x-2">
@@ -280,3 +288,4 @@ export const TruckLayoutVisualization: React.FC<TruckLayoutVisualizationProps> =
     </div>
   );
 };
+

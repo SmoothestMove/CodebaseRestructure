@@ -8,7 +8,7 @@ interface UseLongPressOptions {
 }
 
 export function useLongPress({ onLongPress, delay = 300 }: UseLongPressOptions) {
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const start = useCallback(() => {
     timeoutRef.current = setTimeout(() => {
@@ -19,7 +19,7 @@ export function useLongPress({ onLongPress, delay = 300 }: UseLongPressOptions) 
   const clear = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
-      timeoutRef.current = undefined
+      timeoutRef.current = null
     }
   }, [])
 

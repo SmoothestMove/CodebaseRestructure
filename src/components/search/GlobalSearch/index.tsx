@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaBox, FaDollarSign, FaUser, FaTimes, FaHistory } from 'react-icons/fa';

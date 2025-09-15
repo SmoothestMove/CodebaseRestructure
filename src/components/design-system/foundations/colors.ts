@@ -6,17 +6,18 @@
 export const colors = {
   // Brand colors
   brand: {
-    primary: '#1f4054', // Dark blue-gray
-    'primary-dark': '#0f2027',
+    // Aligned to Tailwind brand palette (index.html) and CSS vars (index.css)
+    primary: '#1e3a5f', // brand-primary
+    'primary-dark': '#162b45', // brand-primary-dark
     'primary-light': '#34495e',
-    secondary: '#6c757d', // Gray
-    'secondary-dark': '#495057',
+    secondary: '#708090', // brand-secondary
+    'secondary-dark': '#5a6875', // brand-secondary-dark
     'secondary-light': '#adb5bd',
-    tertiary: '#e67e22', // Orange
-    'tertiary-dark': '#d35400',
+    tertiary: '#ff7e00', // brand-tertiary
+    'tertiary-dark': '#e67100', // brand-tertiary-dark
     'tertiary-light': '#f39c12',
-    accent: '#f1c40f', // Yellow
-    'accent-dark': '#e6b800',
+    accent: '#e1a95f', // brand-accent
+    'accent-dark': '#ca9854', // brand-accent-dark
     'accent-light': '#f4d03f',
   },
 

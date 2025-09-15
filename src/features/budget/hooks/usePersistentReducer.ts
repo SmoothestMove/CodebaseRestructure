@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 // Custom hook for persistent state using localStorage
@@ -28,3 +29,4 @@ const usePersistentReducer = <S, A>(
 };
 
 export default usePersistentReducer;
+

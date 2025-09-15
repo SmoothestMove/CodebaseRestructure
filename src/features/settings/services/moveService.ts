@@ -49,7 +49,13 @@ export const createMove = async (userId: string): Promise<Move> => {
       updatedAt: serverTimestamp(),
       participants: { [userId]: true },
     };
-    
+    // Debug: verify payload matches Firestore rules expectations
+    console.debug('[createMove] payload to create', {
+      ...newMove,
+      createdAt: '<serverTimestamp>',
+      updatedAt: '<serverTimestamp>'
+    });
+
     const moveDoc = await addDoc(movesRef, newMove);
     
     return {
@@ -59,7 +65,11 @@ export const createMove = async (userId: string): Promise<Move> => {
       updatedAt: new Date(),
     };
   } catch (error: any) {
-    console.error('Create move error:', error);
+    console.error('Create move error:', {
+      code: error?.code,
+      message: error?.message,
+      stack: error?.stack
+    });
     
     // Handle specific Firebase permission errors
     if (error.code === 'permission-denied') {
@@ -87,7 +97,7 @@ export const joinMove = async (moveCode: string, userId: string): Promise<Move |
     const movesRef = collection(firestore, 'moves');
     const q = query(movesRef, where('moveCode', '==', moveCode));
     const querySnapshot = await getDocs(q);
-    
+    console.debug('[joinMove] query by code', moveCode, 'found', querySnapshot.size);
     if (querySnapshot.empty) {
       throw new Error('Invalid move code');
     }
@@ -107,7 +117,11 @@ export const joinMove = async (moveCode: string, userId: string): Promise<Move |
     const updatedMove = await getMoveById(moveDoc.id);
     return updatedMove;
   } catch (error: any) {
-    console.error('Join move error:', error);
+    console.error('Join move error:', {
+      code: error?.code,
+      message: error?.message,
+      stack: error?.stack
+    });
     
     // Handle specific Firebase permission errors
     if (error.code === 'permission-denied') {

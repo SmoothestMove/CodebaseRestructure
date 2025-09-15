@@ -42,7 +42,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Get Mindee API key from the imported file
-  const MINDEE_API_KEY = '0934184ca7773f4e3f22935db2852918'; // From ReceiptScanning.md
+  const MINDEE_API_KEY = import.meta.env.VITE_MINDEE_API_KEY; // from env; do not hardcode
 
   // Initialize form with initialData if provided (edit mode)
   useEffect(() => {

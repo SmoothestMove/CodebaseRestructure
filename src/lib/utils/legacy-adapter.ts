@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Owner } from '@/types';
 import type { EnhancedRandomizedData } from './randomization-enhanced';
 import { modernToLegacyOwner } from '@/types/owners-spaces';

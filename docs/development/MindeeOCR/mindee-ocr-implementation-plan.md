@@ -120,7 +120,7 @@
 - ✅ Type system already supports required data structures
 
 ### Critical Dependencies
-- **Mindee API key**: `0934184ca7773f4e3f22935db2852918`
+- **Mindee API key**: `VITE_MINDEE_API_KEY` (set in `.env.local`)
 - **Required packages**: react-toastify, react-icons, uuid
 - **File size limit**: 5MB
 - **Supported formats**: JPEG, PNG, GIF, PDF
@@ -146,7 +146,7 @@ src/features/budget/
 
 ### Environment Variables Required
 ```env
-VITE_MINDEE_API_KEY=0934184ca7773f4e3f22935db2852918
+VITE_MINDEE_API_KEY=your_mindee_api_key
 ```
 
 ---

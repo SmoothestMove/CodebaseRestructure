@@ -16,7 +16,7 @@
 npm run dev      # Start development server (http://localhost:5173)
 npm run build    # Build for production
 npm run preview  # Preview production build
-npm start        # Start production server (Express.js)
+npm start        # Start local production preview (Vite preview)
 npm run deploy   # Deploy to Firebase hosting
 ```
 

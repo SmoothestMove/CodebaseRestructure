@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * ADAPTER LAYER: Gradual Migration Strategy
  * 

@@ -261,19 +261,19 @@ export class SmoothMovesIntegrationService {
 
     if (direction === 'bidirectional' || direction === 'planner-only') {
       // Sync planner frames to Smooth Moves timeframes
-      for (const frame of plannerFrames) {
-        const timeframe: SmoothMovesTimeframe = {
+      for (const frame of plannerFrames as any[]) {
+        const f: any = frame; const timeframe: SmoothMovesTimeframe = {
           id: frame.id,
-          title: frame.title,
-          description: frame.description,
-          taskIds: frame.taskIds || [],
-          color: frame.color,
-          isDefault: frame.isDefault || false,
-          order: frame.order || 0,
-          dateOffset: frame.offsetStart,
-          dateRange: frame.description || `${frame.offsetStart} days`,
-          createdAt: frame.createdAt?.toMillis(),
-          updatedAt: frame.updatedAt?.toMillis()
+          title: f.title,
+          description: f.description,
+          taskIds: (f.taskIds || []) as string[],
+          color: f.color,
+          isDefault: !!f.isDefault,
+          order: (f.order || 0) as number,
+          dateOffset: (f.offsetStart as number),
+          dateRange: (f.description || `${frame.offsetStart} days`,
+          createdAt: (f.createdAt?.toMillis?.() ?? undefined),
+          updatedAt: (f.updatedAt?.toMillis?.() ?? undefined)
         }
 
         const existingTimeframe = timeframes.find(t => t.id === frame.id)
@@ -582,3 +582,4 @@ export class SmoothMovesIntegrationService {
     return { tasksMigrated, framesMigrated, errors }
   }
 }
+

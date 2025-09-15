@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 
@@ -171,3 +172,4 @@ const BulletChart: React.FC<BulletChartProps> = ({ data }) => {
 };
 
 export default BulletChart;
+

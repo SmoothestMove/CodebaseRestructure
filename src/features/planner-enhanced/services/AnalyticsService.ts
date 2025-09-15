@@ -3,11 +3,10 @@ import {
   doc,
   getDocs,
   setDoc,
-  updateDoc,
   query,
   where,
   orderBy,
-  limit,
+  limit as queryLimit,
   startAfter,
   endBefore,
   serverTimestamp,
@@ -529,13 +528,13 @@ export class AnalyticsService {
    */
   static async getAnalyticsHistory(
     moveId: string,
-    limit: number = 30
+    maxItems: number = 30
   ): Promise<PlannerAnalytics[]> {
     const snapshotsRef = collection(db, `moves/${moveId}/analyticsSnapshots`)
     const q = query(
       snapshotsRef,
       orderBy('generatedAt', 'desc'),
-      limit(limit)
+      queryLimit(maxItems)
     )
     
     const snapshot = await getDocs(q)

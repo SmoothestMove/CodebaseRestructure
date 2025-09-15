@@ -15,7 +15,7 @@
 npm run dev              # Start development server (Vite) at localhost:5173
 npm run build           # Build for production  
 npm run preview         # Preview production build locally
-npm start              # Start production server (Express.js)
+npm start              # Local production preview (Vite preview)
 npm run deploy         # Build and deploy to Firebase hosting
 
 # No testing framework currently configured
@@ -204,7 +204,7 @@ src/
 ├── docs/                    # Documentation (development guides, project management)
 ├── firebase/                # Firebase configuration files
 ├── Archives/                # Archived legacy implementations
-└── EnhancedPlannerComponents/ # User component testing area
+└── # EnhancedPlannerComponents removed; superseded by planner-enhanced\/ # User component testing area
 ```
 
 ---

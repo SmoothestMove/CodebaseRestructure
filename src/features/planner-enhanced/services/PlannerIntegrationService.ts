@@ -490,16 +490,27 @@ export class PlannerIntegrationService {
     recommendations: string[]
     lastChecked: Date
   }> {
-    const healthCheck = {
-      overall: 'healthy' as const,
+    const healthCheck: {
+      overall: 'healthy' | 'warning' | 'critical'
       systems: {
-        database: { status: 'healthy' as const, details: 'All collections accessible' },
-        sync: { status: 'healthy' as const, details: 'Sync service operational' },
-        templates: { status: 'healthy' as const, details: 'Template system functional' },
-        analytics: { status: 'healthy' as const, details: 'Analytics generation working' },
-        export: { status: 'healthy' as const, details: 'Export functionality available' }
+        database: { status: 'healthy' | 'warning' | 'error', details: string }
+        sync: { status: 'healthy' | 'warning' | 'error', details: string }
+        templates: { status: 'healthy' | 'warning' | 'error', details: string }
+        analytics: { status: 'healthy' | 'warning' | 'error', details: string }
+        export: { status: 'healthy' | 'warning' | 'error', details: string }
+      }
+      recommendations: string[]
+      lastChecked: Date
+    } = {
+      overall: 'healthy',
+      systems: {
+        database: { status: 'healthy', details: 'All collections accessible' },
+        sync: { status: 'healthy', details: 'Sync service operational' },
+        templates: { status: 'healthy', details: 'Template system functional' },
+        analytics: { status: 'healthy', details: 'Analytics generation working' },
+        export: { status: 'healthy', details: 'Export functionality available' }
       },
-      recommendations: [] as string[],
+      recommendations: [],
       lastChecked: new Date()
     }
 

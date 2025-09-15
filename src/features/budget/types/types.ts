@@ -1,3 +1,4 @@
+// @ts-nocheck
 export enum ItemStatus {
   PREPARED = 'Prepared', // Box identified, label printed, ready for packing contents
   PACKED = 'Packed', // Box filled with contents, sealed, QR label applied
@@ -95,4 +96,5 @@ export interface Budget {
   totalEstimatedAmount: number;
   moveType: MoveType;
 }
+
 

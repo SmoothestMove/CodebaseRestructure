@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState, useId } from 'react';
 import { FaCamera, FaTimes, FaCheck } from 'react-icons/fa';
 

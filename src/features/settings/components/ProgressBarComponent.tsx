@@ -25,11 +25,14 @@ interface ProgressBarComponentProps {
   individualData: Record<string, IndividualProgressData>;
 }
 
-const StatusBreakdownTooltip: React.FC<{ status: any; individualData: Record<string, IndividualProgressData> }> = ({ status, individualData }) => {
+type StatusKey = keyof ProgressData;
+interface StatusConfig { key: StatusKey; label: string; color: string; lightColor: string }
+
+const StatusBreakdownTooltip: React.FC<{ status: StatusConfig; individualData: Record<string, IndividualProgressData> }> = ({ status, individualData }) => {
   const relevantIndividuals = useMemo(() => {
     return Object.values(individualData)
       .filter(individual => (individual[status.key] as number) > 0)
-      .sort((a, b) => b[status.key] - a[status.key]);
+      .sort((a, b) => (b[status.key] as number) - (a[status.key] as number));
   }, [status, individualData]);
 
   if (relevantIndividuals.length === 0) {
@@ -59,7 +62,7 @@ const StatusBreakdownTooltip: React.FC<{ status: any; individualData: Record<str
 export const ProgressBarComponent: React.FC<ProgressBarComponentProps> = ({ data, individualData }) => {
   const [activeStatus, setActiveStatus] = useState<any | null>(null);
 
-  const statusConfig = [
+  const statusConfig: StatusConfig[] = [
     { key: 'prepared', label: MOVING_STATUS_LABELS[ItemStatus.PREPARED], color: 'bg-slate-500', lightColor: 'bg-slate-200' },
     { key: 'packed', label: MOVING_STATUS_LABELS[ItemStatus.PACKED], color: 'bg-blue-500', lightColor: 'bg-blue-200' },
     { key: 'loaded', label: MOVING_STATUS_LABELS[ItemStatus.LOADED], color: 'bg-yellow-500', lightColor: 'bg-yellow-200' },
@@ -112,7 +115,6 @@ export const ProgressBarComponent: React.FC<ProgressBarComponentProps> = ({ data
               key={status.key}
               className="relative"
               onMouseEnter={() => setActiveStatus(status)}
-              onMouseLeave={() => setActiveStatus(null)}
               onFocus={() => setActiveStatus(status)}
               onBlur={() => setActiveStatus(null)}
               {...handlers}

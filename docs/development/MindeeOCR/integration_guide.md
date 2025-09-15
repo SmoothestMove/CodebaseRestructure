@@ -12,7 +12,7 @@ The integration adds AI-powered receipt scanning capabilities to your expense tr
 
 ## Prerequisites
 
-1. **Mindee API Key**: You already have the API key `0934184ca7773f4e3f22935db2852918` from your `ReceiptScanning.md` file
+1. **Mindee API Key**: Set `VITE_MINDEE_API_KEY` via environment variables (do not commit real keys)
 2. **React 18+** with TypeScript support
 3. **Existing budget feature components** (which you already have)
 
@@ -213,7 +213,7 @@ const handleReceiptScanned = (expense: Omit<Expense, 'id'>) => {
   onClose={() => setIsReceiptScanOpen(false)}
   onConfirm={handleReceiptScanned}
   categories={categories}
-  apiKey="0934184ca7773f4e3f22935db2852918"
+  apiKey="${import.meta.env.VITE_MINDEE_API_KEY}"
 />
 ```
 
@@ -224,7 +224,7 @@ import { useReceiptScanner } from '../hooks/useReceiptScanner';
 
 const MyComponent = () => {
   const scanner = useReceiptScanner({
-    apiKey: '0934184ca7773f4e3f22935db2852918',
+    apiKey: import.meta.env.VITE_MINDEE_API_KEY,
     onScanSuccess: (data) => {
       console.log('Extracted data:', data);
     },

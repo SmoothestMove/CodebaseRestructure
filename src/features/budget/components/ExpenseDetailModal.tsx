@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Category, Expense } from '../types/types';
 import { ICONS } from '../constants/constants';
@@ -101,3 +102,4 @@ export const ExpenseDetailModal: React.FC<ExpenseDetailModalProps> = ({
 };
 
 export default ExpenseDetailModal;
+

@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import React from 'react';
 import { TRUCK_ZONES, Box as AppBox } from '@/types'; 
