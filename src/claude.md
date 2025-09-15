@@ -203,7 +203,6 @@ src/
 ```
 ├── docs/                    # Documentation (development guides, project management)
 ├── firebase/                # Firebase configuration files
-├── Archives/                # Archived legacy implementations
 └── # EnhancedPlannerComponents removed; superseded by planner-enhanced\/ # User component testing area
 ```
 
