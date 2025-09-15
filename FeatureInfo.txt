@@ -1,0 +1,177 @@
+Smooth Moves — Feature Overview
+
+Your all-in-one workspace for planning, packing, tracking, and executing a residential move. 
+Smooth Moves connects QR-labeled boxes, owners/spaces, 
+planning, calendar, budgeting with receipt OCR, and an in-app AI assistant—securely backed by 
+Firebase and designed for clarity and speed.
+
+----------------------------------------
+Moves: The Organizing Hub
+----------------------------------------
+Every project in Smooth Moves is a “Move.” 
+It acts as the secure container for all related data—boxes, owners/spaces, calendar, planner, 
+and budget—so you always know where things live and who can see them.
+
+What it does
+- Groups everything for a relocation into one place
+- Supports participants and roles so you can collaborate
+- Enforces access with Firebase Auth and Firestore rules
+
+Why it helps
+- Keeps family, roommates, and helpers on the same page
+- Reduces scatter across spreadsheets, notes, and photo albums
+- Provides a trustworthy, privacy-safe record of your move
+
+----------------------------------------
+Box Tracking with QR Codes
+----------------------------------------
+Label boxes once, gain instant traceability forever. 
+Generate QR codes, scan with your phone, and instantly view or update each box’s contents, owner, 
+and destination room.
+
+Key capabilities
+- QR labeling and scanning: Create codes, print or display, and scan to open the box record fast
+- Rich box details: Title, description, photos, status, and categories/tags
+- Owner/space assignment: Tie each box to a person and destination room
+- Search and filters: Find boxes by status, owner, space, or keywords
+- Load planning: Use the truck load view to stage and prioritize packing order
+
+Why you’ll love it
+- Stop guessing what’s in each box
+- Answer “Where did that go?” instantly on move day
+- Keep fragile and priority items top-of-mind when loading
+
+----------------------------------------
+Owners & Spaces
+----------------------------------------
+Assign boxes to owners (people) and spaces (rooms) to make packing and unpacking logical, fast, and fair.
+
+What it does
+- Owners: Track who a box belongs to (e.g., Sam, Jamie, Kids)
+- Spaces: Define source/destination rooms (e.g., Kitchen, Office)
+- Quick assignment: Apply owners/spaces in bulk or box-by-box
+
+Benefits
+- Simplifies day-of-move routing (“This goes to the new Office”)
+- Keeps personal items private and easy to locate later
+- Helps balance effort across family members or roommates
+
+----------------------------------------
+Planner (Tasks, Timeframes, Configuration)
+----------------------------------------
+Turn moving chaos into a plan you can actually follow. 
+Break work into tasks, group them into timeframes (e.g., “4 weeks out,” “Move week”), and track progress.
+
+Core features
+- Tasks: Title, description, status, owner, due date, and links
+- Timeframes: Organize tasks by phase of the move
+- Config: Customize categories, templates, and defaults
+
+Why it matters
+- Reduces last-minute stress with clear, phased steps
+- Improves accountability when multiple people are helping
+- Keeps important prep (utilities, address changes) from slipping through
+
+----------------------------------------
+Calendar
+----------------------------------------
+Your move has a timeline. The calendar makes it visible. 
+See events, deadlines, deliveries, and appointment windows alongside your planning tasks.
+
+Highlights
+- Event management: Add, edit, and view move-specific events
+- Day/week/month views: Navigate near-term detail and long-range planning
+- Context links: Jump from events to related tasks or boxes
+
+Outcomes
+- Avoid missed deliveries and service appointments
+- Coordinate helpers around real timelines
+- Keep the whole move on track at a glance
+
+----------------------------------------
+Budgeting with Receipt OCR
+----------------------------------------
+Track costs without drowning in paperwork. Snap photos of receipts; 
+Smooth Moves extracts key details to categorize expenses and keep your budget up to date.
+
+Capabilities
+- Categories and totals: Build a budget with real-time rollups
+- Receipt OCR: Extracts vendor, date, amount, currency, and line items when available
+- Attachments: Store receipt images with each expense
+- Filters: View spend by category, timeframe, or payee
+
+Why it’s powerful
+- Prevents overspend surprises with clear category totals
+- Automates the boring parts of expense entry
+- Keeps documentation in one place for reimbursements or taxes
+
+----------------------------------------
+MARVIN: Your In‑App AI Assistant
+----------------------------------------
+Get quick, context-aware help without leaving the app. 
+Ask MARVIN to suggest packing checklists, draft timelines, estimate supplies, or find items across 
+your boxes.
+
+What MARVIN can do
+- Planning suggestions: Generate phased task lists and reminders
+- Research assistance: Offer move tips tailored to your situation
+- Content drafting: Create messages to landlords, movers, or helpers
+- Context lookups: Help locate boxes or flag potential gaps
+- Voice support: Optional wake word and speech capabilities for hands-free use
+
+Why it helps
+- Saves hours on planning and coordination
+- Reduces decision fatigue with sensible defaults and checklists
+- Makes you feel in control during a high-stress period
+
+----------------------------------------
+Security, Sync, and Reliability (Firebase)
+----------------------------------------
+Smooth Moves uses Firebase for authentication, data, and files—so your move is private, always available, and consistent across devices.
+
+Under the hood
+- Auth: Sign-in with Firebase Authentication; only participants can access a move
+- Firestore: Real-time updates to boxes, tasks, calendar, and budgets
+- Storage: Attach photos and receipts securely
+- Hosting: Fast, global delivery for a snappy app experience
+
+What this means for you
+- Data privacy by default: Only invited participants can view or edit
+- Multi-device sync: Phone, tablet, laptop—your move is always in step
+- Peace of mind: A reliable backend so you can focus on moving
+
+----------------------------------------
+Who It’s For
+----------------------------------------
+- Families and roommates coordinating a complex move
+- Frequent movers who need a repeatable system
+- Organizers and assistants managing moves for clients
+- Anyone who wants less chaos and more clarity on move day
+
+----------------------------------------
+Common Scenarios
+----------------------------------------
+- Pre-move planning: Generate a phased checklist with MARVIN; schedule key dates on the calendar
+- Packing week: Label boxes with QR codes; assign owners/spaces; track fragile items
+- Move day: Use truck load planning; route boxes to destination rooms; find essentials fast
+- Post-move: Search boxes for specific items; reconcile receipts; close remaining tasks
+
+----------------------------------------
+Getting Started
+----------------------------------------
+1) Create a new Move and invite participants
+2) Add owners and destination spaces (rooms)
+3) Start your Planner with core tasks and timelines
+4) Label boxes with QR codes as you pack
+5) Track your budget—scan receipts as you go
+6) Ask MARVIN for suggestions any time you’re stuck
+
+----------------------------------------
+Why Smooth Moves
+----------------------------------------
+Because moving is stressful enough. 
+Smooth Moves turns dozens of scattered tools into one coordinated system—so you know what to do next, 
+where everything is, 
+and how the whole effort is tracking. 
+Spend less time searching and second-guessing, and more time settling in.
+

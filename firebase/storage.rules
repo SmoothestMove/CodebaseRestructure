@@ -1,0 +1,23 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow only authenticated users to access files under a move context
+    // Files organized under: moves/{moveId}/...
+    match /moves/{moveId}/{allPaths=**} {
+      allow read, write: if request.auth != null && (
+        // Check parent move permissions in Firestore
+        exists(/databases/(default)/documents/moves/$(moveId)) && (
+          get(/databases/(default)/documents/moves/$(moveId)).data.createdBy == request.auth.uid ||
+          get(/databases/(default)/documents/moves/$(moveId)).data.ownerId == request.auth.uid ||
+          request.auth.uid in get(/databases/(default)/documents/moves/$(moveId)).data.participants
+        )
+      );
+    }
+
+    // Deny all other access by default
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
