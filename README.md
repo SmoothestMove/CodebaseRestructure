@@ -25,7 +25,7 @@ A web application to manage moving projects: QR-labeled box tracking, owners/spa
 - Styling: TailwindCSS 4.1
 - Backend: Firebase (Auth, Firestore, Storage, Hosting)
 - Routing: React Router DOM 7.6
-- Key Libraries: `@hello-pangea/dnd`, `date-fns`, `framer-motion`, `recharts`, `react-toastify`, `jspdf`, `lucide-react`, `uuid`
+- Key Libraries: @hello-pangea/dnd, date-fns, framer-motion, recharts, react-toastify, jspdf, lucide-react, uuid
 
 ## Quick Start
 
@@ -41,7 +41,7 @@ npm install
 npm run dev
 ```
 
-Visit `http://localhost:5173` in your browser.
+Visit http://localhost:5173 in your browser.
 
 ## Environment Configuration
 
@@ -84,14 +84,14 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
   - Framework preset: Vite
 - Optional (not used for prod): Firebase Hosting config exists at `firebase/firebase.json` with SPA rewrites to `/index.html`.
 - Firebase backend security: Firestore rules at `firebase/firestore.rules`; indexes at `firebase/firestore.indexes.json`.
-- Firebase Storage rules file is missing — add `firebase/storage.rules` and reference it to secure uploaded files.
+- Firebase Storage rules at `firebase/storage.rules`; referenced in `firebase/firebase.json`.
 
 ## Development Notes
 
-- Path alias: `@/*` → `./src/*` (configured in `vite.config.ts` and `tsconfig.json`)
-- Strict TypeScript is enabled; no root ESLint/Prettier config yet
+- Path alias: `@/*` -> `./src/*` (configured in `vite.config.ts` and `tsconfig.json`)
+- Strict TypeScript is enabled; ESLint/Prettier configured at root
 - Accessibility tooling present (`@axe-core/react`, `jest-axe`) but not wired
-- Tests: no configured test runner at root
+- Tests: Vitest configured (run `npm test` or `npm run test:ui`)
 
 ## Security & Privacy
 
@@ -105,4 +105,5 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
 
 ## License
 
-No LICENSE file is present in this repository. Add one if you intend to open-source.
+No LICENSE file is present in this repository. Add one if you intend to open‑source.
+
