@@ -451,8 +451,8 @@ const CustomFieldCreator = ({ task, onUpdate, buttonText }) => {
   )
 }
 
-// ---checklist COMPONENT ---
-constChecklist = ({ items, onUpdate, onDelete }) => {
+// --- Checklist Component ---
+const Checklist = ({ items, onUpdate, onDelete }) => {
   const [newItemText, setNewItemText] = useState("")
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingPopover, setEditingPopover] = useState(null)
@@ -1112,7 +1112,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, isCreating = false 
               )}
               
               {showChecklist && (
-                <checklist 
+                <Checklist 
                   items={localTask.checklist || []} 
                   onUpdate={handleChecklistUpdate} 
                   onDelete={handleDeleteChecklist} 
@@ -1367,6 +1367,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, isCreating = false 
     </>
   )
 }
+
 
 
 
