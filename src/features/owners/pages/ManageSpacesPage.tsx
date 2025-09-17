@@ -1,8 +1,7 @@
-
-import React, { useState, useMemo } from 'react';
-import { useOwners } from '@/features/owners/hooks/useOwners';
+﻿import React, { useState, useMemo } from 'react';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
-import { Owner, Box } from '@/types';
+import type { CommunalSpace } from '@/types';
 import Button from '@/components/common/Button';
 import OwnerCard from '@/features/owners/components/OwnerCard';
 import AddSpaceModal from '@/features/owners/components/AddSpaceModal'; 
@@ -14,28 +13,23 @@ import { generateLabelPdf } from '@/utils/pdfGenerator';
 import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrintConfirmationModal';
 import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
-
 const ManageSpacesPage: React.FC = () => {
-  const { owners, isLoading: isLoadingOwners } = useOwners();
+  const { predefinedSpaces, customSpaces, isLoading: isLoadingOwners } = useOwnersSpacesSeparation();
+  const { moveId } = useAuth();
   const { settings } = useSettings(); 
   const [isAddSpaceModalOpen, setIsAddSpaceModalOpen] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   
   const [isBatchPrintModalOpen, setIsBatchPrintModalOpen] = useState(false);
-  const [selectedSpaceForBatchPrint, setSelectedSpaceForBatchPrint] = useState<Owner | null>(null);
+  const [selectedSpaceForBatchPrint, setSelectedSpaceForBatchPrint] = useState<CommunalSpace | null>(null);
 
+  const orderedPredefinedSpaces = useMemo(() => {
+    const orderMap = new Map(PREDEFINED_COMMUNAL_ROOMS.map((room, index) => [room.uid, index]));
+    return [...predefinedSpaces].sort((a, b) => (orderMap.get(a.uid) ?? Number.MAX_SAFE_INTEGER) - (orderMap.get(b.uid) ?? Number.MAX_SAFE_INTEGER));
+  }, [predefinedSpaces]);
 
-  const { predefinedCommunalSpaces, customSpaces } = useMemo(() => {
-    const communal = PREDEFINED_COMMUNAL_ROOMS.map(pr => 
-        owners.find(o => o.uid === pr.uid) || pr 
-    ).sort((a, b) => PREDEFINED_COMMUNAL_ROOMS.findIndex(r => r.uid === a.uid) - PREDEFINED_COMMUNAL_ROOMS.findIndex(r => r.uid === b.uid));
-    
-    const custom = owners.filter(o => o.lastName === '(Custom Space)');
-    return { predefinedCommunalSpaces: communal, customSpaces: custom };
-  }, [owners]);
-
-  const handleSpaceAdded = (newSpace: Owner) => {
-    setFeedbackMessage({ type: 'success', message: `Custom Space "${newSpace.firstName}" added successfully!` });
+  const handleSpaceAdded = (newSpace: CommunalSpace) => {
+    setFeedbackMessage({ type: 'success', message: `Custom Space "${newSpace.name}" added successfully!` });
     setIsAddSpaceModalOpen(false);
     
     setSelectedSpaceForBatchPrint(newSpace);
@@ -46,21 +40,26 @@ const ManageSpacesPage: React.FC = () => {
     setFeedbackMessage({ type: 'error', message: errorMessage });
   };
   
-  const handleConfirmInitialBatchPrintForSpace = async (space: Owner) => {
+  const handleConfirmInitialBatchPrintForSpace = async (space: CommunalSpace) => {
     if (!space) throw new Error("Space data is missing for batch printing.");
+    if (!moveId) {
+      setFeedbackMessage({ type: 'error', message: "No active move found. Please join or create a move first." });
+      return;
+    }
+
     const countToPrint = settings.defaultBatchPrintCount; 
     try {
-      const newPreppedBoxes = addPreppedBoxesForPrint(space.uid, countToPrint); 
-      if (newPreppedBoxes.length === 0) {
+      const newPreppedBoxes = await addPreppedBoxesForPrint(moveId, space.uid, countToPrint); 
+      if (!newPreppedBoxes || newPreppedBoxes.length === 0) {
         throw new Error("No boxes were prepared for this space. Check ID generation.");
       }
-      const labelsDataForPdf = newPreppedBoxes.map((box: Box) => ({
+      const labelsDataForPdf = newPreppedBoxes.map(box => ({
         boxId: box.id,
         qrCodeValue: box.qrCodeValue,
         ownerColor: space.color, 
       }));
       await generateLabelPdf(labelsDataForPdf, space); 
-      setFeedbackMessage({ type: 'success', message: `PDF generated for ${countToPrint} initial labels for space "${space.firstName}". Boxes are in 'PREPARED' status.`});
+      setFeedbackMessage({ type: 'success', message: `PDF generated for ${countToPrint} initial labels for space "${space.name}". Boxes are in 'PREPARED' status.`});
     } catch (error) {
       console.error("Failed to generate initial batch labels for space:", error);
       const errMessage = error instanceof Error ? error.message : 'Unknown error during PDF generation for space.';
@@ -68,7 +67,6 @@ const ManageSpacesPage: React.FC = () => {
       throw error; 
     }
   };
-
 
   return (
     <div className="space-y-10">
@@ -96,7 +94,7 @@ const ManageSpacesPage: React.FC = () => {
       <section>
         <div className="flex items-center space-x-3 mb-5">
             <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100">
-                Predefined Communal Spaces <span className="text-brand-secondary dark:text-slate-400 font-normal">({predefinedCommunalSpaces.length})</span>
+                Predefined Communal Spaces <span className="text-brand-secondary dark:text-slate-400 font-normal">({orderedPredefinedSpaces.length})</span>
             </h2>
         </div>
         {isLoadingOwners && (
@@ -108,9 +106,9 @@ const ManageSpacesPage: React.FC = () => {
             <p>Loading predefined spaces...</p>
             </div>
         )}
-        {!isLoadingOwners && predefinedCommunalSpaces.length > 0 && (
+        {!isLoadingOwners && orderedPredefinedSpaces.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-            {predefinedCommunalSpaces.map(space => (
+            {orderedPredefinedSpaces.map(space => (
                 <OwnerCard key={space.uid} owner={space} isCommunal={true} />
             ))}
             </div>

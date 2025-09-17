@@ -1,4 +1,4 @@
-
+﻿
 export enum ItemStatus {
   PREPARED = 'Prepared', // Box identified, label printed, ready for packing contents
   PACKED = 'Packed', // Box filled with contents, sealed, QR label applied
@@ -32,9 +32,10 @@ export type {
   LegacyOwner
 } from './owners-spaces';
 
-export { 
+export {
   isPersonalOwner,
   isCommunalSpace,
+  isCustomCommunalSpace,
   isLegacyOwner,
   legacyOwnerToModern,
   modernToLegacyOwner,
@@ -90,3 +91,4 @@ export interface AppSettings {
   currentMoveId?: string; // Unique ID for the current move session
   // Add other settings here as needed
 }
+

@@ -41,21 +41,24 @@
 ### Medium Risk
 
 #### Environment File Parity & Tooling
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Create a documented folder or README callout describing the environment file strategy; ensure `.env.local` stays gitignored; consider adding scripts/checks that validate required vars in CI.
 - **Dependency:** Complements the high-risk env hardening work; can ship in the same PR.
+- **Notes:** Added `.env.example`, `docs/development/environment.md`, and the `npm run env:verify` script to catch missing keys locally and in CI.
 - **Sources:** RootFilesAnalysis - Medium Priority.
 
 #### API Resilience Utilities
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Implement a shared retry/backoff helper (exponential + jitter, abort support) and update MARVIN + Mindee integrations to use it; add targeted tests around the utility.
 - **Risk driver:** Avoid unbounded retries to stay within external vendor rate limits.
+- **Notes:** Added `src/lib/api/retry.ts`, wrapped Mindee receipt scanning and Gemini chat calls with controlled retries, and removed ad-hoc delay logic.
 - **Sources:** ImplementationPlan - Priority 2.5.
 
 #### Porcupine Integration Review
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Confirm licensing/distribution requirements for the Porcupine model files in `public/` and lazy-load the engine/models only after the wake-word toggle is enabled (for example via dynamic import).
 - **Observation:** Current `wakeWordService` imports `@picovoice/porcupine-web` eagerly.
+- **Notes:** Wake-word service now loads Picovoice modules on demand and adds `docs/development/porcupine.md` outlining licensing and model placement.
 - **Sources:** ImplementationPlan - Priority 2.6.
 
 #### Owners vs Spaces Migration (Phases 2-4)

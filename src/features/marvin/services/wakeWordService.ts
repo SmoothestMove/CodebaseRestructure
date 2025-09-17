@@ -1,12 +1,36 @@
 /// <reference lib="es2015" />
 
-import { PorcupineWorker } from '@picovoice/porcupine-web';
-import { WebVoiceProcessor } from '@picovoice/web-voice-processor';
+import type { PorcupineWorker } from '@picovoice/porcupine-web';
+import type { WebVoiceProcessor } from '@picovoice/web-voice-processor';
 
 class WakeWordService {
   private webVoiceProcessor: WebVoiceProcessor | null = null;
   private porcupineWorker: PorcupineWorker | null = null;
   private running: boolean = false;
+
+  private moduleLoadPromise: Promise<void> | null = null;
+  private porcupineModule: typeof import('@picovoice/porcupine-web') | null = null;
+  private voiceProcessorModule: typeof import('@picovoice/web-voice-processor') | null = null;
+
+  private async ensureModulesLoaded() {
+    if (!this.moduleLoadPromise) {
+      this.moduleLoadPromise = (async () => {
+        const [porcupineModule, voiceProcessorModule] = await Promise.all([
+          import('@picovoice/porcupine-web'),
+          import('@picovoice/web-voice-processor'),
+        ]);
+        this.porcupineModule = porcupineModule;
+        this.voiceProcessorModule = voiceProcessorModule;
+      })();
+    }
+
+    await this.moduleLoadPromise;
+
+    return {
+      PorcupineWorker: this.porcupineModule!.PorcupineWorker,
+      WebVoiceProcessor: this.voiceProcessorModule!.WebVoiceProcessor,
+    };
+  }
 
   async initialize(accessKey: string, modelPublicPath: string, wakeWordCallback: () => void): Promise<void> {
     if (this.running) {
@@ -24,6 +48,8 @@ class WakeWordService {
     }
     
     try {
+      const { PorcupineWorker, WebVoiceProcessor } = await this.ensureModulesLoaded();
+
       this.porcupineWorker = await PorcupineWorker.create(
         accessKey,
         [{

@@ -1,5 +1,5 @@
+import { retryWithBackoff } from '@/lib/api/retry';
 // @ts-nocheck
-import { toast } from 'react-toastify';
 
 // Mindee API Response Types
 export interface MindeeSupplierCompanyRegistration {
@@ -168,26 +168,33 @@ export class ReceiptScanningService {
     const formData = new FormData();
     formData.append('document', imageFile, imageFile.name);
 
-    let lastError: Error | null = null;
-
-    for (let attempt = 0; attempt <= this.retryAttempts; attempt++) {
-      try {
-        const response = await this.makeApiCall(formData);
-        return this.parseApiResponse(response);
-      } catch (error) {
-        lastError = error as Error;
-        
-        if (attempt < this.retryAttempts) {
-          // Wait before retrying (exponential backoff)
-          await this.delay(Math.pow(2, attempt) * 1000);
-          continue;
-        }
+    const response = await retryWithBackoff(
+      async () => this.makeApiCall(formData),
+      {
+        retries: this.retryAttempts,
+        baseDelayMs: 1000,
+        maxDelayMs: this.timeoutMs,
+        shouldRetry: (error) => {
+          if (error instanceof Error) {
+            const message = error.message ?? '';
+            if (message.includes('Invalid API key')) {
+              return false;
+            }
+            if (message.includes('Rate limit exceeded')) {
+              return false;
+            }
+          }
+          return true;
+        },
+        onRetry: (error, attempt, delayMs) => {
+          console.warn(`[Mindee] Attempt ${attempt + 1} failed:`, error);
+          console.warn(`[Mindee] Retrying in ${delayMs}ms...`);
+        },
       }
-    }
+    );
 
-    throw new Error(`Receipt scanning failed after ${this.retryAttempts + 1} attempts: ${lastError?.message}`);
+    return this.parseApiResponse(response);
   }
-
   /**
    * Validates the uploaded file
    */
@@ -413,10 +420,6 @@ export class ReceiptScanningService {
   /**
    * Utility method for delays
    */
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   /**
    * Processes multiple receipts from a single image (if supported)
    */
@@ -441,3 +444,7 @@ export class ReceiptScanningService {
     return 5 * 1024 * 1024; // 5MB
   }
 }
+
+
+
+

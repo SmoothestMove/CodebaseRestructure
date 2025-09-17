@@ -1,4 +1,4 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 /**
  * ADAPTER LAYER: Gradual Migration Strategy
  * 
@@ -22,7 +22,8 @@ import {
   isCommunalSpace,
   getDisplayName,
   getShortName,
-  getEntityType
+  getEntityType,
+  isCustomCommunalSpace
 } from '@/types/owners-spaces';
 
 /**
@@ -54,6 +55,14 @@ export class OwnersSpacesAdapter {
 
   getSpaces(): CommunalSpace[] {
     return this.entities.filter(isCommunalSpace);
+  }
+
+  getPredefinedSpaces(): CommunalSpace[] {
+    return this.entities.filter(entity => isCommunalSpace(entity) && !isCustomCommunalSpace(entity));
+  }
+
+  getCustomSpaces(): CommunalSpace[] {
+    return this.entities.filter(entity => isCustomCommunalSpace(entity));
   }
 
   getAllEntities(): OwnerOrSpace[] {
@@ -136,12 +145,19 @@ export class OwnersSpacesAdapter {
   // STATISTICS
   getStats() {
     const { owners, spaces } = separateOwnersAndSpaces(this.entities);
+    const customSpaces = spaces.filter(space => isCustomCommunalSpace(space));
+    const predefinedSpaces = spaces.length - customSpaces.length;
+    const total = this.entities.length || 1;
+
     return {
       totalEntities: this.entities.length,
       personalOwners: owners.length,
       communalSpaces: spaces.length,
-      ownerPercentage: this.entities.length > 0 ? (owners.length / this.entities.length) * 100 : 0,
-      spacePercentage: this.entities.length > 0 ? (spaces.length / this.entities.length) * 100 : 0
+      predefinedSpaces,
+      customSpaces: customSpaces.length,
+      ownerPercentage: (owners.length / total) * 100,
+      spacePercentage: (spaces.length / total) * 100,
+      customSpacePercentage: (customSpaces.length / total) * 100
     };
   }
 
@@ -206,3 +222,7 @@ export function useOwnersSpacesSeparation(legacyOwners: Owner[]) {
     stats: adapter.getStats()
   };
 }
+
+
+
+

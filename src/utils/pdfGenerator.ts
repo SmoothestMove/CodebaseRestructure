@@ -1,7 +1,13 @@
-// utils/pdfGenerator.ts
+﻿// utils/pdfGenerator.ts
 
 import { jsPDF } from 'jspdf';
-import { Owner } from '@/types'; 
+import type { Owner } from '@/types';
+import type { OwnerOrSpace } from '@/types';
+import { 
+  getDisplayName,
+  isLegacyOwner,
+  legacyOwnerToModern
+} from '@/types';
 
 // Declare QRious globally as it's loaded via CDN in index.html
 declare global {
@@ -16,7 +22,31 @@ interface LabelDataForPdf {
   ownerColor: string;
 }
 
-export const generateLabelPdf = async (labelsData: LabelDataForPdf[], owner: Owner) => {
+const normalizeEntity = (entity: Owner | OwnerOrSpace): OwnerOrSpace => {
+  if (isLegacyOwner(entity)) {
+    return legacyOwnerToModern(entity);
+  }
+  return entity as OwnerOrSpace;
+};
+
+const buildFilenameSlug = (displayName: string): string => {
+  if (!displayName) {
+    return 'labels';
+  }
+
+  return displayName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\-\s]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
+export const generateLabelPdf = async (labelsData: LabelDataForPdf[], entity: Owner | OwnerOrSpace) => {
+  const modernEntity = normalizeEntity(entity);
+  const displayName = getDisplayName(modernEntity) || modernEntity.uid;
+  const filenameSlug = buildFilenameSlug(displayName);
+
   const doc = new jsPDF({
     unit: 'in', 
     format: 'letter' // 8.5 x 11 inches
@@ -115,9 +145,6 @@ export const generateLabelPdf = async (labelsData: LabelDataForPdf[], owner: Own
     doc.setFontSize(fontSizePt); 
     doc.setTextColor('#000000'); 
 
-    // const textBlockX = labelX + (labelWidth - qrCodeRenderSize) / 2; // Centering text block similar to QR if textWidth is used
-    // const textBlockActualWidth = qrCodeRenderSize; // Text centered within the QR code's width
-
     const textYPosition = labelY + qrCodePaddingTop + qrCodeRenderSize + textMarginTopFromQR;
     
     // For centering text, jsPDF's text function with align: 'center' uses the x-coordinate as the center point.
@@ -130,6 +157,6 @@ export const generateLabelPdf = async (labelsData: LabelDataForPdf[], owner: Own
 
     labelsRenderedOnPage++;
   }
-  const ownerName = `${owner.firstName.toLowerCase()}${owner.lastName ? '-' + owner.lastName.toLowerCase() : ''}`;
-  doc.save(`${ownerName}-labels.pdf`);
+
+  doc.save(`${filenameSlug || modernEntity.uid}-labels.pdf`);
 };

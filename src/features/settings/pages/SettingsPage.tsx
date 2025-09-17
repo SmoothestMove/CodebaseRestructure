@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useSettings } from '@/features/settings/hooks/useSettings';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
-import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
 import { useTheme } from '@/hooks/useTheme'; 
 import { useMove } from '@/features/settings/hooks/MoveContext';
 import { getMoveById } from '@/features/settings/services/moveService';
@@ -10,7 +10,6 @@ import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import { IconSettings, IconTrash } from '@/lib/config/constants';
-import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable, FaUndo, FaBomb } from 'react-icons/fa';
 import { 
   resetMoveToDefault, 
@@ -28,7 +27,7 @@ interface AppMetadata {
 const SettingsPage: React.FC = () => {
   const { settings, updateSettings, isLoading: isLoadingSettings } = useSettings();
   const { boxes } = useBoxes();
-  const { owners } = useOwners();
+  const { personalOwners, predefinedSpaces, customSpaces, adapter } = useOwnersSpacesSeparation();
   const { theme, toggleTheme, isDarkMode } = useTheme();
   const { move, updateMove } = useMove();
   const { user } = useAuth(); 
@@ -109,21 +108,16 @@ const SettingsPage: React.FC = () => {
   }, [move?.moveDate]);
 
   const handleExportData = () => {
-    const personalOwners = owners.filter(owner => 
-        !PREDEFINED_COMMUNAL_ROOMS.some(pc => pc.uid === owner.uid) && 
-        owner.lastName !== '(Custom Space)'
-    );
-    const customSpaces = owners.filter(owner => owner.lastName === '(Custom Space)');
-
     const dataToExport = {
       appName: appMetadata?.name || "Smooth Moves Data",
       exportDate: new Date().toISOString(),
       themePreference: theme,
-      currentMoveId: settings.currentMoveId, // Include currentMoveId
-      boxes: boxes,
-      personalOwners: personalOwners,
-      customSpaces: customSpaces,
-      settings: settings, // Includes defaultPrintCount and currentMoveId
+      currentMoveId: settings.currentMoveId,
+      boxes,
+      personalOwners,
+      predefinedSpaces,
+      customSpaces,
+      settings,
     };
     const jsonString = JSON.stringify(dataToExport, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -144,23 +138,20 @@ const SettingsPage: React.FC = () => {
     
     // Map boxes to CSV rows
     const csvRows = boxes.map(box => {
-      // Find owner name
-      const owner = owners.find(o => o.uid === box.ownerUid);
-      const ownerName = owner ? `${owner.firstName} ${owner.lastName}` : 'Unknown';
-      
-      // Combine truck zone and position
-      const truckInfo = box.truckZone && box.truckVerticalPosition 
+      const ownerName = box.ownerUid ? adapter.getDisplayName(box.ownerUid) : "Unassigned";
+
+      const truckInfo = box.truckZone && box.truckVerticalPosition
         ? `${box.truckZone} - ${box.truckVerticalPosition}`
-        : box.truckZone || '';
+        : box.truckZone || "";
 
       return [
         ownerName,
         box.id,
-        box.name || '',
-        box.contents || '',
+        box.name || "",
+        box.contents || "",
         box.currentStatus,
-        box.currentLocation || '',
-        box.destinationRoom || '',
+        box.currentLocation || "",
+        box.destinationRoom || "",
         truckInfo
       ];
     });
@@ -667,7 +658,7 @@ const SettingsPage: React.FC = () => {
         <div className="space-y-4">
             <Alert 
                 type="error" 
-                message="⚠️ NUCLEAR OPTION: This will completely wipe ALL application data including moves, settings, and preferences. The app will return to its initial state as if freshly installed." 
+                message="âš ï¸ NUCLEAR OPTION: This will completely wipe ALL application data including moves, settings, and preferences. The app will return to its initial state as if freshly installed." 
             />
             <p className="text-brand-secondary dark:text-slate-300">
                 To confirm this destructive action, please type "<strong className="text-red-600 dark:text-red-400">DELETE</strong>" in the box below.
@@ -687,3 +678,11 @@ const SettingsPage: React.FC = () => {
 };
 
 export default SettingsPage;
+
+
+
+
+
+
+
+

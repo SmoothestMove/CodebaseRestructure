@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Modal from '@/components/common/Modal';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import { useOwners } from '../hooks/useOwners';
-import { Owner } from '@/types';
+import { useOwnersSpacesSeparation } from '../hooks/useOwnersSpacesSeparation';
+import type { PersonalOwner, LegacyOwner } from '@/types';
+import { legacyOwnerToModern } from '@/types';
 import { IconPlus } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 
 interface AddOwnerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onOwnerAdded: (newOwner: Owner) => void; // Changed to pass Owner object
+  onOwnerAdded: (newOwner: PersonalOwner) => void;
   onAddError?: (errorMessage: string) => void;
   initialFirstName?: string;
   initialLastName?: string;
@@ -24,7 +25,7 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { addOwner } = useOwners();
+  const { addOwner } = useOwnersSpacesSeparation();
 
   const resetForm = () => {
     setFirstName('');
@@ -56,24 +57,21 @@ const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerA
     setShowSuccess(false);
 
     try {
-      // Simulate API call
       const newOwnerPayload = { 
         firstName: firstName.trim(), 
         lastName: lastName.trim(), 
         color 
       };
       
-      try {
-        const newOwner = await addOwner(newOwnerPayload);
-        setIsLoading(false);
-        setShowSuccess(true);
-        onOwnerAdded(newOwner);
-        setTimeout(() => {
-          handleClose();
-        }, 1500);
-      } catch (err: unknown) {
-        throw err; // Re-throw to be caught by the outer catch
-      }
+      const newOwnerLegacy = await addOwner(newOwnerPayload);
+      const newOwner = legacyOwnerToModern(newOwnerLegacy as LegacyOwner) as PersonalOwner;
+
+      setIsLoading(false);
+      setShowSuccess(true);
+      onOwnerAdded(newOwner);
+      setTimeout(() => {
+        handleClose();
+      }, 1500);
     } catch (err: unknown) {
       setIsLoading(false);
       const errorMessage = err instanceof Error ? err.message : 'Failed to add owner. Please try again.';

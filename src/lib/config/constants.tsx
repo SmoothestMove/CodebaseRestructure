@@ -1,18 +1,61 @@
-import React from 'react';
+﻿import React from 'react';
 import { Owner } from '@/types';
 import { IoSettingsSharp, IoSync } from 'react-icons/io5'; 
 import { FcGoogle } from 'react-icons/fc'; 
 import { FaExclamationTriangle } from 'react-icons/fa';
-// Firebase configuration with environment-specific settings
-export const firebaseConfig = {
-  apiKey: String(import.meta.env.VITE_FIREBASE_API_KEY || '').replace(/[\s\\]/g, ''),
-  authDomain: String(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '').replace(/[\s\\]/g, ''),
-  projectId: String(import.meta.env.VITE_FIREBASE_PROJECT_ID || '').replace(/[\s\\]/g, ''),
-  storageBucket: String(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '').replace(/[\s\\]/g, ''),
-  messagingSenderId: String(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '').replace(/[\s\\]/g, ''),
-  appId: String(import.meta.env.VITE_FIREBASE_APP_ID || '').replace(/[\s\\]/g, ''),
-  measurementId: "G-4NW7CSXH7S"
+// Environment helpers ensure required keys are present before Firebase initializes.
+const ENV = import.meta.env as Record<string, string | boolean | undefined>;
+const isDevEnvironment = Boolean(ENV.DEV);
+
+const sanitizeEnvValue = (value: string): string => value.replace(/[\s\\]/g, '').trim();
+
+type EnvLookupOptions = {
+  optional?: boolean;
+  fallback?: string;
 };
+
+const buildMissingEnvMessage = (key: string) => [
+  `[config] Missing required environment variable "${key}".`,
+  'Add it to your .env.local (see docs/development/environment.md) and restart Smooth Moves.'
+].join(' ');
+
+export const getEnvVar = (key: string, options: EnvLookupOptions = {}): string => {
+  const { optional = false, fallback = '' } = options;
+  const raw = ENV[key];
+  const normalized = typeof raw === 'string' ? raw : raw != null ? String(raw) : '';
+  const sanitized = sanitizeEnvValue(normalized);
+
+  if (!sanitized) {
+    if (optional) {
+      if (isDevEnvironment) {
+        console.warn(`[config] Optional environment variable "${key}" is not set.`);
+      }
+      return fallback;
+    }
+    throw new Error(buildMissingEnvMessage(key));
+  }
+
+  return sanitized;
+};
+
+export const REQUIRED_FIREBASE_ENV_KEYS = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID'
+] as const;
+
+export const firebaseConfig = Object.freeze({
+  apiKey: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[0]),
+  authDomain: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[1]),
+  projectId: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[2]),
+  storageBucket: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[3]),
+  messagingSenderId: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[4]),
+  appId: getEnvVar(REQUIRED_FIREBASE_ENV_KEYS[5]),
+  measurementId: 'G-4NW7CSXH7S'
+});
 
 // In your authentication code, you can still use the custom domain for production
 // by checking the hostname and using the appropriate domain for redirects
@@ -144,3 +187,4 @@ export const IconSpinner: React.FC<{className?: string}> = ({ className = "w-5 h
 export const IconWarning: React.FC<{className?: string}> = ({ className = "w-5 h-5" }) => (
   <FaExclamationTriangle className={`${iconBaseClass} ${className}`} />
 );
+

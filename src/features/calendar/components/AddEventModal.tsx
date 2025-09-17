@@ -5,7 +5,7 @@ import Button from '@/components/common/Button';
 import Input from '@/components/common/Input';
 import Textarea from '@/components/common/Textarea';
 import { useCalendar } from '../hooks/useCalendar';
-import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
 import { CalendarService } from '../services/calendarService';
 import { EventFormData } from '../types/calendarTypes';
 
@@ -17,7 +17,7 @@ interface AddEventModalProps {
 
 export default function AddEventModal({ isOpen, onClose, initialDate }: AddEventModalProps) {
   const { createEvent, loading } = useCalendar();
-  const { owners } = useOwners();
+  const { personalOwners, communalSpaces } = useOwnersSpacesSeparation();
   
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
@@ -228,16 +228,14 @@ export default function AddEventModal({ isOpen, onClose, initialDate }: AddEvent
         </div>
 
         {/* Assign Task */}
-        {owners.filter(owner => owner.lastName !== '(Communal)').length > 0 && (
+        {personalOwners.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
               <Users className="inline w-4 h-4 mr-2" />
               Assign Task (Optional)
             </label>
             <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
-              {owners
-                .filter(owner => owner.lastName !== '(Communal)')
-                .map((owner) => (
+              {personalOwners.map((owner) => (
                 <label
                   key={owner.uid}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border border-slate-200 dark:border-slate-600 transition-colors"
@@ -248,15 +246,17 @@ export default function AddEventModal({ isOpen, onClose, initialDate }: AddEvent
                     onChange={() => handleAssigneeToggle(owner.uid)}
                     className="h-4 w-4 text-brand-primary focus:ring-brand-primary border-slate-300 rounded"
                   />
-                  <span 
-                    className="text-sm font-medium"
-                    style={{ color: owner.color }}
-                  >
+                  <span className="text-sm font-medium" style={{ color: owner.color }}>
                     {owner.firstName} {owner.lastName}
                   </span>
                 </label>
               ))}
             </div>
+            {communalSpaces.length > 0 && (
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                Need to assign a space instead? Use the assignment controls in the box or owners screens.
+              </p>
+            )}
           </div>
         )}
 

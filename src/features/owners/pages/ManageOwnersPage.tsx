@@ -1,39 +1,31 @@
-
-import React, { useState, useMemo } from 'react';
-import { useOwners } from '@/features/owners/hooks/useOwners';
-import { Owner } from '@/types';
+﻿import React, { useState } from 'react';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
+import type { PersonalOwner } from '@/types';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 import Button from '@/components/common/Button';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 import OwnerCard from '@/features/owners/components/OwnerCard';
 import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrintConfirmationModal';
 import Alert from '@/components/common/Alert';
-import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
+import { IconPlus } from '@/lib/config/constants';
 import { FaUserGroup } from 'react-icons/fa6'; 
 import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
 import { generateLabelPdf } from '@/utils/pdfGenerator';
 import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
 const ManageOwnersPage: React.FC = () => {
-  const { owners, isLoading: isLoadingOwners } = useOwners();
+  const { personalOwners, isLoading: isLoadingOwners } = useOwnersSpacesSeparation();
   const { moveId } = useAuth();
   const { settings } = useSettings(); 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   const [isBatchPrintModalOpen, setIsBatchPrintModalOpen] = useState(false);
-  const [selectedOwnerForBatchPrint, setSelectedOwnerForBatchPrint] = useState<Owner | null>(null);
+  const [selectedOwnerForBatchPrint, setSelectedOwnerForBatchPrint] = useState<PersonalOwner | null>(null);
 
-  const personalOwners = useMemo(() => {
-    const communalRoomUids = PREDEFINED_COMMUNAL_ROOMS.map(r => r.uid);
-    return owners.filter(o => 
-      !communalRoomUids.includes(o.uid) && 
-      o.lastName !== '(Custom Space)' 
-    );
-  }, [owners]);
-
-  const handleOwnerAdded = (newOwner: Owner) => {
-    setFeedbackMessage({ type: 'success', message: `Owner "${newOwner.firstName} ${newOwner.lastName || ''}".trim() added successfully!` });
+  const handleOwnerAdded = (newOwner: PersonalOwner) => {
+    const ownerDisplayName = `${newOwner.firstName} ${newOwner.lastName}`.trim();
+    setFeedbackMessage({ type: 'success', message: `Owner "${ownerDisplayName}" added successfully!` });
     setIsAddModalOpen(false);
     
     setSelectedOwnerForBatchPrint(newOwner);
@@ -44,7 +36,7 @@ const ManageOwnersPage: React.FC = () => {
     setFeedbackMessage({ type: 'error', message: errorMessage });
   };
 
-  const handleConfirmInitialBatchPrint = async (owner: Owner) => {
+  const handleConfirmInitialBatchPrint = async (owner: PersonalOwner) => {
     if (!owner) throw new Error("Owner data is missing for batch printing.");
     if (!moveId) {
       setFeedbackMessage({ type: 'error', message: "No active move found. Please join or create a move first." });
@@ -71,7 +63,6 @@ const ManageOwnersPage: React.FC = () => {
       throw error; 
     }
   };
-
 
   return (
     <div className="space-y-10">
@@ -127,7 +118,6 @@ const ManageOwnersPage: React.FC = () => {
             </div>
         )}
       </section>
-
 
       <AddOwnerModal
         isOpen={isAddModalOpen}

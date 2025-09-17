@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
-import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
 import { Box, ItemStatus, NewBoxData, TruckZone, VerticalPosition } from '@/types';
 import QRCodeDisplay from '@/components/common/QRCodeDisplay';
 import Button from '@/components/common/Button';
@@ -22,7 +22,7 @@ const BoxDetailsPage: React.FC = () => {
   const location = useLocation();
   const { moveId } = useAuth(); // Get moveId from Auth context
   const { getBox, updateBox, addScanEntryToBox, deleteBoxById, isLoading: boxesLoading } = useBoxes();
-  const { owners, getOwnerByUid } = useOwners();
+  const { owners, personalOwners, communalSpaces, adapter, getOwnerByUid } = useOwnersSpacesSeparation();
 
   const [box, setBox] = useState<Box | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,35 +46,31 @@ const BoxDetailsPage: React.FC = () => {
   // Separate people from spaces for better UX
   const peopleOptions = useMemo(() => [
     { value: '', label: 'Unassigned to Person' },
-    ...owners
-      .filter(owner => owner.lastName !== '(Communal)' && owner.lastName !== '(Custom Space)')
-      .map(person => ({
-        value: person.uid,
-        label: `${person.firstName} ${person.lastName}`,
-        color: person.color
-      }))
-  ], [owners]);
+    ...personalOwners.map(person => ({
+      value: person.uid,
+      label: `${person.firstName} ${person.lastName}`,
+      color: person.color,
+    })),
+  ], [personalOwners]);
 
   const spaceOptions = useMemo(() => [
     { value: '', label: 'Unassigned to Space' },
-    ...owners
-      .filter(owner => owner.lastName === '(Communal)' || owner.lastName === '(Custom Space)')
-      .map(space => ({
-        value: space.uid,
-        label: space.firstName + (space.lastName === '(Custom Space)' ? ' (Custom)' : ''),
-        color: space.color,
-        isSpace: true
-      }))
-  ], [owners]);
+    ...communalSpaces.map(space => ({
+      value: space.uid,
+      label: space.category === 'custom' ? `${space.name} (Custom)` : space.name,
+      color: space.color,
+      isSpace: true,
+    })),
+  ], [communalSpaces]);
 
   // Legacy combined options for backward compatibility if needed
   const ownerOptionsForSelect = useMemo(() => [
     { value: '', label: 'Unassigned / No Owner' },
     ...owners.map(owner => ({
       value: owner.uid,
-      label: `${owner.firstName} ${owner.lastName} (${owner.uid})`
-    }))
-  ], [owners]);
+      label: `${adapter.getDisplayName(owner.uid)} (${owner.uid})`,
+    })),
+  ], [adapter, owners]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -109,9 +105,8 @@ const BoxDetailsPage: React.FC = () => {
       setScanFormData({ location: fetchedBox.currentLocation || '', notes: '', newStatus: fetchedBox.currentStatus });
       
       // Determine if current assignment is to a person or space
-      const currentOwner = fetchedBox.ownerUid ? getOwnerByUid(fetchedBox.ownerUid) : null;
-      const isCurrentlySpace = currentOwner && (currentOwner.lastName === '(Communal)' || currentOwner.lastName === '(Custom Space)');
-      
+      const isCurrentlySpace = fetchedBox.ownerUid ? adapter.isSpace(fetchedBox.ownerUid) : false;
+
       setEditFormData({ 
         name: fetchedBox.name,
         contents: fetchedBox.contents,
@@ -124,7 +119,7 @@ const BoxDetailsPage: React.FC = () => {
       setError('Box not found. It might have been deleted or the link is incorrect.');
     }
     setIsLoading(false);
-  }, [boxId, getBox, navigate, boxesLoading]);
+  }, [boxId, getBox, navigate, boxesLoading, adapter]);
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -293,6 +288,20 @@ const BoxDetailsPage: React.FC = () => {
   const currentOwnerDetails = box.ownerUid ? getOwnerByUid(box.ownerUid) : null;
   const displayImage = box.imageUrl && !box.imageUrl.includes('picsum.photos');
 
+  const currentOwnerEntity = box.ownerUid ? adapter.findById(box.ownerUid) : null;
+  const currentOwnerColor = currentOwnerEntity?.color ?? currentOwnerDetails?.color ?? '#CBD5E1';
+  const currentOwnerIsSpace = currentOwnerEntity ? currentOwnerEntity.type === 'space' : false;
+  const currentOwnerLabelPrefix = currentOwnerEntity
+    ? currentOwnerIsSpace
+      ? 'Space: '
+      : 'Person: '
+    : 'Person: ';
+  const currentOwnerDisplayName = currentOwnerEntity
+    ? adapter.getDisplayName(currentOwnerEntity.uid)
+    : currentOwnerDetails
+      ? `${currentOwnerDetails.firstName}${currentOwnerDetails.lastName ? ` ${currentOwnerDetails.lastName}` : ''}`.trim()
+      : 'Unassigned';
+
   const statusPillStyle = (status: ItemStatus): string => {
     switch (status) {
       case ItemStatus.PREPARED: return 'bg-yellow-500/20 text-yellow-700 border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-500/40';
@@ -319,21 +328,16 @@ const BoxDetailsPage: React.FC = () => {
           <div className="md:flex justify-between items-start">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold break-words">{box.name}</h1>
-              {currentOwnerDetails ? (
+              {currentOwnerEntity ? (
                 <div className="flex items-center mt-1.5">
                   <span
                     className="w-4 h-4 rounded-full inline-block mr-2 border-2 border-white/50 dark:border-slate-400/50"
-                    style={{ backgroundColor: currentOwnerDetails.color }}
-                    title={`${currentOwnerDetails.firstName} ${currentOwnerDetails.lastName} color`}
+                    style={{ backgroundColor: currentOwnerColor }}
+                    title={`${currentOwnerDisplayName} color`}
                   />
                   <span className="text-sm text-brand-light-gray dark:text-slate-300">
-                    {currentOwnerDetails.lastName === '(Communal)' ? 'Space: ' : 
-                     currentOwnerDetails.lastName === '(Custom Space)' ? 'Custom Space: ' : 
-                     'Person: '}
-                    {currentOwnerDetails.firstName}
-                    {currentOwnerDetails.lastName !== '(Communal)' && currentOwnerDetails.lastName !== '(Custom Space)' 
-                      ? ` ${currentOwnerDetails.lastName}` 
-                      : ''}
+                    {currentOwnerLabelPrefix}
+                    {currentOwnerDisplayName}
                   </span>
                 </div>
               ) : (
@@ -388,9 +392,8 @@ const BoxDetailsPage: React.FC = () => {
             <div className="flex flex-wrap gap-3 pt-6 border-t border-slate-200 dark:border-slate-700">
               <Button onClick={() => { 
                 // Determine if current assignment is to a person or space
-                const currentOwner = box.ownerUid ? getOwnerByUid(box.ownerUid) : null;
-                const isCurrentlySpace = currentOwner && (currentOwner.lastName === '(Communal)' || currentOwner.lastName === '(Custom Space)');
-                
+                const isCurrentlySpace = box.ownerUid ? adapter.isSpace(box.ownerUid) : false;
+
                 setEditFormData({ 
                   name: box.name, 
                   contents: box.contents, 

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { useOwners } from './useOwners';
 import { createAdapterFromLegacy } from '@/lib/adapters/owners-spaces-adapter';
 import type { PersonalOwner, CommunalSpace } from '@/types';
@@ -20,6 +20,8 @@ export function useOwnersSpacesSeparation() {
       // New separated data
       personalOwners: adapter.getOwners(),
       communalSpaces: adapter.getSpaces(),
+      predefinedSpaces: adapter.getPredefinedSpaces(),
+      customSpaces: adapter.getCustomSpaces(),
       
       // Utility functions
       adapter,

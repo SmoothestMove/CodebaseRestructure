@@ -1,143 +1,183 @@
+Here is the text you provided in Markdown format:
+
+```markdown
 # Section 1: Project & Business Overview
 
-### App Name
-Smooth Moves
+This section helps us understand the big picture: who you are, what your goals are, and your timeline.
 
-### Primary Contact
-- **Name:** TBD
-- **Email:** TBD
-- **Role:** Product Owner / Founder
+### App Name:
+[Your App's Name]
 
-### Project Timeline
-- Target launch for the marketing site: align with public beta (tentatively Q4 2025).
-- Critical deadline: site must be live before the beta invitation email sequence (~4 weeks prior to launch).
+### Primary Contact:
+- **Name:**
+- **Email:**
+- **Role (e.g., CEO, Lead Developer):**
 
-### Elevator Pitch
-Smooth Moves is a web application that keeps residential moves on track with QR-labeled box management, owners/spaces assignments, planning tools, budgeting with receipt OCR, and the MARVIN AI assistant, all built on React + TypeScript and Firebase.
+### Project Timeline:
+- What is your desired launch date for this landing page?
+- Are there any critical deadlines we need to be aware of (e.g., tied to an ad campaign, press release, or app store launch)?
+
+### The Elevator Pitch:
+In one single, compelling sentence, what does your app do?
+
+Example: "Scribe is an AI-powered tool that automatically generates step-by-step guides for any digital process."
 
 ---
 
 # Section 2: Goals & Success Metrics
 
-### Primary Goal
-- [x] Join a waitlist / beta program
+This is the most important section. A landing page must have a clear purpose.
 
-Capture interested movers before full launch so we can run a controlled beta.
+### Primary Goal:
+What is the single most important action you want a visitor to take on this page? (Please choose only one)
 
-### Secondary Goals
-- Encourage visitors to follow development updates and changelog entries.
-- Provide clear feature overviews to validate product-market fit with DIY movers.
+- [ ] Download the app from the App Store / Google Play
+- [ ] Sign up for an account / Start a free trial
+- [ ] Join a waitlist / beta program
+- [ ] Pre-order the app
+- [ ] Schedule a demo
+- [ ] Subscribe to a newsletter
+- [ ] Other (please specify):
 
-### Success Metrics
-- 250 waitlist sign-ups before beta launch.
-- 35% of visitors scroll to the feature overview section.
-- Collect at least 50 qualitative feedback submissions via the dev updates form in the first month.
+### Secondary Goals:
+Are there any less critical, "nice-to-have" actions a visitor might take?
+
+Example: Follow us on social media, read a blog post, watch a demo video.
+
+### Success Metrics:
+How will you measure the success of this landing page?
+
+Example: "Achieve a 15% conversion rate on email sign-ups," or "Generate 500 app downloads in the first month."
 
 ---
 
 # Section 3: Target Audience
 
-### Ideal User Profile
-- **Demographics:** Adults 25-55 coordinating residential moves in North America; includes homeowners, renters, and small moving coordinators.
-- **Psychographics:** Organized planners who value visibility into their move, track belongings, and collaborate with family or roommates.
-- **Technical Skill Level:** Comfortable with modern mobile/web apps; average-to-advanced digital literacy.
+We need to know exactly who we're talking to. The design and copy will be tailored to this person.
 
-### Pain Point
-People managing a move struggle to keep track of boxes, owners, rooms, dates, and budgets across multiple spreadsheets, sticky notes, and text threads.
+### Ideal User Profile:
+Describe your ideal customer in as much detail as possible. Think about:
+- **Demographics**: Age, location, job title, industry.
+- **Psychographics**: Their goals, values, interests, online habits.
+- **Technical Skill Level**: Are they tech-savvy or beginners?
 
-**Current workaround:** Ad-hoc spreadsheets or generic to-do apps that lack QR support, household assignments, and budgeting context; these tools fall apart when multiple people contribute.
+### The Pain Point:
+What is the biggest problem, frustration, or "pain point" your target audience has that your app solves?
 
-### "Aha!" Moment
-Scanning a QR code on a box instantly surfaces contents, assigned owner/space, status, and related tasks, giving movers confidence that nothing is lost.
+How are they currently trying to solve this problem (and why is it not working well)?
+
+### The "Aha!" Moment:
+What will a user experience with your app that makes them think, "Wow, this is amazing!"? This helps us understand the core value you deliver.
 
 ---
 
 # Section 4: Content & Messaging
 
-### Value Proposition
-Smooth Moves centralizes every aspect of a residential move—inventory, people, rooms, scheduling, budgeting, and AI assistance—so teams stay coordinated from packing through delivery.
+This is the heart of the page's copy. Provide as much as you can, even if it's just rough notes.
 
-### Key Features & Benefits
-- **Box Management**
-  **Benefit:** Generate and scan QR codes to view contents, photos, and status updates on any device.
-- **Owners & Spaces**
-  **Benefit:** Color-code boxes by people or rooms to keep assignments clear during packing and unloading.
-- **Financial Navigator**
-  **Benefit:** Track categories, expenses, and totals with optional receipt OCR for faster reconciliation.
-- **Calendar & Planner**
-  **Benefit:** Plan timelines, tasks, and events that sync with move milestones and participants.
-- **MARVIN Assistant**
-  **Benefit:** Use a Gemini-powered AI helper (with optional Porcupine wake word) for quick answers and command-and-control.
+### Value Proposition:
+What makes your app unique or better than the alternatives (including competitors or doing nothing at all)? This is your Unique Selling Proposition (USP).
 
-### Call to Action (CTA) Text
-"Join the Waitlist" for the primary hero button; secondary CTA "Follow Development Updates."
+### Key Features & Benefits:
+List the 3-5 most important features of your app. For each feature, describe the primary benefit to the user.
 
-### Trust & Social Proof
+Remember: A feature is what your app does. A benefit is what the user gets.
+
+- **Feature 1:**
+  - **Benefit 1:**
+  
+- **Feature 2:**
+  - **Benefit 2:**
+  
+- **Feature 3:**
+  - **Benefit 3:**
+
+### Call to Action (CTA) Text:
+What text should appear on the main button(s)?
+
+Examples: "Download for Free," "Get Started Now," "Join the Waitlist," "Claim Your Spot."
+
+### Trust & Social Proof:
+Do you have any of the following? These are powerful for building visitor confidence.
+
 - [ ] Testimonials from users
 - [ ] Case studies
 - [ ] Number of users/downloads
 - [ ] Awards or recognitions
-- [ ] "As featured in" media logos
-- [ ] Star ratings
+- [ ] "As featured in" media logos (e.g., TechCrunch, Forbes)
+- [ ] Star ratings (e.g., 4.9/5 on the App Store)
 
-### Objections & FAQs
-- **Data ownership:** All move data stays within your Firebase project; export paths will be documented.
-- **Pricing:** Final pricing model TBD; early beta will be free.
-- **Security:** Auth via Firebase; granular Firestore rules gate move data to owners/participants.
-- **Offline/scan reliability:** QR workflow works offline and syncs when connectivity resumes (document limitations on launch).
+### Objections & FAQs:
+What are the most common questions or hesitations potential users have before they decide to try your app? (e.g., concerns about price, security, complexity).
 
 ---
 
 # Section 5: Design & Branding
 
-### Brand Guidelines
+This section guides the visual direction of the landing page.
+
+### Brand Guidelines:
+Do you have an existing brand style guide? (If yes, please provide it).
 - [ ] Yes
-- [x] No
+- [ ] No
 
-### Core Brand Assets
-- **Logo:** In progress (placeholder wordmark in use).
-- **Colors:** Primary palette draws from CSS tokens (`#1e3a5f`, `#ff7e00`, `#e1a95f`, supporting neutrals).
-- **Fonts:** Inter for body/heading text.
+### Core Brand Assets (If no style guide):
+- **Logo**: (Please provide in high-resolution vector format like .svg or .ai)
+- **Colors**: (Please provide HEX codes for primary, secondary, and accent colors).
+- **Fonts**: (Please provide the names of your brand fonts).
 
-### Overall Tone & Vibe
-Modern, Friendly, Trustworthy, Technical, Energetic.
+### Overall Tone & Vibe:
+Circle 3-5 words that best describe the desired feel of the landing page:
+- Modern, Minimalist, Playful, Professional, Corporate, Fun, Energetic, Calm, Trustworthy, Technical, Elegant, Bold, Friendly, Sophisticated
 
-### Inspiration
-- TODO: Add 2-3 reference URLs with notes (e.g., linear.app, notion.so landing page structure).
+### Inspiration:
+Please provide links to 2-3 landing pages you really like. For each, briefly explain what you like about it (e.g., the layout, the color scheme, the copy, the simplicity).
 
-### Things to Avoid
-Overly corporate stock photography; cluttered moving checklists that overwhelm visitors.
+### Things to Avoid:
+Are there any websites, design styles, or clichés you particularly dislike?
 
 ---
 
 # Section 6: Technical Requirements
 
-### Domain Name
-movingsmooth.com
+The nuts and bolts needed to get the page live.
 
-**Domain ownership:** [x] Yes   [ ] No
+### Domain Name:
+What is the URL where the landing page will live? (e.g., www.yourapp.com)
 
-### Hosting
-Vercel (static deploy, build command `npm run build`, output `dist/`). Firebase Hosting configuration exists for SPA rewrites if we need a fallback.
+Do you own this domain already? 
+- [ ] Yes 
+- [ ] No
 
-### Analytics & Tracking
-- **Google Analytics (GA4 Measurement ID):** TBD
-- **Meta (Facebook) Pixel ID:** Not set
-- **Other tracking tools:** None yet
+### Hosting:
+Do you have a hosting provider? If so, which one?
 
-### Legal Pages
+**Note**: If you don't have one, we can provide recommendations.
+
+### Analytics & Tracking:
+Do you have accounts for any of the following? If so, please provide the tracking ID or pixel code.
+
+- **Google Analytics (GA4 Measurement ID):**
+- **Meta (Facebook) Pixel ID:**
+- **Other tracking tools:**
+
+### Legal Pages:
+Do you have a Privacy Policy and Terms of Service ready? We will need to link to these from the landing page footer.
 - [ ] Yes, I will provide the links.
-- [x] No, need to draft Privacy Policy and Terms of Service before launch.
+- [ ] No, I need to create them.
 
 ---
 
 # Section 7: Asset Checklist
 
-- [ ] Logo Files (SVG/AI/PNG)
-- [ ] App Screenshots (high-resolution)
-- [ ] Lifestyle Photos or Illustrations
-- [ ] Demo Video or GIFs
-- [ ] App Store / Google Play Store Badges
-- [ ] Written Marketing Copy (beyond README)
-- [ ] Testimonials (names, companies, photos)
-- [ ] Brand Style Guide (optional)
+Please gather and provide the following files in a shared folder (e.g., Google Drive, Dropbox).
+
+- [ ] Logo Files (SVG, AI, PNG formats)
+- [ ] App Screenshots (High-resolution, showing key features)
+- [ ] Lifestyle Photos or Illustrations (If you have them)
+- [ ] Demo Video or GIFS (If available)
+- [ ] App Store / Google Play Store Badges (If applicable)
+- [ ] Written Content / Copy (If you have already written it)
+- [ ] Testimonials (Including name, company, and photo of the person, if possible)
+- [ ] Brand Style Guide (If available)
+```

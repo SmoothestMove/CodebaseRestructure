@@ -1,6 +1,7 @@
 /// <reference lib="es2015" />
 
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
+import { retryWithBackoff } from '@/lib/api/retry';
 import { AppData, GroundingChunk, AiAction } from '../types/marvin';
 
 // Developer Integration Note:
@@ -152,15 +153,37 @@ export const getMarvinResponse = async (prompt: string, appData: AppData): Promi
     hasLocation: !!appData.location
   });
 
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model: model,
-    contents: prompt,
-    config: {
-        systemInstruction: systemInstruction,
-        ...(useWebSearch && { tools: [{ googleSearch: {} }] })
-    },
-  });
-
+  const response: GenerateContentResponse = await retryWithBackoff(
+    () =>
+      ai.models.generateContent({
+        model: model,
+        contents: prompt,
+        config: Object.assign(
+          { systemInstruction },
+          useWebSearch ? { tools: [{ googleSearch: {} }] } : {}
+        ),
+      }),
+    {
+      retries: 2,
+      baseDelayMs: 750,
+      maxDelayMs: 4000,
+      shouldRetry: (error) => {
+        const status = (error?.status ?? error?.code) as number | undefined;
+        if (typeof status === "number" && status >= 400 && status < 500 && status !== 429) {
+          return false;
+        }
+        const message = typeof error?.message === "string" ? error.message.toLowerCase() : "";
+        if (message.includes("invalid api key")) {
+          return false;
+        }
+        return true;
+      },
+      onRetry: (error, attempt, delayMs) => {
+        console.warn(`[Gemini] attempt ${attempt + 1} failed:`, error);
+        console.warn(`[Gemini] retrying in ${delayMs}ms...`);
+      },
+    }
+  );
   const text = response.text;
   
   console.log('MARVIN response analysis:', {

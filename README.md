@@ -6,7 +6,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.2-646CFF.svg)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-38B2AC.svg)](https://tailwindcss.com/)
 
-A web application to manage moving projects: QR-labeled box tracking, owners/spaces, planner and calendar, budgeting with receipt OCR, and the MARVIN AI assistant — built with React + TypeScript and Firebase.
+A web application to manage moving projects: QR-labeled box tracking, owners/spaces, planner and calendar, budgeting with receipt OCR, and the MARVIN AI assistant - built with React + TypeScript and Firebase.
 
 ## Features
 
@@ -45,7 +45,8 @@ Visit http://localhost:5173 in your browser.
 
 ## Environment Configuration
 
-Create a `.env.local` file in the project root with the following keys:
+1. Copy `.env.example` to `.env.local` and fill in the required values.
+2. Run `npm run env:verify` to confirm everything is configured before starting the dev server.
 
 ```bash
 # Firebase Configuration (Required)
@@ -59,14 +60,14 @@ VITE_FIREBASE_APP_ID=your_app_id
 # MARVIN AI Assistant (Required for AI features)
 VITE_GEMINI_API_KEY=your_gemini_api_key
 
-# Mindee OCR API (Required for receipt scanning)
+# Mindee OCR API (Optional for receipt scanning)
 VITE_MINDEE_API_KEY=your_mindee_api_key
 
 # Picovoice Wake Word (Optional - enhances MARVIN)
 VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 ```
 
-The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
+The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`. See `docs/development/environment.md` for detailed environment guidance.
 
 ## Scripts
 
@@ -105,5 +106,6 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`.
 
 ## License
 
-No LICENSE file is present in this repository. Add one if you intend to open‑source.
+No LICENSE file is present in this repository. Add one if you intend to open-source.
+
 

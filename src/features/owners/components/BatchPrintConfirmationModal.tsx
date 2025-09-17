@@ -1,17 +1,17 @@
-
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
-import { Owner } from '@/types';
-import { IconQrCode, IconCheck } from '@/lib/config/constants';
+import type { OwnerOrSpace } from '@/types';
+import { getDisplayName } from '@/types';
+import { IconQrCode } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 import { useSettings } from '@/features/settings/hooks/useSettings';
 
 interface BatchPrintConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  owner: Owner | null;
-  onConfirmPrint: (owner: Owner) => Promise<void>;
+  owner: OwnerOrSpace | null;
+  onConfirmPrint: (owner: OwnerOrSpace) => Promise<void>;
 }
 
 const BatchPrintConfirmationModal: React.FC<BatchPrintConfirmationModalProps> = ({
@@ -26,6 +26,7 @@ const BatchPrintConfirmationModal: React.FC<BatchPrintConfirmationModalProps> = 
   const [printError, setPrintError] = useState<string | null>(null);
 
   const defaultLabelCount = settings.defaultBatchPrintCount;
+  const ownerDisplayName = useMemo(() => owner ? getDisplayName(owner) : '', [owner]);
 
   useEffect(() => {
     if (isOpen) {
@@ -47,8 +48,8 @@ const BatchPrintConfirmationModal: React.FC<BatchPrintConfirmationModalProps> = 
         handleClose();
       }, 2500);
     } catch (error) {
-      console.error("Error during batch print confirmation:", error);
-      setPrintError(error instanceof Error ? error.message : "An unexpected error occurred during printing setup.");
+      console.error('Error during batch print confirmation:', error);
+      setPrintError(error instanceof Error ? error.message : 'An unexpected error occurred during printing setup.');
     } finally {
       setIsLoading(false);
     }
@@ -63,8 +64,6 @@ const BatchPrintConfirmationModal: React.FC<BatchPrintConfirmationModalProps> = 
   };
 
   if (!owner) return null;
-
-  const ownerDisplayName = `${owner.firstName} ${owner.lastName || ''}`.trim();
 
   return (
     <Modal
