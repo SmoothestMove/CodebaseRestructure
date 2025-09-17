@@ -1,0 +1,34 @@
+/* Design tokens and base color palette */
+:root {
+  --brand-primary: #1e3a5f;
+  --brand-primary-dark: #162b45;
+  --brand-secondary: #708090;
+  --brand-secondary-dark: #5a6875;
+  --brand-tertiary: #ff7e00;
+  --brand-tertiary-dark: #e67100;
+  --brand-accent: #e1a95f;
+  --brand-accent-dark: #ca9854;
+
+  --semantic-success: #22c55e;
+  --semantic-warning: #f59e0b;
+  --semantic-error: #ef4444;
+  --semantic-info: #3b82f6;
+
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
+}
+
+.dark {
+  --brand-primary: #1e293b;
+  --brand-secondary: #475569;
+  --brand-tertiary: #f97316;
+  --brand-accent: #eab308;
+}

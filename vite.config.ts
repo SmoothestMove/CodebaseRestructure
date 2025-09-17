@@ -42,7 +42,6 @@ export default defineConfig({
   // Optimize dependencies
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
-    force: true
   },
   // Plugin to handle HTML files
   plugins: [

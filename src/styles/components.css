@@ -1,0 +1,176 @@
+/* Planner surfaces */
+.planner-gradient-bg {
+  background: linear-gradient(135deg, var(--neutral-900) 0%, var(--neutral-800) 50%, var(--neutral-900) 100%);
+}
+
+.planner-card {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.planner-input {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  color: var(--neutral-100);
+}
+
+.planner-input::placeholder {
+  color: var(--neutral-400);
+}
+
+.planner-button {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  color: var(--neutral-300);
+  transition: all 0.2s ease-in-out;
+}
+
+.planner-button:hover {
+  background: rgba(71, 85, 105, 0.8);
+  color: var(--neutral-100);
+  border-color: rgba(94, 163, 184, 0.6);
+}
+
+.task-card {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.task-card:hover {
+  background: rgba(71, 85, 105, 0.9);
+  border-color: var(--brand-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.frame-default {
+  background-color: var(--neutral-700);
+  border-color: var(--neutral-600);
+}
+
+.frame-hover {
+  background-color: var(--neutral-600);
+}
+
+.priority-critical { background-color: var(--semantic-error); color: white; }
+.priority-high { background-color: var(--brand-tertiary); color: white; }
+.priority-medium { background-color: var(--brand-accent); color: white; }
+.priority-low { background-color: var(--semantic-success); color: white; }
+
+.status-not-started { background-color: var(--neutral-600); color: white; }
+.status-in-progress { background-color: var(--semantic-info); color: white; }
+.status-completed { background-color: var(--semantic-success); color: white; }
+.status-cancelled { background-color: var(--semantic-error); color: white; }
+
+.text-gradient-orange-peach {
+  background-image: linear-gradient(to right, var(--brand-tertiary), var(--brand-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scanner overlays */
+div[id^="qr-reader-"] > video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+div[id^="qr-reader-default_dashboard_section"] {
+  display: none !important;
+}
+
+#html5-qrcode-anchor-scan-type-change,
+#html5-qrcode-button-camera-permission,
+#html5-qrcode-button-camera-stop,
+#html5-qrcode-button-camera-start {
+  display: none !important;
+}
+
+.scan-line-element::before,
+.scan-line-element::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  will-change: opacity, background-color;
+}
+
+.scan-line-element::before {
+  background-color: var(--tracer-1-bg, transparent);
+  opacity: var(--tracer-1-opacity, 0);
+  transform: translateY(var(--tracer-1-offsetY, 0px));
+  z-index: -1;
+}
+
+.scan-line-element::after {
+  background-color: var(--tracer-2-bg, transparent);
+  opacity: var(--tracer-2-opacity, 0);
+  transform: translateY(var(--tracer-2-offsetY, 0px));
+  z-index: -2;
+}
+.dark .planner-gradient-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+.dark .planner-card {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(30, 41, 59, 0.5);
+}
+
+.dark .planner-input {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(30, 41, 59, 0.7);
+  color: #f8fafc;
+}
+
+.dark .planner-input::placeholder {
+  color: #94a3b8;
+}
+
+.dark .planner-button {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(30, 41, 59, 0.7);
+  color: #cbd5e1;
+}
+
+.dark .planner-button:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border-color: rgba(71, 85, 105, 0.8);
+}
+
+.dark .task-card {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(30, 41, 59, 0.4);
+}
+
+.dark .task-card:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #eab308;
+}
+
+.dark .frame-default {
+  background-color: #334155;
+  border-color: #475569;
+}
+
+.dark .frame-hover {
+  background-color: #475569;
+}
+
+.dark .planner-text-primary { color: #f8fafc; }
+.dark .planner-text-secondary { color: #cbd5e1; }
+.dark .planner-text-muted { color: #94a3b8; }
+
+.dark .text-gradient-orange-peach {
+  background-image: linear-gradient(to right, #ff7e00, #e1a95f);
+}
+

@@ -1,4 +1,4 @@
-﻿# Smooth Moves Revision Plan (Consolidated)
+# Smooth Moves Revision Plan (Consolidated)
 
 **Last Updated:** 2025-09-16
 
@@ -12,29 +12,29 @@
 ### Low Risk
 
 #### Vite OptimizeDeps Audit
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Revisit the unconditional `optimizeDeps.force = true` setting in `vite.config.ts`; profile whether it is still required or if it slows local HMR unnecessarily.
 - **Next steps:** Document benchmarking results; revert if no longer needed.
 - **Sources:** ImplementationPlan - Priority 2.7.
 
 #### README Encoding Verification
-- **Status:** Needs review
+- **Status:** Complete
 - **What:** Re-run doc QA (`README.md`, `README2.md`) to ensure prior encoding artifacts remain resolved; ImplementationPlan flagged this but current copies look cleaned; confirm before closing.
 - **Sources:** ImplementationPlan - Priority 3.10.
 
 #### CSS Architecture Consolidation
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Extract inline styles from `index.html`, split `index.css` into a structured `src/styles/` hierarchy (globals, components, utilities, tokens, themes), and dedupe overlapping declarations.
 - **Benefit:** Improves maintainability and long-term theming flexibility.
 - **Sources:** RootFilesAnalysis - Medium Priority (CSS Organization).
 
 #### Debug Log Handling
-- **Status:** Not started
+- **Status:** Complete
 - **What:** Delete `pglite-debug.log` (currently empty) and add it (or the generating tool) to `.gitignore` if further logs may appear.
 - **Sources:** RootFilesAnalysis - Low Priority.
 
 #### Landing Page Discovery (Client Intake)
-- **Status:** Not started
+- **Status:** In progress
 - **What:** Complete the questionnaire in `LandingPageQuest.md` so copy/design work for the marketing site can proceed; transfer answers into the marketing brief once gathered.
 - **Sources:** `LandingPageQuest.md`.
 
