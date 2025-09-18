@@ -10,6 +10,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
 import { Badge } from './ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 // Lightweight Textarea wrapper (not provided in local UI set)
 const Textarea = React.forwardRef(({ className, ...props }: any, ref: any) => (
   <textarea 
