@@ -1,18 +1,9 @@
 ﻿'use client';
-import {
-  motion,
-  AnimatePresence,
-  Transition,
-  Variants,
-  Variant,
-  MotionConfig,
-} from 'framer-motion';
-import { cn } from '@/lib/utils';
-import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-const AccordionContext = createContext(
-  undefined
-);
+import { cn } from '@/lib/utils';
+import React, { createContext, useContext, useState } from 'react';
+
+const AccordionContext = createContext(undefined);
 
 function useAccordion() {
   const context = useContext(AccordionContext);
@@ -22,32 +13,25 @@ function useAccordion() {
   return context;
 }
 
-function AccordionProvider({ children, variants }) {
+function AccordionProvider({ children }) {
   const [expandedValue, setExpandedValue] = useState(null);
 
   const toggleItem = (value) => {
-    setExpandedValue(expandedValue === value ? null : value);
+    setExpandedValue((current) => (current === value ? null : value));
   };
 
   return (
-    <AccordionContext.Provider value={{ expandedValue, toggleItem, variants }}>
+    <AccordionContext.Provider value={{ expandedValue, toggleItem }}>
       {children}
     </AccordionContext.Provider>
   );
 }
 
-function Accordion({
-  children,
-  className,
-  transition,
-  variants,
-}) {
+function Accordion({ children, className }) {
   return (
-    <MotionConfig transition={transition}>
-      <div className={cn('relative', className)} aria-orientation='vertical'>
-        <AccordionProvider variants={variants}>{children}</AccordionProvider>
-      </div>
-    </MotionConfig>
+    <div className={cn('relative', className)} aria-orientation='vertical'>
+      <AccordionProvider>{children}</AccordionProvider>
+    </div>
   );
 }
 
@@ -56,10 +40,7 @@ function AccordionItem({ value, children, className }) {
   const isExpanded = value === expandedValue;
 
   return (
-    <div
-      className={cn('overflow-hidden', className)}
-      {...(isExpanded ? { 'data-expanded': '' } : {})}
-    >
+    <div className={cn('overflow-hidden', className)} data-expanded={isExpanded || undefined}>
       {React.Children.map(children, (child) =>
         React.cloneElement(child, {
           expanded: isExpanded,
@@ -70,55 +51,32 @@ function AccordionItem({ value, children, className }) {
   );
 }
 
-function AccordionTrigger({
-  children,
-  className,
-  onToggle,
-  expanded,
-}) {
+function AccordionTrigger({ children, className, onToggle, expanded }) {
   return (
     <button
       onClick={onToggle}
       aria-expanded={expanded}
       type='button'
-      className={cn('group', className)}
-      {...(expanded ? { 'data-expanded': '' } : {})}
+      className={cn('group w-full text-left', className)}
+      data-expanded={expanded || undefined}
     >
       {children}
     </button>
   );
 }
 
-function AccordionContent({
-  children,
-  expanded,
-  className,
-}) {
-  const { variants } = useAccordion();
-  const BASE_VARIANTS = {
-    expanded: { height: 'auto' },
-    collapsed: { height: 0 },
-  };
-
-  const combinedVariants = {
-    expanded: { ...BASE_VARIANTS.expanded, ...variants?.expanded },
-    collapsed: { ...BASE_VARIANTS.collapsed, ...variants?.collapsed },
-  };
-
+function AccordionContent({ children, expanded, className }) {
   return (
-    <AnimatePresence>
-      {expanded && (
-        <motion.div
-          initial='collapsed'
-          animate='expanded'
-          exit='collapsed'
-          variants={combinedVariants}
-          className={className}
-        >
-          {children}
-        </motion.div>
+    <div
+      className={cn(
+        'grid transition-[grid-template-rows] duration-200 ease-out',
+        className
       )}
-    </AnimatePresence>
+      style={{ gridTemplateRows: expanded ? '1fr' : '0fr' }}
+      aria-hidden={!expanded}
+    >
+      <div className='overflow-hidden'>{children}</div>
+    </div>
   );
 }
 

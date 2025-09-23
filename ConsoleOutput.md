@@ -1,17 +1,67 @@
-Triggered by clicking on a card in the planner timeline
-
-Uncaught (in promise) Error: Call timed out backgroundScript.runPageLoadHook
-    at makeTimeoutError (page.js:285:27)
-    at page.js:876:26Understand this error
-index-TK1KXwqF.js:2344 useMovePresence Effect
-index-TK1KXwqF.js:4055 Uncaught ReferenceError: Select is not defined
-    at XJ (index-TK1KXwqF.js:4055:33548)
-    at Oo (index-TK1KXwqF.js:48:34255)
-    at WE (index-TK1KXwqF.js:48:63080)
-    at nj (index-TK1KXwqF.js:48:73748)
-    at kj (index-TK1KXwqF.js:48:108011)
-    at jfe (index-TK1KXwqF.js:48:107061)
-    at vA (index-TK1KXwqF.js:48:106889)
-    at Ej (index-TK1KXwqF.js:48:103960)
-    at qj (index-TK1KXwqF.js:48:115696)
-    at Uy (index-TK1KXwqF.js:48:114257)
+D:\src\client\react-…ry-callbacks.ts:101 Uncaught ChunkLoadError: Loading chunk app/layout failed.
+(timeout: http://localhost:3001/_next/static/chunks/app/layout.js)
+    at __webpack_require__.f.j (webpack.js?v=1758254955358:858:29)
+    at webpack.js?v=1758254955358:153:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (webpack.js?v=1758254955358:152:67)
+    at fn.e (webpack.js?v=1758254955358:389:50)
+    at loadChunk (D:\codebase\Codebase…velopment.js:136:14)
+    at preloadModule (D:\codebase\Codebase…evelopment.js:103:1)
+    at resolveModule (D:\codebase\Codebase…velopment.js:1627:1)
+    at processFullStringRow (D:\codebase\Codebase…velopment.js:2238:1)
+    at processFullBinaryRow (D:\codebase\Codebase…velopment.js:2233:1)
+    at progress (D:\codebase\Codebase…velopment.js:2479:1)
+    at RootLayout (layout.js:18:9)
+getReactStitchedError	@	D:\src\client\compon…titched-error.ts:23
+onUncaughtError	@	D:\src\client\react-…ary-callbacks.ts:93
+onCaughtError	@	D:\src\client\react-…ary-callbacks.ts:41
+logCaughtError	@	D:\codebase\Codebase…development.js:8400
+runWithFiberInDEV	@	D:\codebase\Codebase….development.js:844
+inst.componentDidCatch.update.callback	@	D:\codebase\Codebase…development.js:8447
+callCallback	@	D:\codebase\Codebase…development.js:6428
+commitCallbacks	@	D:\codebase\Codebase…development.js:6448
+runWithFiberInDEV	@	D:\codebase\Codebase….development.js:844
+commitClassCallbacks	@	D:\codebase\Codebase…evelopment.js:12139
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12763
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12691
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
+recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
+commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12768
+flushLayoutEffects	@	D:\codebase\Codebase…evelopment.js:15686
+commitRoot	@	D:\codebase\Codebase…evelopment.js:15527
+commitRootWhenReady	@	D:\codebase\Codebase…evelopment.js:14758
+performWorkOnRoot	@	D:\codebase\Codebase…evelopment.js:14681
+performWorkOnRootViaSchedulerTask	@	D:\codebase\Codebase…evelopment.js:16349
+performWorkUntilDeadline	@	D:\codebase\Codebase…r.development.js:45

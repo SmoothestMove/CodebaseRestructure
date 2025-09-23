@@ -67,3 +67,42 @@
     @apply bg-background text-foreground;
   }
 }
+@keyframes slider-scroll-x-forward {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slider-scroll-x-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slider-scroll-y-forward {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes slider-scroll-y-reverse {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.slider-track[data-pause-on-hover='true']:hover {
+  animation-play-state: paused;
+}

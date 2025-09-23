@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useId, useState } from 'react';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -17,12 +17,12 @@ const messageByStatus = {
   success: {
     Icon: CheckCircle2,
     text: 'Thanks! Check your inbox for the Moving Day Command Center preview.',
-    className: 'text-emerald-600',
+    className: 'text-emerald-600 dark:text-emerald-400',
   },
   error: {
     Icon: AlertCircle,
     text: 'We could not add that email. Double-check and try again.',
-    className: 'text-rose-600',
+    className: 'text-rose-600 dark:text-rose-400',
   },
 };
 
@@ -52,7 +52,7 @@ function WaitlistForm({ orientation = 'horizontal' }) {
       setStatus('success');
       setEmail('');
       setRole('');
-    } catch (error) {
+    } catch (_error) {
       setStatus('error');
     }
   };
@@ -65,15 +65,15 @@ function WaitlistForm({ orientation = 'horizontal' }) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        'w-full',
+        'flex w-full flex-col items-stretch gap-3',
         orientation === 'horizontal'
-          ? 'flex flex-col sm:flex-row sm:items-center sm:gap-3'
-          : 'flex flex-col gap-3'
+          ? 'sm:flex-row sm:items-stretch sm:justify-start sm:gap-3'
+          : ''
       )}
       aria-live='polite'
     >
       <input type='text' name='company' className='hidden' tabIndex={-1} autoComplete='off' />
-      <div className='flex-1 w-full'>
+      <div className='flex-1'>
         <label htmlFor={emailId} className='sr-only'>
           Email address
         </label>
@@ -84,14 +84,14 @@ function WaitlistForm({ orientation = 'horizontal' }) {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder='you@example.com'
-          className='w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-base shadow-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10'
+          className='w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-base shadow-sm transition focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-200 dark:focus:ring-slate-100/10'
         />
       </div>
 
       <div
         className={cn(
           'w-full sm:w-52',
-          orientation === 'horizontal' ? 'mt-3 sm:mt-0' : ''
+          orientation === 'horizontal' ? 'sm:mt-0' : ''
         )}
       >
         <label htmlFor={roleId} className='sr-only'>
@@ -101,7 +101,7 @@ function WaitlistForm({ orientation = 'horizontal' }) {
           id={roleId}
           value={role}
           onChange={(event) => setRole(event.target.value)}
-          className='w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-base text-slate-700 shadow-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10'
+          className='w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-base text-slate-700 shadow-sm transition focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-200 dark:focus:ring-slate-100/10'
         >
           {roleOptions.map((option) => (
             <option key={option.value || 'empty'} value={option.value}>
@@ -114,7 +114,8 @@ function WaitlistForm({ orientation = 'horizontal' }) {
       <button
         type='submit'
         className={cn(
-          'mt-3 sm:mt-0 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900/20',
+          'inline-flex items-center justify-center whitespace-nowrap rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900/20 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus:ring-slate-100/20',
+          orientation === 'horizontal' ? 'sm:mt-0' : 'mt-1',
           status === 'loading' ? 'cursor-wait opacity-80' : ''
         )}
         disabled={status === 'loading'}
