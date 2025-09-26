@@ -76,14 +76,17 @@ function WaitlistForm({ orientation = "horizontal" }: WaitlistFormProps) {
   };
 
   const statusMessage = status === "success" || status === "error" ? messageByStatus[status] : null;
-  const messageLayoutClasses = orientation === "horizontal" ? "sm:pt-0 sm:pl-4" : "";
+  const isLoading = status === "loading";
+  const isSuccess = status === "success";
 
   return (
     <form
       onSubmit={handleSubmit}
       className={cn(
         "flex w-full flex-col items-stretch gap-3",
-        orientation === "horizontal" ? "sm:flex-row sm:items-stretch sm:justify-start sm:gap-3" : "",
+        orientation === "horizontal"
+          ? "sm:flex-row sm:items-stretch sm:justify-start sm:gap-3"
+          : "",
       )}
       aria-live="polite"
     >
@@ -124,18 +127,35 @@ function WaitlistForm({ orientation = "horizontal" }: WaitlistFormProps) {
       <button
         type="submit"
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900/20 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus:ring-slate-100/20",
+          "group relative inline-flex items-center justify-center whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 via-orange-500 to-amber-400 px-6 py-3 text-base font-semibold text-white shadow-[0_0_18px_rgba(249,115,22,0.45)] transition",
+          "focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:ring-offset-2 dark:focus:ring-offset-slate-950",
+          "hover:shadow-[0_0_26px_rgba(249,115,22,0.55)]",
           orientation === "horizontal" ? "sm:mt-0" : "mt-1",
-          status === "loading" ? "cursor-wait opacity-80" : "",
+          isLoading ? "cursor-wait opacity-80" : "",
         )}
-        disabled={status === "loading"}
+        disabled={isLoading}
       >
-        {status === "loading" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-        {status === "success" ? "Waitlist joined" : "Join the waitlist"}
+        <span
+          className={cn(
+            "absolute inset-0 rounded-full bg-orange-400/20 blur-xl transition opacity-70",
+            isLoading ? "opacity-40" : "group-hover:opacity-100",
+          )}
+          aria-hidden
+        />
+        <span className="relative flex items-center gap-2">
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+          {isSuccess ? "Waitlist joined" : "Join the waitlist"}
+        </span>
       </button>
 
       {statusMessage ? (
-        <p className={cn("flex items-center gap-2 text-sm font-medium pt-3", messageLayoutClasses, statusMessage.className)}>
+        <p
+          className={cn(
+            "flex items-center gap-2 pt-3 text-sm font-medium",
+            orientation === "horizontal" ? "sm:pl-4 sm:pt-0" : "",
+            statusMessage.className,
+          )}
+        >
           <statusMessage.Icon className="h-4 w-4" />
           <span>{statusMessage.text}</span>
         </p>
@@ -145,3 +165,4 @@ function WaitlistForm({ orientation = "horizontal" }: WaitlistFormProps) {
 }
 
 export default WaitlistForm;
+

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
@@ -86,20 +86,31 @@ function HeroSection() {
       <MaxWidthWrapper className="pt-10 !px-2 lg:!px-10 lg:grid lg:grid-cols-2 lg:gap-x-12 lg:pt-24 lg:pb-20">
         <div className="col-span-1 px-2 lg:px-0">
           <div className="relative mx-auto flex flex-col items-start text-left">
-            <h1 className="relative w-full max-w-2xl text-balance text-5xl font-bold tracking-tighter text-slate-900 !leading-tight md:text-6xl dark:text-white">
-              Smooth Moves, the one and done
-              <span className="relative mx-3 inline-flex min-h-[1.6em] min-w-[12ch] items-center overflow-visible align-baseline">
-                <span
-                  key={activeWord}
-                  className={`whitespace-nowrap text-orange-400 drop-shadow-[0_0_14px_rgba(248,113,38,0.55)] transition-all duration-300 ease-out ${
-                    isTransitioning ? "opacity-0 blur-sm" : "opacity-100 blur-0"
-                  }`}
-                >
-                  {activeWord}
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                className="w-fit rounded-full border border-orange-200/60 bg-orange-50/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-orange-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-orange-400/20 dark:bg-orange-500/15 dark:text-orange-200"
+              >
+                Join the waitlist
+              </button>
+              <h1 className="relative w-full max-w-2xl text-balance text-5xl font-bold tracking-tighter text-slate-900 !leading-tight md:text-6xl dark:text-white">
+                Smooth Moves, the one and done
+                <span className="relative mx-3 inline-flex min-h-[1.6em] min-w-[16ch] items-center overflow-hidden align-baseline px-1">
+                  <span
+                    key={activeWord}
+                    className={`whitespace-nowrap text-orange-400 drop-shadow-[0_0_14px_rgba(248,113,38,0.55)] transition-all duration-300 ease-out ${
+                      isTransitioning ? "opacity-0 blur-sm" : "opacity-100 blur-0"
+                    }`}
+                  >
+                    {activeWord}
+                  </span>
                 </span>
-              </span>
-              assistant.
-            </h1>
+                assistant.
+              </h1>
+              <p className="text-lg font-semibold text-slate-700 md:text-xl dark:text-slate-200">
+                Plan, budget, and organize every step of your move in one simple workspace.
+              </p>
+            </div>
 
             <p className="mt-6 max-w-prose text-lg font-semibold text-slate-700 md:text-xl dark:text-slate-200">
               Smooth Moves brings your move plan, box inventory, budget, and MARVIN AI assistant together so every detail is handled ahead of move day. Join the beta waitlist to help shape launch.
@@ -190,3 +201,4 @@ function HeroSection() {
 }
 
 export default HeroSection;
+
