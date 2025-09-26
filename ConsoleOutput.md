@@ -1,67 +1,27 @@
-D:\src\client\react-…ry-callbacks.ts:101 Uncaught ChunkLoadError: Loading chunk app/layout failed.
-(timeout: http://localhost:3001/_next/static/chunks/app/layout.js)
-    at __webpack_require__.f.j (webpack.js?v=1758254955358:858:29)
-    at webpack.js?v=1758254955358:153:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (webpack.js?v=1758254955358:152:67)
-    at fn.e (webpack.js?v=1758254955358:389:50)
-    at loadChunk (D:\codebase\Codebase…velopment.js:136:14)
-    at preloadModule (D:\codebase\Codebase…evelopment.js:103:1)
-    at resolveModule (D:\codebase\Codebase…velopment.js:1627:1)
-    at processFullStringRow (D:\codebase\Codebase…velopment.js:2238:1)
-    at processFullBinaryRow (D:\codebase\Codebase…velopment.js:2233:1)
-    at progress (D:\codebase\Codebase…velopment.js:2479:1)
-    at RootLayout (layout.js:18:9)
-getReactStitchedError	@	D:\src\client\compon…titched-error.ts:23
-onUncaughtError	@	D:\src\client\react-…ary-callbacks.ts:93
-onCaughtError	@	D:\src\client\react-…ary-callbacks.ts:41
-logCaughtError	@	D:\codebase\Codebase…development.js:8400
-runWithFiberInDEV	@	D:\codebase\Codebase….development.js:844
-inst.componentDidCatch.update.callback	@	D:\codebase\Codebase…development.js:8447
-callCallback	@	D:\codebase\Codebase…development.js:6428
-commitCallbacks	@	D:\codebase\Codebase…development.js:6448
-runWithFiberInDEV	@	D:\codebase\Codebase….development.js:844
-commitClassCallbacks	@	D:\codebase\Codebase…evelopment.js:12139
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12763
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12691
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12686
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12866
-recursivelyTraverseLayoutEffects	@	D:\codebase\Codebase…evelopment.js:13672
-commitLayoutEffectOnFiber	@	D:\codebase\Codebase…evelopment.js:12768
-flushLayoutEffects	@	D:\codebase\Codebase…evelopment.js:15686
-commitRoot	@	D:\codebase\Codebase…evelopment.js:15527
-commitRootWhenReady	@	D:\codebase\Codebase…evelopment.js:14758
-performWorkOnRoot	@	D:\codebase\Codebase…evelopment.js:14681
-performWorkOnRootViaSchedulerTask	@	D:\codebase\Codebase…evelopment.js:16349
-performWorkUntilDeadline	@	D:\codebase\Codebase…r.development.js:45
+PS D:\codebase\CodebaseRestructure\landing-page> npm run build
+
+> saas-landing-page@0.1.0 build
+> next build
+
+   ▲ Next.js 15.3.2
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 1000ms
+   Linting and checking validity of types  ...
+ ⚠ The Next.js plugin was not detected in your ESLint configuration. See https://nextjs.org/docs/app/api-reference/config/eslint#migrating-existing-config
+ ✓ Linting and checking validity of types    
+ ✓ Collecting page data    
+ ✓ Generating static pages (5/5)
+ ✓ Collecting build traces    
+ ✓ Finalizing page optimization
+
+Route (app)                                 Size  First Load JS    
+┌ ○ /                                    10.6 kB         123 kB
+└ ○ /_not-found                            977 B         102 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/4bd1b696-b3407ec744ec4587.js  53.2 kB
+  ├ chunks/684-e8eb2c9930ba9d8b.js       45.9 kB
+  └ other shared chunks (total)          1.99 kB
+
+
+○  (Static)  prerendered as static content
