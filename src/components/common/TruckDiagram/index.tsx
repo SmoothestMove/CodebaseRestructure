@@ -6,21 +6,44 @@ import { useTheme } from '@/hooks/useTheme'; // Import useTheme
 
 type TruckZoneName = typeof TRUCK_ZONES[number];
 
+/**
+ * @interface ZoneOccupancyInfo
+ * @description Defines the structure for information about the occupancy of a truck zone.
+ */
 export interface ZoneOccupancyInfo {
+  /** The name of the truck zone. */
   area: TruckZoneName;
+  /** The number of items in the zone. */
   count: number;
+  /** An optional list of items in the zone. */
   items?: Pick<AppBox, 'id' | 'contents'>[]; 
 }
 
+/**
+ * @interface TruckDiagramProps
+ * @description Defines the properties for the TruckDiagram component.
+ */
 interface TruckDiagramProps {
+  /** An optional callback function that is called when a zone is selected. */
   onSelectZone?: (area: TruckZoneName) => void;
+  /** The currently selected truck zone. */
   selectedZone?: TruckZoneName | null;
+  /** Whether the truck diagram is interactive. */
   interactive?: boolean;
+  /** An array of zone occupancy information. */
   zoneOccupancy?: ZoneOccupancyInfo[];
+  /** An optional CSS class to apply to the highlighted zone. */
   highlightColorClass?: string;
+  /** Optional additional CSS classes to apply to the truck diagram container. */
   className?: string;
 }
 
+/**
+ * A component that displays a diagram of a truck with selectable zones.
+ * The diagram can be interactive and can display the occupancy of each zone.
+ * @param {TruckDiagramProps} props - The properties for the TruckDiagram component.
+ * @returns {JSX.Element} The rendered TruckDiagram component.
+ */
 const TruckDiagram: React.FC<TruckDiagramProps> = ({
   onSelectZone,
   selectedZone,

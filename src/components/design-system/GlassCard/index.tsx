@@ -2,34 +2,40 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface GlassCardProps
+ * @description Defines the properties for the GlassCard component.
+ */
 interface GlassCardProps {
-  /** Card content */
+  /** The content to be displayed inside the card. */
   children: React.ReactNode;
-  /** Glass effect intensity (0-100) */
+  /** The intensity of the glass effect. */
   intensity?: number;
-  /** Blur strength (px) */
+  /** The strength of the blur effect. */
   blur?: number;
-  /** Glass card variant */
+  /** The visual variant of the card. */
   variant?: 'subtle' | 'medium' | 'strong' | 'frosted';
-  /** Border style */
+  /** The style of the border. */
   border?: 'none' | 'subtle' | 'visible';
-  /** Shadow intensity */
+  /** The intensity of the shadow. */
   shadow?: 'none' | 'subtle' | 'medium' | 'strong';
-  /** CSS classes */
+  /** Optional additional CSS classes to apply to the card. */
   className?: string;
-  /** Click handler */
+  /** An optional callback function that is called when the card is clicked. */
   onClick?: () => void;
-  /** Enable hover effects */
+  /** Whether to enable hover effects. */
   hover?: boolean;
-  /** Enable interactive scaling */
+  /** Whether to enable interactive scaling. */
   interactive?: boolean;
-  /** Gradient overlay direction */
+  /** The direction of the gradient overlay. */
   gradientDirection?: 'top' | 'bottom' | 'left' | 'right' | 'radial';
 }
 
 /**
- * GlassCard - Modern glassmorphism card component
- * Creates beautiful glass-like effects with backdrop blur and transparency
+ * A modern glassmorphism card component that creates beautiful glass-like effects
+ * with backdrop blur and transparency.
+ * @param {GlassCardProps} props - The properties for the GlassCard component.
+ * @returns {JSX.Element} The rendered GlassCard component.
  */
 const GlassCard: React.FC<GlassCardProps> = ({
   children,
@@ -179,7 +185,9 @@ const GlassCard: React.FC<GlassCardProps> = ({
 };
 
 /**
- * GlassSection - Glass section for larger content areas
+ * A glass section for larger content areas.
+ * @param {Omit<GlassCardProps, 'variant'> & { title?: string; subtitle?: string; }} props - The properties for the GlassSection component.
+ * @returns {JSX.Element} The rendered GlassSection component.
  */
 export const GlassSection: React.FC<Omit<GlassCardProps, 'variant'> & {
   /** Section title */
@@ -217,7 +225,9 @@ export const GlassSection: React.FC<Omit<GlassCardProps, 'variant'> & {
 );
 
 /**
- * GlassButton - Interactive glass button
+ * An interactive glass button.
+ * @param {Omit<GlassCardProps, 'onClick'> & { children: React.ReactNode; onClick: () => void; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; }} props - The properties for the GlassButton component.
+ * @returns {JSX.Element} The rendered GlassButton component.
  */
 export const GlassButton: React.FC<Omit<GlassCardProps, 'onClick'> & {
   /** Button text */

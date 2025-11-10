@@ -25,6 +25,41 @@ import ReceiptScanModal from './ReceiptScanModal';
 // Import reducer and types
 import { budgetReducer, initialState, AppState, Action } from './budgetReducer';
 
+/**
+ * @typedef {object} BudgetingState
+ * @property {AppState} state - The current state of the budget.
+ * @property {React.Dispatch<Action>} dispatch - The dispatch function for the budget reducer.
+ * @property {boolean} isAddExpenseModalOpen - Whether the add expense modal is open.
+ * @property {function} setIsAddExpenseModalOpen - Setter for isAddExpenseModalOpen.
+ * @property {boolean} isCategoryModalOpen - Whether the category modal is open.
+ * @property {function} setIsCategoryModalOpen - Setter for isCategoryModalOpen.
+ * @property {boolean} isSetupBudgetModalOpen - Whether the setup budget modal is open.
+ * @property {function} setIsSetupBudgetModalOpen - Setter for isSetupBudgetModalOpen.
+ * @property {boolean} isSetupExpensesModalOpen - Whether the setup expenses modal is open.
+ * @property {function} setIsSetupExpensesModalOpen - Setter for isSetupExpensesModalOpen.
+ * @property {boolean} isReceiptScanModalOpen - Whether the receipt scan modal is open.
+ * @property {function} setIsReceiptScanModalOpen - Setter for isReceiptScanModalOpen.
+ * @property {(Expense | null)} selectedExpense - The currently selected expense.
+ * @property {function} setSelectedExpense - Setter for selectedExpense.
+ * @property {(Category | null)} selectedCategory - The currently selected category.
+ * @property {function} setSelectedCategory - Setter for selectedCategory.
+ * @property {string} searchTerm - The current search term.
+ * @property {function} setSearchTerm - Setter for searchTerm.
+ * @property {string} selectedCategoryFilter - The currently selected category filter.
+ * @property {function} setSelectedCategoryFilter - Setter for selectedCategoryFilter.
+ * @property {('bar' | 'pie')} chartView - The current chart view.
+ * @property {function} setChartView - Setter for chartView.
+ * @property {boolean} showHelp - Whether to show the help section.
+ * @property {function} setShowHelp - Setter for showHelp.
+ * @property {('expenses' | 'categories' | 'charts')} currentTab - The current tab.
+ * @property {function} setCurrentTab - Setter for currentTab.
+ */
+
+/**
+ * A comprehensive component for managing a moving budget. It includes features
+ * for tracking expenses, managing categories, visualizing spending, and more.
+ * @returns {JSX.Element} The rendered Budgeting component.
+ */
 const Budgeting: React.FC = () => {
   const [state, dispatch] = usePersistentReducer<AppState, Action>(
     budgetReducer,

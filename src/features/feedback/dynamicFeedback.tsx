@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Send } from 'lucide-react';
 
-// Types for TypeScript integration
+/**
+ * @interface FeedbackQuestion
+ * @property {string} id - The ID of the question.
+ * @property {string} question - The question text.
+ * @property {('textarea' | 'scale' | 'select')} type - The type of the question.
+ * @property {string} [placeholder] - The placeholder text for the question.
+ * @property {string[]} [options] - The options for a select question.
+ * @property {number} [min] - The minimum value for a scale question.
+ * @property {number} [max] - The maximum value for a scale question.
+ * @property {string} category - The category of the question.
+ * @property {string} categoryTitle - The title of the category.
+ */
 interface FeedbackQuestion {
   id: string;
   question: string;
@@ -14,6 +25,15 @@ interface FeedbackQuestion {
   categoryTitle: string;
 }
 
+/**
+ * @interface FeedbackResponse
+ * @property {string} questionId - The ID of the question.
+ * @property {string} question - The question text.
+ * @property {string | number} response - The response to the question.
+ * @property {string} category - The category of the question.
+ * @property {string} categoryTitle - The title of the category.
+ * @property {string} timestamp - The timestamp of when the response was submitted.
+ */
 interface FeedbackResponse {
   questionId: string;
   question: string;
@@ -23,6 +43,16 @@ interface FeedbackResponse {
   timestamp: string;
 }
 
+/**
+ * @interface FeedbackSubmission
+ * @property {string} sessionId - The ID of the session.
+ * @property {string} [userId] - The ID of the user.
+ * @property {FeedbackResponse[]} responses - A list of feedback responses.
+ * @property {object} metadata - The metadata for the submission.
+ * @property {string} metadata.userAgent - The user agent of the user.
+ * @property {string} metadata.timestamp - The timestamp of when the submission was submitted.
+ * @property {number} metadata.timeToComplete - The time it took to complete the feedback in seconds.
+ */
 interface FeedbackSubmission {
   sessionId: string;
   userId?: string;
@@ -34,6 +64,13 @@ interface FeedbackSubmission {
   };
 }
 
+/**
+ * @interface FeedbackFormProps
+ * @property {function(FeedbackSubmission): void} [onSubmit] - A callback function for when the feedback is submitted.
+ * @property {string} [userId] - The ID of the user.
+ * @property {object.<string, FeedbackQuestion[]>} [customQuestions] - A map of custom questions to use instead of the default questions.
+ * @property {string} [className] - A custom class name for the component.
+ */
 interface FeedbackFormProps {
   onSubmit?: (data: FeedbackSubmission) => void;
   userId?: string;
@@ -41,6 +78,11 @@ interface FeedbackFormProps {
   className?: string;
 }
 
+/**
+ * A form for collecting feedback from users.
+ * @param {FeedbackFormProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered FeedbackForm component.
+ */
 const FeedbackForm: React.FC<FeedbackFormProps> = ({ 
   onSubmit, 
   userId,

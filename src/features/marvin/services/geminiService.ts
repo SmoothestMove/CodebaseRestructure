@@ -11,6 +11,11 @@ if (!import.meta.env.VITE_GEMINI_API_KEY) {
 }
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
+/**
+ * Checks if a string is a valid JSON string.
+ * @param {string} str - The string to check.
+ * @returns {boolean} Whether the string is a valid JSON string.
+ */
 const isJsonString = (str: string) => {
   try {
     JSON.parse(str);
@@ -20,6 +25,11 @@ const isJsonString = (str: string) => {
   return true;
 };
 
+/**
+ * Extracts a JSON string from a text block.
+ * @param {string} text - The text to extract the JSON from.
+ * @returns {string | null} The extracted JSON string, or null if no JSON was found.
+ */
 const extractJsonFromText = (text: string): string | null => {
   // Try to extract JSON from markdown code blocks
   const codeBlockMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
@@ -40,6 +50,11 @@ const extractJsonFromText = (text: string): string | null => {
   return text.trim();
 };
 
+/**
+ * Creates the system instruction for the MARVIN assistant.
+ * @param {AppData} appData - The application data.
+ * @returns {string} The system instruction.
+ */
 const createSystemInstruction = (appData: AppData) => {
   const locationContext = appData.location ? `
 - User Location: ${appData.location.city ? `${appData.location.city}, ` : ''}${appData.location.state || ''} (${appData.location.latitude.toFixed(4)}, ${appData.location.longitude.toFixed(4)})` : `
@@ -140,6 +155,12 @@ interface MarvinResponse {
   additionalActions?: AiAction[];
 }
 
+/**
+ * Gets a response from the MARVIN assistant.
+ * @param {string} prompt - The user's prompt.
+ * @param {AppData} appData - The application data.
+ * @returns {Promise<MarvinResponse>} The response from the assistant.
+ */
 export const getMarvinResponse = async (prompt: string, appData: AppData): Promise<MarvinResponse> => {
   const model = 'gemini-2.5-flash';
   const systemInstruction = createSystemInstruction(appData);

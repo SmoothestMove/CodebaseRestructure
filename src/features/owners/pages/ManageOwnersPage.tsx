@@ -14,6 +14,10 @@ import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
 import { generateLabelPdf } from '@/utils/pdfGenerator';
 import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
+/**
+ * The main page for managing personal owners.
+ * @returns {JSX.Element} The rendered ManageOwnersPage component.
+ */
 const ManageOwnersPage: React.FC = () => {
   const { owners, isLoading: isLoadingOwners } = useOwners();
   const { moveId } = useAuth();

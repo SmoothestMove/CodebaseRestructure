@@ -7,6 +7,15 @@ import { Owner } from '@/types';
 import { IconPlus } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 
+/**
+ * @interface AddOwnerModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {function(Owner): void} onOwnerAdded - A callback function for when an owner is added.
+ * @property {function(string): void} [onAddError] - A callback function for when an error occurs.
+ * @property {string} [initialFirstName] - The initial first name.
+ * @property {string} [initialLastName] - The initial last name.
+ */
 interface AddOwnerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,6 +25,11 @@ interface AddOwnerModalProps {
   initialLastName?: string;
 }
 
+/**
+ * A modal for adding a new owner.
+ * @param {AddOwnerModalProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered AddOwnerModal component.
+ */
 const AddOwnerModal: React.FC<AddOwnerModalProps> = ({ isOpen, onClose, onOwnerAdded, onAddError, initialFirstName, initialLastName }) => {
   const [firstName, setFirstName] = useState(initialFirstName || '');
   const [lastName, setLastName] = useState(initialLastName || '');

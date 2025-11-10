@@ -2,21 +2,38 @@
 import React, { useEffect, useRef } from 'react';
 import { useTheme } from '@/hooks/useTheme'; // Import useTheme
 
+/**
+ * @description Extends the global Window interface to include the QRious library.
+ */
 declare global {
   interface Window {
     QRious: any; 
   }
 }
 
+/**
+ * @interface QRCodeDisplayProps
+ * @description Defines the properties for the QRCodeDisplay component.
+ */
 interface QRCodeDisplayProps {
+  /** The value to be encoded in the QR code. */
   value: string;
+  /** The size of the QR code in pixels. */
   size?: number;
+  /** The error correction level for the QR code. */
   level?: 'L' | 'M' | 'Q' | 'H'; 
+  /** The background color of the QR code. */
   background?: string; 
-  // foreground prop removed, will be determined by theme
+  /** Optional additional CSS classes to apply to the QR code canvas. */
   className?: string;
 }
 
+/**
+ * A component that displays a QR code using the QRious library.
+ * The foreground color of the QR code is automatically adjusted based on the current theme.
+ * @param {QRCodeDisplayProps} props - The properties for the QRCodeDisplay component.
+ * @returns {JSX.Element} The rendered QRCodeDisplay component.
+ */
 const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
   value,
   size = 160,

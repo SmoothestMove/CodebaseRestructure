@@ -9,10 +9,20 @@ import { useOwners } from '@/features/owners/hooks/useOwners';
 import Button from '@/components/common/Button'; 
 import { getItemStatusDisplayLabel } from '@/utils/statusUtils'; 
 
+/**
+ * @interface BoxCardProps
+ * @description Defines the properties for the BoxCard component.
+ */
 interface BoxCardProps { 
+  /** The box data to be displayed in the card. */
   box: Box; 
 }
 
+/**
+ * A component that displays a card with information about a box.
+ * @param {BoxCardProps} props - The properties for the BoxCard component.
+ * @returns {JSX.Element} The rendered BoxCard component.
+ */
 const BoxCard: React.FC<BoxCardProps> = ({ box }) => { 
   const { deleteBoxById } = useBoxes(); 
   const { getOwnerByUid } = useOwners(); 

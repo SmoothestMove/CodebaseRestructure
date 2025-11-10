@@ -15,6 +15,12 @@ import { IconChevronLeft, IconEdit, IconCamera, IconTrash, IconCheck, IconQrCode
 import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '@/utils/statusUtils';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 
+/**
+ * A page that displays the details of a box, including its contents, owner,
+ * history, and a QR code. It also allows the user to edit, update, and
+ * delete the box.
+ * @returns {JSX.Element} The rendered BoxDetailsPage component.
+ */
 const BoxDetailsPage: React.FC = () => {
   const { boxId } = useParams<{ boxId: string }>();
   const navigate = useNavigate();

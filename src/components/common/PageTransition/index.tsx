@@ -3,12 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { pageTransitions, getPageTransition } from '@/lib/animations';
 
+/**
+ * @interface PageTransitionProps
+ * @description Defines the properties for the PageTransition component.
+ */
 interface PageTransitionProps {
+  /** The content to be rendered within the transition. */
   children: React.ReactNode;
+  /** Optional additional CSS classes to apply to the transition container. */
   className?: string;
 }
 
-// Custom hook to track previous location for transition direction
+/**
+ * A custom hook that tracks the previous location for transition direction.
+ * @returns {string | undefined} The previous location's pathname.
+ */
 const usePreviousLocation = () => {
   const location = useLocation();
   const prevLocationRef = React.useRef<string>();
@@ -21,8 +30,10 @@ const usePreviousLocation = () => {
 };
 
 /**
- * PageTransition wrapper component for smooth page transitions
- * Automatically selects appropriate transition based on route hierarchy
+ * A wrapper component that provides smooth page transitions.
+ * It automatically selects an appropriate transition based on the route hierarchy.
+ * @param {PageTransitionProps} props - The properties for the PageTransition component.
+ * @returns {JSX.Element} The rendered PageTransition component.
  */
 const PageTransition: React.FC<PageTransitionProps> = ({ 
   children, 

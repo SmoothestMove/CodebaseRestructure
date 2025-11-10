@@ -1,11 +1,22 @@
 import { toast } from 'react-toastify';
 
-// Mindee API Response Types
+/**
+ * @interface MindeeSupplierCompanyRegistration
+ * @property {string} value - The value of the company registration.
+ * @property {string} type - The type of the company registration.
+ */
 export interface MindeeSupplierCompanyRegistration {
   value: string;
   type: string;
 }
 
+/**
+ * @interface MindeeLineItem
+ * @property {string | null} description - The description of the line item.
+ * @property {number | null} quantity - The quantity of the line item.
+ * @property {number | null} total_amount - The total amount of the line item.
+ * @property {number | null} unit_price - The unit price of the line item.
+ */
 export interface MindeeLineItem {
   description: string | null;
   quantity: number | null;
@@ -13,6 +24,13 @@ export interface MindeeLineItem {
   unit_price: number | null;
 }
 
+/**
+ * @interface MindeeTax
+ * @property {number | null} rate - The tax rate.
+ * @property {number | null} base - The tax base.
+ * @property {number | null} value - The tax value.
+ * @property {string | null} code - The tax code.
+ */
 export interface MindeeTax {
   rate: number | null;
   base: number | null;
@@ -20,12 +38,63 @@ export interface MindeeTax {
   code: string | null;
 }
 
+/**
+ * @interface MindeeLocale
+ * @property {string | null} language - The language of the locale.
+ * @property {string | null} country - The country of the locale.
+ * @property {string | null} currency - The currency of the locale.
+ */
 export interface MindeeLocale {
   language: string | null;
   country: string | null;
   currency: string | null;
 }
 
+/**
+ * @interface MindeeReceiptPrediction
+ * @property {object} category - The category of the receipt.
+ * @property {string | null} category.value - The value of the category.
+ * @property {number} category.confidence - The confidence score for the category.
+ * @property {object} subcategory - The subcategory of the receipt.
+ * @property {string | null} subcategory.value - The value of the subcategory.
+ * @property {number} subcategory.confidence - The confidence score for the subcategory.
+ * @property {object} date - The date of the receipt.
+ * @property {string | null} date.value - The value of the date.
+ * @property {number} date.confidence - The confidence score for the date.
+ * @property {object} time - The time of the receipt.
+ * @property {string | null} time.value - The value of the time.
+ * @property {number} time.confidence - The confidence score for the time.
+ * @property {object} total_amount - The total amount of the receipt.
+ * @property {number | null} total_amount.value - The value of the total amount.
+ * @property {number} total_amount.confidence - The confidence score for the total amount.
+ * @property {object} total_net - The total net amount of the receipt.
+ * @property {number | null} total_net.value - The value of the total net amount.
+ * @property {number} total_net.confidence - The confidence score for the total net amount.
+ * @property {object} total_tax - The total tax amount of the receipt.
+ * @property {number | null} total_tax.value - The value of the total tax amount.
+ * @property {number} total_tax.confidence - The confidence score for the total tax amount.
+ * @property {object} supplier_name - The name of the supplier.
+ * @property {string | null} supplier_name.value - The value of the supplier name.
+ * @property {number} supplier_name.confidence - The confidence score for the supplier name.
+ * @property {object} supplier_address - The address of the supplier.
+ * @property {string | null} supplier_address.value - The value of the supplier address.
+ * @property {number} supplier_address.confidence - The confidence score for the supplier address.
+ * @property {object} supplier_phone_number - The phone number of the supplier.
+ * @property {string | null} supplier_phone_number.value - The value of the supplier phone number.
+ * @property {number} supplier_phone_number.confidence - The confidence score for the supplier phone number.
+ * @property {object} receipt_number - The receipt number.
+ * @property {string | null} receipt_number.value - The value of the receipt number.
+ * @property {number} receipt_number.confidence - The confidence score for the receipt number.
+ * @property {object} tip - The tip amount.
+ * @property {number | null} tip.value - The value of the tip amount.
+ * @property {number} tip.confidence - The confidence score for the tip amount.
+ * @property {object} locale - The locale of the receipt.
+ * @property {MindeeLocale | null} locale.value - The value of the locale.
+ * @property {number} locale.confidence - The confidence score for the locale.
+ * @property {MindeeLineItem[]} line_items - A list of line items.
+ * @property {MindeeTax[]} taxes - A list of taxes.
+ * @property {MindeeSupplierCompanyRegistration[]} supplier_company_registrations - A list of supplier company registrations.
+ */
 export interface MindeeReceiptPrediction {
   category: {
     value: string | null;
@@ -84,6 +153,32 @@ export interface MindeeReceiptPrediction {
   supplier_company_registrations: MindeeSupplierCompanyRegistration[];
 }
 
+/**
+ * @interface MindeeApiResponse
+ * @property {object} api_request - The API request information.
+ * @property {any} api_request.error - An error object, if any.
+ * @property {string[]} api_request.resources - A list of resources used in the request.
+ * @property {string} api_request.status - The status of the request.
+ * @property {number} api_request.status_code - The status code of the request.
+ * @property {string} api_request.url - The URL of the request.
+ * @property {object} document - The document information.
+ * @property {string} document.id - The ID of the document.
+ * @property {string} document.name - The name of the document.
+ * @property {number} document.n_pages - The number of pages in the document.
+ * @property {boolean} document.is_rotation_applied - Whether rotation was applied to the document.
+ * @property {object} document.inference - The inference information.
+ * @property {string} document.inference.started_at - The start time of the inference.
+ * @property {string} document.inference.finished_at - The finish time of the inference.
+ * @property {number} document.inference.processing_time - The processing time of the inference.
+ * @property {object[]} document.inference.pages - A list of pages in the document.
+ * @property {number} document.inference.pages.id - The ID of the page.
+ * @property {object} document.inference.pages.orientation - The orientation of the page.
+ * @property {number} document.inference.pages.orientation.value - The value of the orientation.
+ * @property {MindeeReceiptPrediction} document.inference.pages.prediction - The prediction for the page.
+ * @property {any} document.inference.pages.extras - Any extra information for the page.
+ * @property {MindeeReceiptPrediction} document.inference.prediction - The prediction for the document.
+ * @property {any} document.inference.extras - Any extra information for the document.
+ */
 export interface MindeeApiResponse {
   api_request: {
     error: any;
@@ -113,7 +208,26 @@ export interface MindeeApiResponse {
   };
 }
 
-// Extracted receipt data interface
+/**
+ * @interface ExtractedReceiptData
+ * @property {string} merchantName - The name of the merchant.
+ * @property {number} amount - The total amount of the receipt.
+ * @property {string} date - The date of the receipt.
+ * @property {string} description - A description of the receipt.
+ * @property {string} [categoryHint] - A hint for the category of the receipt.
+ * @property {string} [subcategoryHint] - A hint for the subcategory of the receipt.
+ * @property {object[]} [lineItems] - A list of line items.
+ * @property {string} lineItems.description - The description of the line item.
+ * @property {number | null} lineItems.quantity - The quantity of the line item.
+ * @property {number | null} lineItems.unitPrice - The unit price of the line item.
+ * @property {number | null} lineItems.totalAmount - The total amount of the line item.
+ * @property {object} confidence - The confidence scores for the extracted data.
+ * @property {number} confidence.overall - The overall confidence score.
+ * @property {number} confidence.merchantName - The confidence score for the merchant name.
+ * @property {number} confidence.amount - The confidence score for the amount.
+ * @property {number} confidence.date - The confidence score for the date.
+ * @property {MindeeReceiptPrediction} rawData - The raw prediction data from Mindee.
+ */
 export interface ExtractedReceiptData {
   merchantName: string;
   amount: number;
@@ -136,7 +250,13 @@ export interface ExtractedReceiptData {
   rawData: MindeeReceiptPrediction;
 }
 
-// Configuration interface
+/**
+ * @interface ReceiptScanningConfig
+ * @property {string} apiKey - The API key for the receipt scanning service.
+ * @property {number} [confidenceThreshold] - The confidence threshold for the scanning service.
+ * @property {number} [retryAttempts] - The number of times to retry a failed scan.
+ * @property {number} [timeoutMs] - The timeout for the API request in milliseconds.
+ */
 export interface ReceiptScanningConfig {
   apiKey: string;
   confidenceThreshold?: number;
@@ -144,6 +264,10 @@ export interface ReceiptScanningConfig {
   timeoutMs?: number;
 }
 
+/**
+ * A service for scanning receipts using the Mindee API.
+ * @class
+ */
 export class ReceiptScanningService {
   private apiKey: string;
   private confidenceThreshold: number;
@@ -151,6 +275,10 @@ export class ReceiptScanningService {
   private timeoutMs: number;
   private baseUrl = 'https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict';
 
+  /**
+   * @constructor
+   * @param {ReceiptScanningConfig} config - The configuration for the service.
+   */
   constructor(config: ReceiptScanningConfig) {
     this.apiKey = config.apiKey;
     this.confidenceThreshold = config.confidenceThreshold || 0.7;

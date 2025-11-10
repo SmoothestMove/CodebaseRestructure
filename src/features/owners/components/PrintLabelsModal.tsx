@@ -8,6 +8,13 @@ import { IconQrCode, IconCheck } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 import { useSettings } from '@/features/settings/hooks/useSettings'; // Import useSettings
 
+/**
+ * @interface PrintLabelsModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {Owner | null} owner - The owner to print labels for.
+ * @property {function(Owner, number): Promise<void>} onConfirmPrint - A callback function for when the print is confirmed.
+ */
 interface PrintLabelsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +22,11 @@ interface PrintLabelsModalProps {
   onConfirmPrint: (owner: Owner, numLabels: number) => Promise<void>;
 }
 
+/**
+ * A modal for printing labels for an owner.
+ * @param {PrintLabelsModalProps} props - The props for the component.
+ * @returns {JSX.Element | null} The rendered PrintLabelsModal component, or null if no owner is provided.
+ */
 const PrintLabelsModal: React.FC<PrintLabelsModalProps> = ({
   isOpen,
   onClose,

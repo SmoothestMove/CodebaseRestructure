@@ -1,1 +1,1 @@
-// Login form component with validation and authentication logic.
+// Placeholder for LoginForm component

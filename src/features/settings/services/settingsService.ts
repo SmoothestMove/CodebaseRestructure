@@ -7,6 +7,10 @@ const DEFAULT_SETTINGS: AppSettings = {
   currentMoveId: undefined, // Initialize currentMoveId
 };
 
+/**
+ * Gets the application settings from local storage.
+ * @returns {AppSettings} The application settings.
+ */
 export function getSettings(): AppSettings {
   const settingsJson = localStorage.getItem(SETTINGS_LOCAL_STORAGE_KEY);
   if (settingsJson) {
@@ -23,6 +27,10 @@ export function getSettings(): AppSettings {
   return { ...DEFAULT_SETTINGS };
 }
 
+/**
+ * Saves the application settings to local storage.
+ * @param {AppSettings} settings - The application settings to save.
+ */
 export function saveSettings(settings: AppSettings): void {
   try {
     const settingsJson = JSON.stringify(settings);

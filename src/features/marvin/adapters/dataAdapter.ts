@@ -4,7 +4,17 @@ import { CalendarEvent } from '@/features/calendar/types/calendarTypes';
 import { Expense, Category, Budget } from '@/features/budget/types/types';
 
 /**
- * Converts the existing app data structures to MARVIN's expected AppData format
+ * Converts the existing app data structures to MARVIN's expected AppData format.
+ * @param {Box[]} [boxes=[]] - A list of boxes.
+ * @param {Owner[]} [owners=[]] - A list of owners.
+ * @param {any[]} [budgetReservations=[]] - A list of budget reservations.
+ * @param {CalendarEvent[]} [calendarEvents=[]] - A list of calendar events.
+ * @param {object} [budgetData] - The budget data.
+ * @param {Category[]} budgetData.categories - A list of budget categories.
+ * @param {Expense[]} budgetData.expenses - A list of budget expenses.
+ * @param {Budget} budgetData.budget - The budget.
+ * @param {LocationData | null} [location] - The location data.
+ * @returns {AppData} The app data in MARVIN's format.
  */
 export const createMarvinAppData = (
   boxes: Box[] = [],
@@ -122,7 +132,10 @@ export const createMarvinAppData = (
 };
 
 /**
- * Helper function to get summary stats for MARVIN
+ * A helper function to get summary stats for MARVIN.
+ * @param {Box[]} boxes - A list of boxes.
+ * @param {Owner[]} owners - A list of owners.
+ * @returns {object} The move summary.
  */
 export const getMoveSummary = (boxes: Box[], owners: Owner[]) => {
   const totalBoxes = boxes.length;

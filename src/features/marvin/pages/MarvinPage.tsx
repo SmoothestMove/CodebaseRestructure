@@ -11,6 +11,10 @@ import { useMarvinCalendar } from '@/features/calendar/hooks/useMarvinCalendar';
 import { useMarvinBudget } from '@/features/budget/hooks/useMarvinBudget';
 import { locationService } from '../services/locationService';
 
+/**
+ * The main page for the MARVIN assistant.
+ * @returns {JSX.Element} The rendered MarvinPage component.
+ */
 const MarvinPage: React.FC = () => {
   const navigate = useNavigate();
   const { boxes } = useBoxes();

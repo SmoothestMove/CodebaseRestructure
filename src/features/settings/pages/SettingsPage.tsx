@@ -13,12 +13,22 @@ import { IconSettings, IconTrash } from '@/lib/config/constants';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable } from 'react-icons/fa'; 
 
+/**
+ * @interface AppMetadata
+ * @property {string} name - The name of the application.
+ * @property {string} description - The description of the application.
+ * @property {string} [version] - The version of the application.
+ */
 interface AppMetadata {
   name: string;
   description: string;
   version?: string; 
 }
 
+/**
+ * The main page for managing application settings.
+ * @returns {JSX.Element} The rendered SettingsPage component.
+ */
 const SettingsPage: React.FC = () => {
   const { settings, updateSettings, isLoading: isLoadingSettings } = useSettings();
   const { boxes } = useBoxes();

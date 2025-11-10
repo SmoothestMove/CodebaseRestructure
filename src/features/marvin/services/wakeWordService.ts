@@ -8,6 +8,13 @@ class WakeWordService {
   private porcupineWorker: PorcupineWorker | null = null;
   private running: boolean = false;
 
+  /**
+   * Initializes the wake word service.
+   * @param {string} accessKey - The Picovoice access key.
+   * @param {string} modelPublicPath - The public path to the wake word model.
+   * @param {function(): void} wakeWordCallback - A callback function for when the wake word is detected.
+   * @returns {Promise<void>}
+   */
   async initialize(accessKey: string, modelPublicPath: string, wakeWordCallback: () => void): Promise<void> {
     if (this.running) {
       return;
@@ -62,6 +69,9 @@ class WakeWordService {
     }
   }
 
+  /**
+   * Stops the wake word service.
+   */
   stop() {
     if (this.webVoiceProcessor) {
       (this.webVoiceProcessor as any).stop();
@@ -77,6 +87,10 @@ class WakeWordService {
     }
   }
 
+  /**
+   * Checks if the wake word service is running.
+   * @returns {boolean} Whether the service is running.
+   */
   isRunning(): boolean {
     return this.running;
   }

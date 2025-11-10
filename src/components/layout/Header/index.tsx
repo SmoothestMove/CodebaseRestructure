@@ -9,6 +9,11 @@ import { Mic, Calendar, MapPin } from 'lucide-react';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import Button from '@/components/common/Button'; 
 
+/**
+ * A navigation bar component that displays a sidebar on desktop and a bottom bar on mobile.
+ * It also includes a global search modal.
+ * @returns {JSX.Element} The rendered Navbar component.
+ */
 const Navbar: React.FC = () => {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);

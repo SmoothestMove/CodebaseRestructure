@@ -13,6 +13,10 @@ import Alert from '@/components/common/Alert';
 import { IconPlus, IconQrCode } from '@/lib/config/constants';
 import { getItemStatusDisplayLabel } from '@/utils/statusUtils';
 
+/**
+ * A page that allows the user to pack a new box and generate a QR code for it.
+ * @returns {JSX.Element} The rendered PackBoxPage component.
+ */
 const PackBoxPage: React.FC = () => { // Renamed from AddItemPage
   const [name, setName] = useState('');
   const [contents, setContents] = useState(''); // Renamed from description

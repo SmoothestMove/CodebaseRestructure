@@ -1,18 +1,27 @@
 import React from 'react';
 
+/**
+ * @interface SkeletonProps
+ * @description Defines the properties for the Skeleton component.
+ */
 export interface SkeletonProps {
-  /** Height of the skeleton */
+  /** The height of the skeleton loader. */
   height?: string | number;
-  /** Width of the skeleton */
+  /** The width of the skeleton loader. */
   width?: string | number;
-  /** Border radius variant */
+  /** The shape variant of the skeleton loader. */
   variant?: 'text' | 'rectangular' | 'circular';
-  /** Custom CSS classes */
+  /** Optional additional CSS classes to apply to the skeleton loader. */
   className?: string;
-  /** Animation variant */
+  /** The animation variant of the skeleton loader. */
   animation?: 'pulse' | 'wave' | 'none';
 }
 
+/**
+ * A component that displays a skeleton loader.
+ * @param {SkeletonProps} props - The properties for the Skeleton component.
+ * @returns {JSX.Element} The rendered Skeleton component.
+ */
 const Skeleton: React.FC<SkeletonProps> = ({
   height = '1rem',
   width = '100%',
@@ -58,6 +67,14 @@ const Skeleton: React.FC<SkeletonProps> = ({
 };
 
 // Specialized skeleton components for common use cases
+/**
+ * A specialized skeleton component for text.
+ * @param {object} props - The properties for the SkeletonText component.
+ * @param {number} [props.lines=1] - The number of lines of text to display.
+ * @param {string | number} [props.width='100%'] - The width of the text.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the component.
+ * @returns {JSX.Element} The rendered SkeletonText component.
+ */
 export const SkeletonText: React.FC<{
   lines?: number;
   width?: string | number;
@@ -77,6 +94,13 @@ export const SkeletonText: React.FC<{
   );
 };
 
+/**
+ * A specialized skeleton component for an avatar.
+ * @param {object} props - The properties for the SkeletonAvatar component.
+ * @param {'sm' | 'md' | 'lg' | 'xl'} [props.size='md'] - The size of the avatar.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the component.
+ * @returns {JSX.Element} The rendered SkeletonAvatar component.
+ */
 export const SkeletonAvatar: React.FC<{
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
@@ -96,6 +120,14 @@ export const SkeletonAvatar: React.FC<{
   );
 };
 
+/**
+ * A specialized skeleton component for a button.
+ * @param {object} props - The properties for the SkeletonButton component.
+ * @param {'sm' | 'md' | 'lg'} [props.size='md'] - The size of the button.
+ * @param {string | number} [props.width='auto'] - The width of the button.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the component.
+ * @returns {JSX.Element} The rendered SkeletonButton component.
+ */
 export const SkeletonButton: React.FC<{
   size?: 'sm' | 'md' | 'lg';
   width?: string | number;
@@ -117,6 +149,12 @@ export const SkeletonButton: React.FC<{
 };
 
 // Dashboard-specific skeleton components
+/**
+ * A skeleton component for a stats card.
+ * @param {object} props - The properties for the StatsCardSkeleton component.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the component.
+ * @returns {JSX.Element} The rendered StatsCardSkeleton component.
+ */
 export const StatsCardSkeleton: React.FC<{ className?: string }> = ({ 
   className = '' 
 }) => (
@@ -131,6 +169,12 @@ export const StatsCardSkeleton: React.FC<{ className?: string }> = ({
   </div>
 );
 
+/**
+ * A skeleton component for a list of participants.
+ * @param {object} props - The properties for the ParticipantsSkeleton component.
+ * @param {number} [props.count=3] - The number of participants to display.
+ * @returns {JSX.Element} The rendered ParticipantsSkeleton component.
+ */
 export const ParticipantsSkeleton: React.FC<{ count?: number }> = ({ 
   count = 3 
 }) => (
@@ -156,6 +200,12 @@ export const ParticipantsSkeleton: React.FC<{ count?: number }> = ({
   </div>
 );
 
+/**
+ * A skeleton component for a set of quick actions.
+ * @param {object} props - The properties for the QuickActionsSkeleton component.
+ * @param {number} [props.count=3] - The number of quick actions to display.
+ * @returns {JSX.Element} The rendered QuickActionsSkeleton component.
+ */
 export const QuickActionsSkeleton: React.FC<{ count?: number }> = ({ 
   count = 3 
 }) => (

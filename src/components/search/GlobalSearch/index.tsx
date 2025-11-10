@@ -5,31 +5,49 @@ import { useNavigate } from 'react-router-dom';
 import { shouldReduceMotion } from '@/lib/animations';
 import Button from '@/components/common/Button';
 
+/**
+ * @interface SearchResult
+ * @description Defines the properties for a search result.
+ */
 interface SearchResult {
+  /** The unique identifier for the search result. */
   id: string;
+  /** The type of the search result. */
   type: 'box' | 'expense' | 'owner' | 'category';
+  /** The title of the search result. */
   title: string;
+  /** An optional subtitle for the search result. */
   subtitle?: string;
+  /** An optional description for the search result. */
   description?: string;
+  /** The URL for the search result. */
   url: string;
+  /** The icon for the search result. */
   icon: React.ReactNode;
+  /** Optional metadata for the search result. */
   metadata?: Record<string, any>;
 }
 
+/**
+ * @interface GlobalSearchProps
+ * @description Defines the properties for the GlobalSearch component.
+ */
 interface GlobalSearchProps {
-  /** Whether the search is open */
+  /** Whether the search modal is open. */
   isOpen: boolean;
-  /** Close handler */
+  /** A callback function to be called when the search modal is closed. */
   onClose: () => void;
-  /** Placeholder text */
+  /** An optional placeholder text for the search input. */
   placeholder?: string;
-  /** Maximum number of results per category */
+  /** The maximum number of results to be displayed per category. */
   maxResultsPerCategory?: number;
 }
 
 /**
- * GlobalSearch - Provides cross-feature search functionality
- * Searches across boxes, expenses, owners, and categories
+ * A component that provides cross-feature search functionality.
+ * It searches across boxes, expenses, owners, and categories.
+ * @param {GlobalSearchProps} props - The properties for the GlobalSearch component.
+ * @returns {JSX.Element | null} The rendered GlobalSearch component or null if it's not open.
  */
 const GlobalSearch: React.FC<GlobalSearchProps> = ({
   isOpen,

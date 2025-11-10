@@ -17,6 +17,12 @@ import { IconCamera, IconQrCode, IconCheck, IconChevronLeft, IconLightningBolt, 
 import { getItemStatusDisplayLabel } from '@/utils/statusUtils';
 import { FaUpload } from 'react-icons/fa';
 
+/**
+ * A page that allows the user to scan a QR code on a box to update its
+ * status and location. It also provides a "quick scan" mode for rapidly
+ * loading and unloading boxes.
+ * @returns {JSX.Element} The rendered ScanPage component.
+ */
 const BRAND_TERTIARY_COLOR = '#ff7e00';
 const WHITE_COLOR = '#ffffff';
 const SLATE_50_COLOR = '#f8fafc'; // For dark mode scanner line

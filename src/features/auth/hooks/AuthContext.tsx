@@ -4,18 +4,35 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '@/main';
 import { getSettings, saveSettings } from '@/features/settings/services/settingsService';
 
+/**
+ * @interface AuthContextType
+ * @description Defines the shape of the authentication context.
+ */
 interface AuthContextType {
+  /** The authenticated user object, or null if not authenticated. */
   user: User | null;
+  /** The authenticated user object, or null if not authenticated. */
   currentUser: User | null;
+  /** Whether the authentication status is currently being loaded. */
   loading: boolean;
+  /** The path to redirect to after a successful login. */
   redirectPath: string | null;
+  /** A function to set the redirect path. */
   setRedirectPath: (path: string | null) => void;
+  /** The ID of the current move. */
   moveId: string | null;
+  /** A function to set the current move ID. */
   setMoveId: (id: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * A component that provides authentication context to its children.
+ * @param {object} props - The properties for the AuthProvider component.
+ * @param {ReactNode} props.children - The child components to be rendered within the provider.
+ * @returns {JSX.Element} The rendered AuthProvider component.
+ */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,6 +84,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+/**
+ * A custom hook that provides access to the authentication context.
+ * @returns {AuthContextType} The authentication context.
+ * @throws {Error} If used outside of an AuthProvider.
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

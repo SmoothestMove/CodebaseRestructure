@@ -15,11 +15,20 @@ import { generateLabelPdf } from '@/utils/pdfGenerator';
 import PrintLabelsModal from '@/features/owners/components/PrintLabelsModal';
 import ReprintBatchesModal from '@/features/owners/components/ReprintBatchesModal';
 
+/**
+ * @interface OwnerCardProps
+ * @property {Owner} owner - The owner to display.
+ * @property {boolean} [isCommunal] - Whether the owner is a communal space.
+ */
 interface OwnerCardProps {
   owner: Owner;
   isCommunal?: boolean; 
 }
 
+/**
+ * A map of communal room UIDs to their corresponding icons.
+ * @type {Record<string, React.FC<any>>}
+ */
 const COMMUNAL_ROOM_ICONS: Record<string, React.FC<any>> = {
   'KT': FaUtensils,  // Kitchen
   'LR': FaCouch,     // Living Room
@@ -30,6 +39,11 @@ const COMMUNAL_ROOM_ICONS: Record<string, React.FC<any>> = {
   'OF': FaLaptop,     // Office
 };
 
+/**
+ * A card for displaying an owner's information.
+ * @param {OwnerCardProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered OwnerCard component.
+ */
 const OwnerCard: React.FC<OwnerCardProps> = ({ owner, isCommunal = false }) => {
     const { moveId } = useAuth();
   const { deleteOwnerByUid } = useOwners(); 

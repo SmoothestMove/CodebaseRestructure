@@ -4,6 +4,15 @@ import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import { FaPrint, FaBoxOpen, FaHashtag } from 'react-icons/fa'; 
 
+/**
+ * @interface Batch
+ * @property {string} id - The ID of the batch.
+ * @property {string} name - The name of the batch.
+ * @property {string} boxId - The ID of the first box in the batch.
+ * @property {string} [boxRange] - The range of box IDs in the batch.
+ * @property {number} [count] - The number of boxes in the batch.
+ * @property {Box[]} [boxes] - A list of boxes in the batch.
+ */
 interface Batch {
   id: string;
   name: string;
@@ -13,6 +22,14 @@ interface Batch {
   boxes?: Box[];
 }
 
+/**
+ * @interface ReprintBatchesModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {function(string): void} onReprint - A callback function for when a batch is reprinted.
+ * @property {Batch[]} batches - A list of batches.
+ * @property {Owner} owner - The owner of the batches.
+ */
 interface ReprintBatchesModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +38,11 @@ interface ReprintBatchesModalProps {
   owner: Owner;
 }
 
+/**
+ * A modal for reprinting batches of labels.
+ * @param {ReprintBatchesModalProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered ReprintBatchesModal component.
+ */
 const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
   isOpen,
   onClose,

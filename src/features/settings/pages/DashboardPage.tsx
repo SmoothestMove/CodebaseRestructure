@@ -11,12 +11,22 @@ import { AnimatedGrid } from '@/components/common/AnimatedList';
 import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
 import { FaHouseCircleCheck, FaUserPlus } from 'react-icons/fa6';
 
+/**
+ * @interface ParticipantPresence
+ * @property {boolean} [online] - Whether the participant is online.
+ * @property {string} [displayName] - The display name of the participant.
+ * @property {string} [photoURL] - The photo URL of the participant.
+ */
 interface ParticipantPresence {
   online?: boolean;
   displayName?: string;
   photoURL?: string;
 } 
 
+/**
+ * The main dashboard page for the application.
+ * @returns {JSX.Element} The rendered DashboardPage component.
+ */
 const DashboardPage: React.FC = () => {
     const { boxes, isLoading } = useBoxes(); 
   const { move, presence, loading: moveLoading, error: moveError } = useMove(); 

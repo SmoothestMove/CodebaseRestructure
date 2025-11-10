@@ -1,15 +1,28 @@
-
 import React, { useEffect, useState } from 'react';
 import { IconCheck, IconXMark, IconPlus, IconCamera } from '@/lib/config/constants'; 
 
+/**
+ * Defines the properties for the Alert component.
+ * @interface AlertProps
+ */
 interface AlertProps {
+  /** The message to be displayed in the alert. */
   message: string;
+  /** The type of the alert, which determines its color and icon. */
   type: 'success' | 'error' | 'info' | 'warning';
+  /** An optional callback function that is called when the alert is closed. */
   onClose?: () => void;
+  /** Optional additional CSS classes to apply to the alert. */
   className?: string;
+  /** The duration in milliseconds after which the alert should automatically close. */
   duration?: number; 
 }
 
+/**
+ * A component that displays an alert message to the user.
+ * @param {AlertProps} props - The properties for the Alert component.
+ * @returns {JSX.Element | null} The rendered Alert component or null if no message is provided.
+ */
 const Alert: React.FC<AlertProps> = ({ message, type, onClose, className = '', duration }) => {
   const [isVisible, setIsVisible] = useState(false);
 

@@ -1,6 +1,16 @@
 import { collection, doc, getDoc, getDocs, query, where, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '@/main';
 
+/**
+ * @interface Move
+ * @property {string} id - The ID of the move.
+ * @property {string} moveCode - The code for the move.
+ * @property {string} createdBy - The ID of the user who created the move.
+ * @property {Date} createdAt - The timestamp of when the move was created.
+ * @property {Date} updatedAt - The timestamp of when the move was last updated.
+ * @property {Record<string, boolean>} participants - A map of participant IDs.
+ * @property {Date} [moveDate] - The date of the move.
+ */
 export interface Move {
   id: string;
   moveCode: string;
@@ -21,6 +31,11 @@ const generateMoveCode = (): string => {
   return result;
 };
 
+/**
+ * Gets all moves for a user.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<Move[]>} A list of moves.
+ */
 export const getUserMoves = async (userId: string): Promise<Move[]> => {
   const movesRef = collection(firestore, 'moves');
   const q = query(movesRef, where(`participants.${userId}`, '==', true));
@@ -32,6 +47,11 @@ export const getUserMoves = async (userId: string): Promise<Move[]> => {
   } as Move));
 };
 
+/**
+ * Creates a new move.
+ * @param {string} userId - The ID of the user creating the move.
+ * @returns {Promise<Move>} The new move.
+ */
 export const createMove = async (userId: string): Promise<Move> => {
   // Check if user already has an active move
   const existingMoves = await getUserMoves(userId);
@@ -59,6 +79,12 @@ export const createMove = async (userId: string): Promise<Move> => {
   };
 };
 
+/**
+ * Joins a move.
+ * @param {string} moveCode - The code for the move to join.
+ * @param {string} userId - The ID of the user joining the move.
+ * @returns {Promise<Move | null>} The joined move, or null if it failed.
+ */
 export const joinMove = async (moveCode: string, userId: string): Promise<Move | null> => {
   // Check if user already has an active move
   const existingMoves = await getUserMoves(userId);
@@ -91,6 +117,11 @@ export const joinMove = async (moveCode: string, userId: string): Promise<Move |
   return updatedMove;
 };
 
+/**
+ * Gets a move by its ID.
+ * @param {string} moveId - The ID of the move.
+ * @returns {Promise<Move | null>} The move, or null if not found.
+ */
 export const getMoveById = async (moveId: string): Promise<Move | null> => {
   const moveDoc = await getDoc(doc(firestore, 'moves', moveId));
   if (!moveDoc.exists()) {
@@ -99,6 +130,11 @@ export const getMoveById = async (moveId: string): Promise<Move | null> => {
   return { id: moveDoc.id, ...moveDoc.data() } as Move;
 };
 
+/**
+ * Gets a move by its code.
+ * @param {string} moveCode - The code of the move.
+ * @returns {Promise<Move | null>} The move, or null if not found.
+ */
 export const getMoveByCode = async (moveCode: string): Promise<Move | null> => {
   const movesRef = collection(firestore, 'moves');
   const q = query(movesRef, where('moveCode', '==', moveCode));

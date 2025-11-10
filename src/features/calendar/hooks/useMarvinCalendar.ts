@@ -11,7 +11,10 @@ import {
 } from '@/features/marvin/types/marvin';
 import { CalendarEventInput } from '../types/calendarTypes';
 
-// Hook to provide calendar management functions for MARVIN
+/**
+ * A hook to provide calendar management functions for MARVIN.
+ * @returns {object} The calendar management functions.
+ */
 export function useMarvinCalendar() {
   const { createEvent, updateEvent, deleteEvent, events } = useCalendar();
   const { moveId } = useAuth();

@@ -8,6 +8,13 @@ import { Owner } from '@/types';
 import { IconPlus } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 
+/**
+ * @interface AddSpaceModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {function(Owner): void} onSpaceAdded - A callback function for when a space is added.
+ * @property {function(string): void} onAddError - A callback function for when an error occurs.
+ */
 interface AddSpaceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +22,11 @@ interface AddSpaceModalProps {
   onAddError: (errorMessage: string) => void;
 }
 
+/**
+ * A modal for adding a new custom space.
+ * @param {AddSpaceModalProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered AddSpaceModal component.
+ */
 const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceAdded, onAddError }) => {
   const [spaceName, setSpaceName] = useState('');
   const [color, setColor] = useState('#708090'); // Default to brand-secondary for spaces

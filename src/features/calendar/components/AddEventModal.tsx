@@ -9,12 +9,23 @@ import { useOwners } from '@/features/owners/hooks/useOwners';
 import { CalendarService } from '../services/calendarService';
 import { EventFormData } from '../types/calendarTypes';
 
+/**
+ * @interface AddEventModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {Date} [initialDate] - The initial date for the event.
+ */
 interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialDate?: Date;
 }
 
+/**
+ * A modal for adding a new event to the calendar.
+ * @param {AddEventModalProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered AddEventModal component.
+ */
 export default function AddEventModal({ isOpen, onClose, initialDate }: AddEventModalProps) {
   const { createEvent, loading } = useCalendar();
   const { owners } = useOwners();

@@ -8,13 +8,18 @@ interface GeolocationResult {
   error?: string;
 }
 
+/**
+ * A service for getting the user's location.
+ * @class
+ */
 class LocationService {
   private cachedLocation: LocationData | null = null;
   private locationExpiryTime = 10 * 60 * 1000; // 10 minutes
 
   /**
-   * Get user's current location using browser geolocation API
-   * Caches location for 10 minutes to avoid repeated requests
+   * Gets the user's current location using the browser's geolocation API.
+   * Caches the location for 10 minutes to avoid repeated requests.
+   * @returns {Promise<GeolocationResult>} The result of the geolocation request.
    */
   async getCurrentLocation(): Promise<GeolocationResult> {
     // Check if we have a cached location that's still valid
@@ -107,8 +112,11 @@ class LocationService {
   }
 
   /**
-   * Simple reverse geocoding using a free service
-   * Falls back gracefully if service is unavailable
+   * Performs reverse geocoding using a free service.
+   * Falls back gracefully if the service is unavailable.
+   * @param {number} lat - The latitude.
+   * @param {number} lon - The longitude.
+   * @returns {Promise<{city?: string; state?: string; country?: string} | null>} The reverse geocoding result, or null if it failed.
    */
   private async reverseGeocode(lat: number, lon: number): Promise<{
     city?: string;
@@ -148,8 +156,9 @@ class LocationService {
   }
 
   /**
-   * Request permission for location access
-   * Call this proactively to get user consent
+   * Requests permission for location access.
+   * Call this proactively to get user consent.
+   * @returns {Promise<boolean>} Whether permission was granted.
    */
   async requestLocationPermission(): Promise<boolean> {
     if (!navigator.permissions) {
@@ -177,14 +186,15 @@ class LocationService {
   }
 
   /**
-   * Clear cached location data
+   * Clears the cached location data.
    */
   clearLocationCache(): void {
     this.cachedLocation = null;
   }
 
   /**
-   * Get cached location without making new request
+   * Gets the cached location without making a new request.
+   * @returns {LocationData | null} The cached location data, or null if it's expired or not available.
    */
   getCachedLocation(): LocationData | null {
     if (this.cachedLocation && this.cachedLocation.timestamp) {

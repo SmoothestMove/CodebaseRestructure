@@ -7,6 +7,13 @@ import { IconQrCode, IconCheck } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 import { useSettings } from '@/features/settings/hooks/useSettings';
 
+/**
+ * @interface BatchPrintConfirmationModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {Owner | null} owner - The owner to print labels for.
+ * @property {function(Owner): Promise<void>} onConfirmPrint - A callback function for when the print is confirmed.
+ */
 interface BatchPrintConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +21,11 @@ interface BatchPrintConfirmationModalProps {
   onConfirmPrint: (owner: Owner) => Promise<void>;
 }
 
+/**
+ * A modal for confirming a batch print of labels.
+ * @param {BatchPrintConfirmationModalProps} props - The props for the component.
+ * @returns {JSX.Element | null} The rendered BatchPrintConfirmationModal component, or null if no owner is provided.
+ */
 const BatchPrintConfirmationModal: React.FC<BatchPrintConfirmationModalProps> = ({
   isOpen,
   onClose,

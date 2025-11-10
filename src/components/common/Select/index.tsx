@@ -1,14 +1,29 @@
 
 import React from 'react';
 
+/**
+ * @interface SelectProps
+ * @extends React.SelectHTMLAttributes<HTMLSelectElement>
+ * @description Defines the properties for the Select component.
+ */
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  /** The label to be displayed above the select element. */
   label?: string;
+  /** An error message to be displayed below the select element. */
   error?: string;
+  /** Optional additional CSS classes to apply to the container of the select element. */
   containerClassName?: string;
+  /** An array of options to be displayed in the select element. */
   options: { value: string | number; label: string }[];
+  /** A placeholder to be displayed as the first option. */
   placeholder?: string;
 }
 
+/**
+ * A styled select component with support for labels, errors, and options.
+ * @param {SelectProps} props - The properties for the Select component.
+ * @returns {JSX.Element} The rendered Select component.
+ */
 const Select: React.FC<SelectProps> = ({ 
   label, 
   id, 

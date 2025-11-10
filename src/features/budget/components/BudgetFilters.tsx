@@ -2,15 +2,30 @@ import React from 'react';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { Category } from '../types/types';
 
+/**
+ * @interface BudgetFiltersProps
+ * @description Defines the properties for the BudgetFilters component.
+ */
 interface BudgetFiltersProps {
+  /** The current search term. */
   searchTerm: string;
+  /** A callback function to be called when the search term changes. */
   onSearchChange: (term: string) => void;
+  /** The ID of the currently selected category for filtering. */
   selectedCategoryFilter: string;
+  /** A callback function to be called when the category filter changes. */
   onCategoryFilterChange: (categoryId: string) => void;
+  /** An array of categories to be displayed in the category filter. */
   categories: Category[];
+  /** Optional additional CSS classes to apply to the component. */
   className?: string;
 }
 
+/**
+ * A component that provides search and filter controls for the budget page.
+ * @param {BudgetFiltersProps} props - The properties for the BudgetFilters component.
+ * @returns {JSX.Element} The rendered BudgetFilters component.
+ */
 const BudgetFilters: React.FC<BudgetFiltersProps> = ({
   searchTerm,
   onSearchChange,

@@ -1,6 +1,14 @@
 import React from 'react';
 
-// Custom hook for persistent state using localStorage
+/**
+ * A custom hook that combines useReducer with localStorage for persistent state.
+ * @template S - The type of the state.
+ * @template A - The type of the action.
+ * @param {function(S, A): S} reducer - The reducer function.
+ * @param {S} initialState - The initial state.
+ * @param {string} key - The key to use for storing the state in localStorage.
+ * @returns {[S, React.Dispatch<A>]} A tuple containing the current state and a dispatch function.
+ */
 const usePersistentReducer = <S, A>(
   reducer: (state: S, action: A) => S,
   initialState: S,

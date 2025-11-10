@@ -3,10 +3,19 @@ import { format } from 'date-fns';
 import { User } from 'lucide-react';
 import { CalendarEventWithAssignees } from '../types/calendarTypes';
 
+/**
+ * @interface AgendaEventProps
+ * @property {CalendarEventWithAssignees} event - The event to display.
+ */
 interface AgendaEventProps {
   event: CalendarEventWithAssignees;
 }
 
+/**
+ * A component for displaying an event in the agenda view.
+ * @param {AgendaEventProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered AgendaEventComponent.
+ */
 export default function AgendaEventComponent({ event }: AgendaEventProps) {
   const hasAssignees = event.assigneeDetails && event.assigneeDetails.length > 0;
   const primaryColor = hasAssignees ? event.assigneeDetails[0].color : '#64748b';

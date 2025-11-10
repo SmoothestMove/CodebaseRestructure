@@ -1,12 +1,25 @@
 
 import React from 'react';
 
+/**
+ * @interface TextareaProps
+ * @extends React.TextareaHTMLAttributes<HTMLTextAreaElement>
+ * @description Defines the properties for the Textarea component.
+ */
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  /** The label to be displayed above the textarea. */
   label?: string;
+  /** An error message to be displayed below the textarea. */
   error?: string;
+  /** Optional additional CSS classes to apply to the container of the textarea. */
   containerClassName?: string;
 }
 
+/**
+ * A styled textarea component with support for labels and errors.
+ * @param {TextareaProps} props - The properties for the Textarea component.
+ * @returns {JSX.Element} The rendered Textarea component.
+ */
 const Textarea: React.FC<TextareaProps> = ({ label, id, error, containerClassName = '', className = '', ...props }) => {
   const baseClasses = "block w-full px-4 py-2.5 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 sm:text-sm placeholder-slate-400 dark:placeholder-slate-300 text-slate-900 dark:text-slate-100 transition-colors duration-150";
   const errorClasses = error 

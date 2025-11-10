@@ -49,6 +49,11 @@ const INITIAL_AUTH_STATE: AuthState = {
   successMessage: null
 };
 
+/**
+ * A page that handles user authentication, including sign-in and registration.
+ * It also allows users to start a new move or join an existing one.
+ * @returns {JSX.Element} The rendered AuthPage component.
+ */
 const AuthPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AuthMode>('signin');
   const [moveMode, setMoveMode] = useState<MoveMode>('new');

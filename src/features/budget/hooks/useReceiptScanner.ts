@@ -2,20 +2,27 @@ import React, { useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { ReceiptScanningService, ExtractedReceiptData } from '../services/ReceiptScanningService';
 
-export interface UseReceiptScannerOptions {
-  apiKey: string;
-  confidenceThreshold?: number;
-  onScanSuccess?: (data: ExtractedReceiptData) => void;
-  onScanError?: (error: Error) => void;
-}
+/**
+ * @typedef {object} UseReceiptScannerOptions
+ * @property {string} apiKey - The API key for the receipt scanning service.
+ * @property {number} [confidenceThreshold] - The confidence threshold for the scanning service.
+ * @property {function(ExtractedReceiptData): void} [onScanSuccess] - A callback function for when a scan is successful.
+ * @property {function(Error): void} [onScanError] - A callback function for when a scan fails.
+ */
 
-export interface ReceiptScannerState {
-  isScanning: boolean;
-  extractedData: ExtractedReceiptData | null;
-  error: string | null;
-  imagePreview: string | null;
-}
+/**
+ * @typedef {object} ReceiptScannerState
+ * @property {boolean} isScanning - Whether a scan is in progress.
+ * @property {(ExtractedReceiptData | null)} extractedData - The extracted receipt data.
+ * @property {(string | null)} error - An error message, if any.
+ * @property {(string | null)} imagePreview - A preview of the scanned image.
+ */
 
+/**
+ * A hook for scanning receipts.
+ * @param {UseReceiptScannerOptions} options - The options for the hook.
+ * @returns {object} The receipt scanner state and functions.
+ */
 export const useReceiptScanner = (options: UseReceiptScannerOptions) => {
   const [state, setState] = useState<ReceiptScannerState>({
     isScanning: false,

@@ -12,6 +12,11 @@ import { FaPrint } from 'react-icons/fa';
 import { getItemStatusOptionsForSelect } from '@/utils/statusUtils';
 
 
+/**
+ * A page that displays a list of all tracked boxes.
+ * It allows the user to search, filter, and sort the boxes.
+ * @returns {JSX.Element} The rendered BoxesListPage component.
+ */
 const BoxesListPage: React.FC = () => { 
   const { boxes, isLoading } = useBoxes(); 
   const [searchTerm, setSearchTerm] = useState('');

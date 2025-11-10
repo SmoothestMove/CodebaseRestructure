@@ -20,7 +20,12 @@ const initialState: CalendarState = {
   currentDate: new Date(),
 };
 
-// Reducer
+/**
+ * The reducer for the calendar state.
+ * @param {CalendarState} state - The current state.
+ * @param {CalendarAction} action - The action to dispatch.
+ * @returns {CalendarState} The new state.
+ */
 function calendarReducer(state: CalendarState, action: CalendarAction): CalendarState {
   switch (action.type) {
     case 'SET_LOADING':
@@ -78,6 +83,11 @@ interface CalendarProviderProps {
   children: React.ReactNode;
 }
 
+/**
+ * The provider for the calendar context.
+ * @param {CalendarProviderProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered CalendarProvider component.
+ */
 export function CalendarProvider({ children }: CalendarProviderProps) {
   const [state, dispatch] = useReducer(calendarReducer, initialState);
   const { currentUser, moveId } = useAuth();
@@ -191,7 +201,10 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
   );
 }
 
-// Hook to use calendar context
+/**
+ * A hook to use the calendar context.
+ * @returns {CalendarContextType} The calendar context.
+ */
 export function useCalendar() {
   const context = useContext(CalendarContext);
   if (context === undefined) {

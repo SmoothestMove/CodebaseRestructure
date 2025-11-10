@@ -9,14 +9,28 @@ import Input from '@/components/common/Input';
 import Select from '@/components/common/Select';
 import Textarea from '@/components/common/Textarea';
 
+/**
+ * @interface AddExpenseModalProps
+ * @description Defines the properties for the AddExpenseModal component.
+ */
 interface AddExpenseModalProps {
+  /** Whether the modal is open. */
   isOpen: boolean;
+  /** A callback function to be called when the modal is closed. */
   onClose: () => void;
+  /** A callback function to be called when the form is submitted. */
   onSubmit: (expense: Omit<Expense, 'id'> | Expense) => void;
+  /** An array of categories to be displayed in the category select field. */
   categories: Category[];
+  /** Optional initial data for the form, used for editing an existing expense. */
   initialData?: Expense | null;
 }
 
+/**
+ * A modal component for adding or editing an expense.
+ * @param {AddExpenseModalProps} props - The properties for the AddExpenseModal component.
+ * @returns {JSX.Element} The rendered AddExpenseModal component.
+ */
 const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   isOpen,
   onClose,

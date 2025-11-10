@@ -3,16 +3,32 @@ import React, { ReactNode, useEffect, useState, useRef } from 'react';
 import Button from '@/components/common/Button'; 
 import { IconXMark } from '@/lib/config/constants'; 
 
+/**
+ * @interface ModalProps
+ * @description Defines the properties for the Modal component.
+ */
 interface ModalProps {
+  /** Whether the modal is open or not. */
   isOpen: boolean;
+  /** Callback function to be called when the modal is closed. */
   onClose: () => void;
+  /** The title of the modal. */
   title: string;
+  /** The content to be displayed inside the modal. */
   children: ReactNode;
+  /** An optional footer to be displayed at the bottom of the modal. */
   footer?: ReactNode;
+  /** The size of the modal. */
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Whether to show the close button in the header. */
   showCloseButton?: boolean; 
 }
 
+/**
+ * A classic modal component that appears centered on the screen.
+ * @param {ModalProps} props - The properties for the Modal component.
+ * @returns {JSX.Element | null} The rendered Modal component or null if it's not open.
+ */
 const Modal: React.FC<ModalProps> = ({ 
   isOpen, 
   onClose, 

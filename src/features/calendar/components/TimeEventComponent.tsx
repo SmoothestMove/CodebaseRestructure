@@ -3,10 +3,19 @@ import { format } from 'date-fns';
 import { Clock, User } from 'lucide-react';
 import { CalendarEventWithAssignees } from '../types/calendarTypes';
 
+/**
+ * @interface TimeEventProps
+ * @property {CalendarEventWithAssignees} event - The event to display.
+ */
 interface TimeEventProps {
   event: CalendarEventWithAssignees;
 }
 
+/**
+ * A component for displaying an event in the time view.
+ * @param {TimeEventProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered TimeEventComponent.
+ */
 export default function TimeEventComponent({ event }: TimeEventProps) {
   const hasAssignees = event.assigneeDetails && event.assigneeDetails.length > 0;
   const primaryColor = hasAssignees ? event.assigneeDetails[0].color : '#64748b';

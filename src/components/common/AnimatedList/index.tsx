@@ -2,35 +2,43 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface AnimatedListProps
+ * @description Defines the properties for the AnimatedList component.
+ */
 interface AnimatedListProps {
-  /** Children components to animate */
+  /** Children components to animate. */
   children: React.ReactNode;
-  /** CSS classes for the container */
+  /** CSS classes for the container. */
   className?: string;
-  /** Container element type */
+  /** Container element type. */
   as?: 'div' | 'ul' | 'ol' | 'section';
-  /** Stagger delay between items (in seconds) */
+  /** Stagger delay between items in seconds. */
   staggerDelay?: number;
-  /** Animation variant to use */
+  /** Animation variant to use. */
   variant?: 'fadeUp' | 'slideIn' | 'scale';
-  /** Layout ID for shared element transitions */
+  /** Layout ID for shared element transitions. */
   layoutId?: string;
 }
 
+/**
+ * @interface AnimatedListItemProps
+ * @description Defines the properties for the AnimatedListItem component.
+ */
 interface AnimatedListItemProps {
-  /** Children content */
+  /** Children content. */
   children: React.ReactNode;
-  /** Item index for stagger calculation */
+  /** Item index for stagger calculation. */
   index: number;
-  /** CSS classes for the item */
+  /** CSS classes for the item. */
   className?: string;
-  /** Item element type */
+  /** Item element type. */
   as?: 'div' | 'li' | 'article';
-  /** Animation variant to use */
+  /** Animation variant to use. */
   variant?: 'fadeUp' | 'slideIn' | 'scale';
-  /** Layout ID for shared element transitions */
+  /** Layout ID for shared element transitions. */
   layoutId?: string;
-  /** Custom exit animation */
+  /** Custom exit animation. */
   exit?: any;
 }
 
@@ -101,7 +109,9 @@ const listItemVariants = {
 };
 
 /**
- * AnimatedList - Container component for staggered list animations
+ * A container component that animates a list of items with a staggered effect.
+ * @param {AnimatedListProps} props - The properties for the AnimatedList component.
+ * @returns {JSX.Element} The rendered AnimatedList component.
  */
 const AnimatedList: React.FC<AnimatedListProps> = ({
   children,
@@ -135,7 +145,9 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
 };
 
 /**
- * AnimatedListItem - Individual item component with staggered animation
+ * An individual list item component that animates as part of an AnimatedList.
+ * @param {AnimatedListItemProps} props - The properties for the AnimatedListItem component.
+ * @returns {JSX.Element} The rendered AnimatedListItem component.
  */
 export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
   children,
@@ -188,7 +200,14 @@ export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
 };
 
 /**
- * Pre-built animated grid component for cards
+ * A pre-built animated grid component for displaying items in a grid layout.
+ * @param {object} props - The properties for the AnimatedGrid component.
+ * @param {React.ReactNode} props.children - The child elements to be rendered in the grid.
+ * @param {string} [props.className] - Additional CSS classes for the grid container.
+ * @param {1 | 2 | 3 | 4} [props.columns=2] - The number of columns in the grid.
+ * @param {'sm' | 'md' | 'lg'} [props.gap='md'] - The gap between grid items.
+ * @param {'fadeUp' | 'slideIn' | 'scale'} [props.variant='fadeUp'] - The animation variant to use.
+ * @returns {JSX.Element} The rendered AnimatedGrid component.
  */
 export const AnimatedGrid: React.FC<{
   children: React.ReactNode;

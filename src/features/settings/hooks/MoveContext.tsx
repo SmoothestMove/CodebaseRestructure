@@ -4,6 +4,16 @@ import { useMoveSync } from '../hooks/useMoveSync';
 import { useMovePresence, PresenceState } from '../hooks/useMovePresence';
 import { Move } from '../services/moveService';
 
+/**
+ * @interface MoveContextType
+ * @property {Move | null} move - The current move.
+ * @property {boolean} loading - Whether the move is loading.
+ * @property {Error | null} error - An error object, if any.
+ * @property {Record<string, PresenceState> | null} presence - The presence state of the move.
+ * @property {function(Partial<Omit<Move, 'id' | 'createdAt' | 'updatedAt'>>): Promise<void>} updateMove - A function to update the move.
+ * @property {function(string): Promise<void>} addParticipant - A function to add a participant to the move.
+ * @property {function(string): Promise<void>} removeParticipant - A function to remove a participant from the move.
+ */
 interface MoveContextType {
   move: Move | null;
   loading: boolean;
@@ -21,6 +31,11 @@ type MoveProviderProps = {
   moveId: string | null;
 };
 
+/**
+ * The provider for the move context.
+ * @param {MoveProviderProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered MoveProvider component.
+ */
 export const MoveProvider: React.FC<MoveProviderProps> = ({ children, moveId }) => {
   console.group('MoveProvider');
   console.log('moveId:', moveId);
@@ -116,6 +131,10 @@ export const MoveProvider: React.FC<MoveProviderProps> = ({ children, moveId }) 
   );
 };
 
+/**
+ * A hook to use the move context.
+ * @returns {MoveContextType} The move context.
+ */
 export const useMove = (): MoveContextType => {
   const context = useContext(MoveContext);
   if (context === undefined) {

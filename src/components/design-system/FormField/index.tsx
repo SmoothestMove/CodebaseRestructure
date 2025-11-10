@@ -1,26 +1,35 @@
 import React from 'react';
 
+/**
+ * @interface FormFieldProps
+ * @description Defines the properties for the FormField component.
+ */
 export interface FormFieldProps {
-  /** Field label */
+  /** The label to be displayed for the form field. */
   label?: string;
-  /** Field ID for accessibility */
+  /** The ID of the form field. */
   id?: string;
-  /** Error message to display */
+  /** An error message to be displayed for the form field. */
   error?: string;
-  /** Help text to display */
+  /** Help text to be displayed for the form field. */
   helpText?: string;
-  /** Whether the field is required */
+  /** Whether the form field is required. */
   required?: boolean;
-  /** Layout orientation */
+  /** The layout orientation of the form field. */
   orientation?: 'vertical' | 'horizontal';
-  /** Label width for horizontal layout */
+  /** The width of the label in a horizontal layout. */
   labelWidth?: string;
-  /** Container CSS classes */
+  /** Optional additional CSS classes to apply to the form field container. */
   className?: string;
-  /** Children (form controls) */
+  /** The form control elements to be rendered inside the form field. */
   children: React.ReactNode;
 }
 
+/**
+ * A component that wraps a form control with a label, error message, and help text.
+ * @param {FormFieldProps} props - The properties for the FormField component.
+ * @returns {JSX.Element} The rendered FormField component.
+ */
 const FormField: React.FC<FormFieldProps> = ({
   label,
   id,
@@ -109,26 +118,45 @@ const FormField: React.FC<FormFieldProps> = ({
 };
 
 // Specialized FormField components
+/**
+ * A specialized FormField component with a vertical layout.
+ * @param {Omit<FormFieldProps, 'orientation'>} props - The properties for the VerticalFormField component.
+ * @returns {JSX.Element} The rendered VerticalFormField component.
+ */
 export const VerticalFormField: React.FC<Omit<FormFieldProps, 'orientation'>> = (props) => (
   <FormField {...props} orientation="vertical" />
 );
 
+/**
+ * A specialized FormField component with a horizontal layout.
+ * @param {Omit<FormFieldProps, 'orientation'>} props - The properties for the HorizontalFormField component.
+ * @returns {JSX.Element} The rendered HorizontalFormField component.
+ */
 export const HorizontalFormField: React.FC<Omit<FormFieldProps, 'orientation'>> = (props) => (
   <FormField {...props} orientation="horizontal" />
 );
 
 // FormGroup for grouping related fields
+/**
+ * @interface FormGroupProps
+ * @description Defines the properties for the FormGroup component.
+ */
 export interface FormGroupProps {
-  /** Group title */
+  /** The title of the form group. */
   title?: string;
-  /** Group description */
+  /** A description of the form group. */
   description?: string;
-  /** Container CSS classes */
+  /** Optional additional CSS classes to apply to the form group container. */
   className?: string;
-  /** Children (FormField components) */
+  /** The FormField components to be rendered inside the form group. */
   children: React.ReactNode;
 }
 
+/**
+ * A component that groups related form fields.
+ * @param {FormGroupProps} props - The properties for the FormGroup component.
+ * @returns {JSX.Element} The rendered FormGroup component.
+ */
 export const FormGroup: React.FC<FormGroupProps> = ({
   title,
   description,
@@ -157,21 +185,30 @@ export const FormGroup: React.FC<FormGroupProps> = ({
 );
 
 // FormSection for larger form organization
+/**
+ * @interface FormSectionProps
+ * @description Defines the properties for the FormSection component.
+ */
 export interface FormSectionProps {
-  /** Section title */
+  /** The title of the form section. */
   title: string;
-  /** Section subtitle/description */
+  /** A subtitle or description for the form section. */
   subtitle?: string;
-  /** Whether the section is collapsible */
+  /** Whether the form section is collapsible. */
   collapsible?: boolean;
-  /** Initial collapsed state */
+  /** The initial collapsed state of the form section. */
   defaultCollapsed?: boolean;
-  /** Container CSS classes */
+  /** Optional additional CSS classes to apply to the form section container. */
   className?: string;
-  /** Children (FormGroup or FormField components) */
+  /** The FormGroup or FormField components to be rendered inside the form section. */
   children: React.ReactNode;
 }
 
+/**
+ * A component that organizes a form into collapsible sections.
+ * @param {FormSectionProps} props - The properties for the FormSection component.
+ * @returns {JSX.Element} The rendered FormSection component.
+ */
 export const FormSection: React.FC<FormSectionProps> = ({
   title,
   subtitle,

@@ -6,9 +6,9 @@ import { Move } from '@/features/settings/services/moveService';
 type MoveUpdate = Partial<Omit<Move, 'id' | 'createdAt' | 'updatedAt'>>;
 
 /**
- * Custom hook for real-time move instance synchronization
- * @param moveId - The ID of the move to sync
- * @returns The current move state and functions to update it
+ * A custom hook for real-time move instance synchronization.
+ * @param {string | null} moveId - The ID of the move to sync.
+ * @returns {object} The current move state and functions to update it.
  */
 export function useMoveSync(moveId: string | null) {
   const [move, setMove] = useState<Move | null>(null);
@@ -48,7 +48,9 @@ export function useMoveSync(moveId: string | null) {
   }, [moveId]);
 
   /**
-   * Update the move with new data
+   * Updates the move with new data.
+   * @param {MoveUpdate} updates - The data to update.
+   * @returns {Promise<void>}
    */
   const updateMove = useCallback(async (updates: MoveUpdate) => {
     if (!moveId) {
@@ -68,7 +70,9 @@ export function useMoveSync(moveId: string | null) {
   }, [moveId]);
 
   /**
-   * Add a participant to the move
+   * Adds a participant to the move.
+   * @param {string} userId - The ID of the user to add.
+   * @returns {Promise<void>}
    */
   const addParticipant = useCallback(async (userId: string) => {
     if (!moveId) { return; }
@@ -86,7 +90,9 @@ export function useMoveSync(moveId: string | null) {
   }, [move, moveId]);
 
   /**
-   * Remove a participant from the move
+   * Removes a participant from the move.
+   * @param {string} userId - The ID of the user to remove.
+   * @returns {Promise<void>}
    */
   const removeParticipant = useCallback(async (userId: string) => {
     if (!moveId || !move?.participants) { return; }

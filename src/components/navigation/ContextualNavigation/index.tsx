@@ -5,34 +5,51 @@ import { FaArrowLeft, FaPlus, FaEdit, FaFilter, FaDownload, FaShare, FaCog, FaSe
 import Button from '@/components/common/Button';
 import { shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface ContextualAction
+ * @description Defines the properties for a contextual action.
+ */
 interface ContextualAction {
+  /** The unique identifier for the action. */
   id: string;
+  /** The label for the action. */
   label: string;
+  /** The icon for the action. */
   icon: React.ReactNode;
+  /** The callback function to be called when the action is clicked. */
   onClick: () => void;
+  /** The visual variant of the action button. */
   variant?: 'primary' | 'secondary' | 'ghost';
+  /** Whether to show the action. */
   show?: boolean;
+  /** Whether the action is disabled. */
   disabled?: boolean;
 }
 
+/**
+ * @interface ContextualNavigationProps
+ * @description Defines the properties for the ContextualNavigation component.
+ */
 interface ContextualNavigationProps {
-  /** Override the automatically detected page context */
+  /** An optional override for the automatically detected page context. */
   pageContext?: string;
-  /** Additional custom actions */
+  /** An array of additional custom actions. */
   customActions?: ContextualAction[];
-  /** Show back button */
+  /** Whether to show the back button. */
   showBackButton?: boolean;
-  /** Custom back handler */
+  /** An optional custom callback function for the back button. */
   onBack?: () => void;
-  /** Page title for breadcrumb */
+  /** The title of the current page for the breadcrumb. */
   pageTitle?: string;
-  /** Show breadcrumb navigation */
+  /** Whether to show the breadcrumb navigation. */
   showBreadcrumb?: boolean;
 }
 
 /**
- * ContextualNavigation - Provides dynamic navigation based on current page context
- * Shows relevant actions and navigation options for the current route
+ * A component that provides dynamic navigation based on the current page context.
+ * It displays relevant actions and navigation options for the current route.
+ * @param {ContextualNavigationProps} props - The properties for the ContextualNavigation component.
+ * @returns {JSX.Element} The rendered ContextualNavigation component.
  */
 const ContextualNavigation: React.FC<ContextualNavigationProps> = ({
   pageContext,

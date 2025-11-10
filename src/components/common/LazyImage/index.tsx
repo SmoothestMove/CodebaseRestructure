@@ -2,22 +2,37 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface LazyImageProps
+ * @description Defines the properties for the LazyImage component.
+ */
 interface LazyImageProps {
+  /** The source URL of the image. */
   src: string;
+  /** The alternative text for the image. */
   alt: string;
+  /** A low-resolution placeholder image URL. */
   placeholder?: string;
+  /** Optional additional CSS classes to apply to the image container. */
   className?: string;
+  /** The width of the image. */
   width?: string | number;
+  /** The height of the image. */
   height?: string | number;
+  /** A base64-encoded blur data URL for a blur-up effect. */
   blurDataURL?: string;
+  /** An optional callback function that is called when the image has loaded. */
   onLoad?: () => void;
+  /** An optional callback function that is called if the image fails to load. */
   onError?: () => void;
+  /** The loading strategy for the image. */
   loading?: 'lazy' | 'eager';
+  /** The intersection observer threshold for lazy loading. */
   threshold?: number;
 }
 
 /**
- * LazyImage component with intersection observer and progressive loading
+ * A component that lazy-loads an image with a progressive blur-up effect.
  * Features:
  * - Lazy loading with intersection observer
  * - Blur-up effect from low-quality placeholder

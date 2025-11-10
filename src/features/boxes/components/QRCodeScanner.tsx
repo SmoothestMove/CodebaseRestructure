@@ -20,13 +20,24 @@ declare global {
   }
 }
 
+/**
+ * @interface QRCodeScannerProps
+ * @description Defines the properties for the QRCodeScanner component.
+ */
 interface QRCodeScannerProps {
+  /** A callback function that is called when a QR code is successfully scanned. */
   onScanSuccess: (decodedText: string, decodedResult: any) => void;
+  /** An optional callback function that is called when a scanner error occurs. */
   onScanError?: (error: ScannerError) => void;
+  /** The frames per second to be used for scanning. */
   fps?: number;
+  /** The size of the QR code scanning box. */
   qrbox?: number | { width: number; height: number };
+  /** Whether to enable verbose logging. */
   verbose?: boolean;
+  /** Optional additional CSS classes to apply to the scanner container. */
   className?: string;
+  /** Whether the scanner is enabled. */
   enabled: boolean;
 }
 
@@ -38,12 +49,24 @@ enum ScannerInternalState {
   ERROR = 'ERROR',
 }
 
+/**
+ * @interface ScannerError
+ * @description Defines the shape of a scanner error.
+ */
 export interface ScannerError {
+  /** The error code. */
   code: 'NO_LIBRARY' | 'CONSTRUCTION_FAILED' | 'PERMISSION_DENIED' | 'NO_CAMERA_FOUND' | 'START_FAILED' | 'STOP_FAILED';
+  /** The error message. */
   message: string;
+  /** The raw error object. */
   rawError?: any;
 }
 
+/**
+ * A component that provides a QR code scanner.
+ * @param {QRCodeScannerProps} props - The properties for the QRCodeScanner component.
+ * @returns {JSX.Element} The rendered QRCodeScanner component.
+ */
 export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
   onScanSuccess,
   onScanError = (err) => console.warn("Default QR Scan Error Handler:", err.code, err.message, err.rawError),

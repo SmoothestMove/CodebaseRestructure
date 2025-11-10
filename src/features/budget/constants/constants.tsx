@@ -8,7 +8,10 @@ import {
 } from 'react-icons/fa';
 import { IoHome, IoHammer, IoBagHandle } from 'react-icons/io5';
 
-// Firebase configuration with environment-specific settings
+/**
+ * Firebase configuration with environment-specific settings.
+ * @type {object}
+ */
 export const firebaseConfig = {
   apiKey: String(import.meta.env.VITE_FIREBASE_API_KEY || '').replace(/[\s]/g, ''),
   authDomain: String(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '').replace(/[\s]/g, ''),
@@ -19,8 +22,16 @@ export const firebaseConfig = {
   measurementId: "G-4NW7CSXH7S"
 };
 
+/**
+ * The key for storing settings in local storage.
+ * @type {string}
+ */
 export const SETTINGS_LOCAL_STORAGE_KEY = 'smoothMovesSettings'; 
 
+/**
+ * A list of predefined communal rooms.
+ * @type {Owner[]}
+ */
 export const PREDEFINED_COMMUNAL_ROOMS: Owner[] = [
   { uid: 'KT', firstName: 'Kitchen', lastName: '(Communal)', color: '#FFA500', createdAt: 0 },
   { uid: 'LR', firstName: 'Living Room', lastName: '(Communal)', color: '#008000', createdAt: 0 },
@@ -33,6 +44,10 @@ export const PREDEFINED_COMMUNAL_ROOMS: Owner[] = [
 
 const iconBaseClass = "inline-block";
 
+/**
+ * A mapping of icon names to React components.
+ * @type {object.<string, React.ReactNode>}
+ */
 export const ICONS: { [key: string]: React.ReactNode } = {
     Package: <FaBoxOpen />,
     Truck: <FaTruck />,

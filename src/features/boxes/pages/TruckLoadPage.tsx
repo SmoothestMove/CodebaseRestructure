@@ -10,6 +10,12 @@ import { IconListBullet } from '@/lib/config/constants';
 import { FaSearch, FaTimesCircle, FaTruck } from 'react-icons/fa'; 
 import { Link } from 'react-router-dom';
 
+/**
+ * A page that allows the user to visualize and manage boxes that have been
+ * loaded onto the truck. It displays a truck diagram and a list of loaded
+ * boxes, and allows the user to filter and search for specific boxes.
+ * @returns {JSX.Element} The rendered TruckLoadPage component.
+ */
 const TruckLoadPage: React.FC = () => {
   const { boxes, isLoading } = useBoxes();
   const [searchTerm, setSearchTerm] = useState('');

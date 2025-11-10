@@ -4,10 +4,18 @@ import { firestore as db } from '@/main';
 import { Owner, NewOwnerData } from '@/types';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 
-// Helper to get the owners subcollection for a given move
+/**
+ * A helper function to get the owners subcollection for a given move.
+ * @param {string} moveId - The ID of the move.
+ * @returns {import('firebase/firestore').CollectionReference} The owners collection.
+ */
 const getOwnersCollection = (moveId: string) => collection(db, 'moves', moveId, 'owners');
 
-// Fetches all personal owners from Firestore and merges them with predefined communal rooms
+/**
+ * Fetches all personal owners from Firestore and merges them with predefined communal rooms.
+ * @param {string} moveId - The ID of the move.
+ * @returns {Promise<Owner[]>} A list of owners.
+ */
 export async function getOwners(moveId: string): Promise<Owner[]> {
   const ownersSnapshot = await getDocs(getOwnersCollection(moveId));
   const personalOwners = ownersSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() } as Owner));
@@ -18,7 +26,12 @@ export async function getOwners(moveId: string): Promise<Owner[]> {
   return [...uniquePersonalOwners, ...PREDEFINED_COMMUNAL_ROOMS];
 }
 
-// Fetches a single owner by UID, checking predefined rooms first, then Firestore
+/**
+ * Fetches a single owner by UID, checking predefined rooms first, then Firestore.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} uid - The UID of the owner.
+ * @returns {Promise<Owner | undefined>} The owner, or undefined if not found.
+ */
 export async function getOwnerByUid(moveId: string, uid: string): Promise<Owner | undefined> {
   const communalRoom = PREDEFINED_COMMUNAL_ROOMS.find(room => room.uid === uid);
   if (communalRoom) return communalRoom;
@@ -29,7 +42,13 @@ export async function getOwnerByUid(moveId: string, uid: string): Promise<Owner 
   return ownerDoc.exists() ? { uid: ownerDoc.id, ...ownerDoc.data() } as Owner : undefined;
 }
 
-// Generates a unique UID within the context of a move, avoiding collisions
+/**
+ * Generates a unique UID within the context of a move, avoiding collisions.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} firstName - The first name of the owner.
+ * @param {string} lastName - The last name of the owner.
+ * @returns {Promise<string>} A unique UID.
+ */
 async function generateUniqueUid(moveId: string, firstName: string, lastName: string): Promise<string> {
   let initials = ((firstName?.[0] || '') + (lastName?.[0] || '')).toUpperCase();
   if (!initials) { 
@@ -67,7 +86,12 @@ async function generateUniqueUid(moveId: string, firstName: string, lastName: st
   return uid;
 }
 
-// Adds a new personal owner to Firestore within a transaction for safe UID generation
+/**
+ * Adds a new personal owner to Firestore within a transaction for safe UID generation.
+ * @param {string} moveId - The ID of the move.
+ * @param {NewOwnerData} ownerData - The data for the new owner.
+ * @returns {Promise<Owner>} The new owner.
+ */
 export async function addOwner(moveId: string, ownerData: NewOwnerData): Promise<Owner> {
   // First verify the move exists and user has access
   const moveDoc = await getDoc(doc(db, 'moves', moveId));
@@ -110,7 +134,13 @@ export async function addOwner(moveId: string, ownerData: NewOwnerData): Promise
   }
 }
 
-// Updates an existing personal owner in Firestore
+/**
+ * Updates an existing personal owner in Firestore.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} uid - The UID of the owner to update.
+ * @param {Partial<Omit<Owner, 'uid'>>} updatedData - The data to update.
+ * @returns {Promise<void>}
+ */
 export async function updateOwner(moveId: string, uid: string, updatedData: Partial<Omit<Owner, 'uid'>>): Promise<void> {
   if (PREDEFINED_COMMUNAL_ROOMS.some(room => room.uid === uid)) {
     throw new Error('Communal rooms are predefined and cannot be updated.');
@@ -119,7 +149,12 @@ export async function updateOwner(moveId: string, uid: string, updatedData: Part
   await updateDoc(ownerDocRef, { ...updatedData, updatedAt: serverTimestamp() });
 }
 
-// Deletes a personal owner from Firestore
+/**
+ * Deletes a personal owner from Firestore.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} uid - The UID of the owner to delete.
+ * @returns {Promise<void>}
+ */
 export async function deleteOwner(moveId: string, uid: string): Promise<void> {
   if (PREDEFINED_COMMUNAL_ROOMS.some(room => room.uid === uid)) {
     console.warn('Attempted to delete a predefined communal room. This action is not allowed.');

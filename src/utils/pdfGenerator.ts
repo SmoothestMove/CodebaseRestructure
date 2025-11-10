@@ -10,12 +10,24 @@ declare global {
   }
 }
 
+/**
+ * @interface LabelDataForPdf
+ * @property {string} boxId - The human-readable ID for the text on the label.
+ * @property {string} qrCodeValue - The value to be encoded in the QR code.
+ * @property {string} ownerColor - The hex color code for the owner.
+ */
 interface LabelDataForPdf {
   boxId: string; // Human-readable ID for the text on label
   qrCodeValue: string; // Value to be encoded in QR (usually same as boxId)
   ownerColor: string;
 }
 
+/**
+ * Generates a PDF of labels.
+ * @param {LabelDataForPdf[]} labelsData - A list of label data objects.
+ * @param {Owner} owner - The owner of the labels.
+ * @returns {Promise<void>}
+ */
 export const generateLabelPdf = async (labelsData: LabelDataForPdf[], owner: Owner) => {
   const doc = new jsPDF({
     unit: 'in', 

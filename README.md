@@ -10,12 +10,10 @@ A comprehensive web application designed to help users efficiently manage and tr
 4.  [Installation & Setup](#installation--setup)
 5.  [Development Commands](#development-commands)
 6.  [Folder Structure](#folder-structure)
-7.  [Core Features & Use Cases](#core-features--use-cases)
-8.  [Configuration](#configuration)
-9.  [UI/UX Design Reference](#uiux-design-reference)
-10. [Known Issues / Limitations](#known-issues--limitations)
-11. [Future Development Ideas](#future-development-ideas)
-12. [Credits & Licensing](#credits--licensing)
+7.  [Architecture](#architecture)
+8.  [Contributing](#contributing)
+9.  [Configuration](#configuration)
+10. [Credits & Licensing](#credits--licensing)
 
 ## Overview
 **Purpose:** Smooth Moves is a comprehensive digital moving management platform that revolutionizes the relocation experience. It combines QR code-based box tracking, AI-powered assistance, comprehensive budget management, and real-time collaboration to make moving organized, efficient, and stress-free.
@@ -140,6 +138,7 @@ src/
 │   │   ├── Select/          # Select component
 │   │   ├── Textarea/        # Textarea component
 │   │   └── TruckDiagram/    # Truck visualization
+│   ├── design-system/       # High-level design system components
 │   └── layout/              # Layout components
 │       ├── Header/          # Navigation header
 │       └── Footer/          # Application footer
@@ -219,6 +218,23 @@ src/
 └── App.tsx                # Root component with routing
 ```
 
+## Architecture
+The application is built using a feature-based architecture. Each feature is a self-contained module that includes its own components, hooks, pages, services, and types. This makes it easy to add new features and maintain existing ones.
+
+The application uses Firebase for its backend services, including authentication, a Firestore database, and storage. The frontend is built with React and TypeScript, and uses Vite as its build tool.
+
+## Contributing
+Contributions are welcome! Please follow these steps to contribute:
+
+1.  **Fork the repository.**
+2.  **Create a new branch** for your feature or bug fix.
+3.  **Make your changes.**
+4.  **Write tests** for your changes.
+5.  **Run the tests** to make sure they pass.
+6.  **Submit a pull request.**
+
+Please make sure to follow the existing code style and to document your changes.
+
 ## Configuration
 
 ### Required API Keys
@@ -258,190 +274,6 @@ VITE_MINDEE_API_KEY=your_mindee_api_key
 # Picovoice Wake Word (Optional)
 VITE_PICOVOICE_ACCESS_KEY=your_picovoice_key
 ```
-
-## Core Features & Use Cases
-
-### 🔐 **Authentication & User Management**
-- **Firebase Authentication:** Secure sign-up and sign-in with email/password
-- **Move Management:** Create new moves or join existing ones with Move ID
-- **Protected Routes:** Secure access to application features
-- **User Onboarding:** Guided setup for new users
-
-### 📦 **Box Management System**
-- **QR Code Generation:** Unique QR codes for each box with automatic generation
-- **Status Tracking:** Complete lifecycle tracking from Prepared → Packed → Loaded → Unloaded → Delivered → Unpacked
-- **Box Details:** Comprehensive information including contents, photos, destination rooms
-- **Real-time Updates:** Live synchronization across all connected devices
-
-### 👥 **Owner & Space Management**
-- **Personal Owners:** Assign boxes to specific individuals with color-coded identification
-- **Shared Spaces:** Manage communal areas (kitchen, living room) and custom spaces
-- **Visual Organization:** Color-coded system for easy identification
-- **Bulk Operations:** Batch printing and management of multiple boxes
-
-### 💰 **Financial Navigator (Budget Tracker)**
-- **Comprehensive Budget Management:** Set total moving budget with move type templates
-- **AI Receipt Scanning:** Automatic expense extraction from receipt photos using Mindee OCR
-- **Expense Tracking:** Record all moving-related expenses with categories
-- **Visual Analytics:** Interactive charts showing spending patterns and budget usage
-- **Category Management:** Customize expense categories with icons and colors
-- **Smart Insights:** Track budget vs actual spending with alerts and warnings
-- **Receipt Management:** Store merchant details, descriptions, and receipt images
-- **Export Capabilities:** Generate reports and track spending over time
-
-### 📱 **QR Code Scanning & Mobile Features**
-- **Camera Integration:** Use device camera to scan QR codes for quick updates
-- **Progressive Status Updates:** Smart scanning that suggests next logical status
-- **Mobile-First Design:** Optimized interface for mobile devices
-- **Offline Capability:** Core scanning features work without internet
-
-### 🚛 **Truck Loading Visualization**
-- **Interactive Truck Diagram:** Visual representation of truck loading zones
-- **Zone Assignment:** Assign boxes to specific truck zones and positions
-- **Load Optimization:** Visual feedback for efficient truck loading
-- **Loading Progress:** Track loading status in real-time
-
-### 📅 **Calendar System**
-- **Interactive Calendar Views:** Month, week, day, and agenda views using React Big Calendar
-- **Event Management:** Create, edit, and delete moving-related events with full CRUD operations
-- **Team Collaboration:** Assign events to specific team members with real-time updates
-- **Firebase Integration:** Real-time synchronization across all connected devices
-- **MARVIN Integration:** AI-powered event creation and scheduling through natural language
-- **Event Details:** Rich event descriptions, time management, and assignee tracking
-- **Responsive Design:** Optimized calendar interface for all screen sizes
-
-### 🧾 **AI Receipt Scanning**
-- **Mindee OCR Integration:** Advanced receipt processing using computer vision
-- **Automated Data Extraction:** Merchant name, amount, date, and line items from receipt images
-- **Smart Category Mapping:** AI-suggested categories mapped to local budget categories
-- **Confidence Scoring:** Visual indicators showing extraction accuracy (High/Medium/Low)
-- **Multi-format Support:** JPEG, PNG, GIF, PDF files up to 5MB
-- **3-step Workflow:** Upload → AI Processing → Review & Edit extracted data
-- **Error Handling:** Comprehensive error handling with retry logic and user-friendly messages
-- **Receipt Storage:** Base64 image storage with expense records
-
-### 📋 **Planner System**
-- **Comprehensive Task Management:** Create, organize, and track moving-related tasks
-- **Drag & Drop Interface:** Intuitive task organization with timeframe columns
-- **Custom Fields Configuration:** Flexible task attributes and metadata
-- **Member Assignment:** Assign tasks to specific team members with tracking
-- **Timeline Management:** Visual timeline with milestones and deadlines
-- **Tag System:** Categorize and filter tasks with custom tags
-- **Task Attachments:** File attachments and detailed task documentation
-- **Firebase Integration:** Real-time synchronization across all devices
-- **Bulk Operations:** Import checklists and batch task creation
-
-### 🤖 **MARVIN AI Assistant**
-- **Natural Language Processing:** Google Gemini API integration for contextual responses
-- **Voice Interaction:** Speech recognition and text-to-speech capabilities
-- **Wake Word Detection:** "Let's Move Marvin" activation using Picovoice technology
-- **Moving Context Awareness:** Real-time access to your boxes, owners, budget, and calendar data
-- **Smart Actions:** Create calendar events, manage budget expenses, and navigate app features
-- **Budget Integration:** Add expenses, create categories, and query spending through voice commands
-- **Calendar Integration:** Schedule events, check availability, and manage move timeline
-- **Web Search Integration:** Real-time search for moving-related queries
-- **Mobile Optimized:** Cross-platform voice support for mobile browsers
-
-### 📄 **PDF Label Generation**
-- **Batch Printing:** Generate multiple QR code labels at once
-- **Color-Coded Labels:** Labels match owner/space color schemes
-- **Professional Layout:** Clean, printable PDF format
-- **Customizable Batches:** Choose number of labels per batch
-
-### 🎨 **User Experience Features**
-- **Dark/Light Mode:** System-wide theme switching with persistence
-- **Responsive Design:** Seamless experience across all device sizes
-- **Animated Transitions:** Smooth Framer Motion animations
-- **Toast Notifications:** Real-time feedback for all user actions
-- **Loading States:** Comprehensive loading indicators throughout the app
-
-## UI/UX Design Reference
-**Color Palette (from Tailwind Config):**
-*   **Primary Branding:**
-    *   `brand-primary`: `#1e3a5f` (Dark Blue) - Headers, Footers, backgrounds
-    *   `brand-secondary`: `#708090` (Slate Gray) - Text, secondary elements
-    *   `brand-tertiary`: `#ff7e00` (Bright Orange) - CTAs, highlights, active states
-    *   `brand-accent`: `#e1a95f` (Muted Peach/Orange) - Warnings, accents
-*   **Backgrounds:**
-    *   Light Mode: `bg-slate-100` (body), `bg-white` (cards/modals)
-    *   Dark Mode: `dark:bg-slate-900` (body), `dark:bg-slate-800` (cards/modals), `dark:bg-slate-700`
-*   **Text:**
-    *   Light Mode: `text-brand-primary`, `text-brand-secondary`, `text-slate-900`
-    *   Dark Mode: `dark:text-slate-100`, `dark:text-slate-300`, `dark:text-slate-400`
-*   **Status Specific (Dark Mode Values from Tailwind config):**
-    *   Error: `dark-red-error: #f87171`
-    *   Success: `dark-green-success: #4ade80`
-    *   Delivered: `dark-purple-delivered: #c084fc`
-
-**Fonts:**
-*   Primary Font: `Inter` (sans-serif)
-*   Fallback: `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `'Segoe UI'`, `Roboto`, `Oxygen`, `Ubuntu`, `Cantarell`, `'Open Sans'`, `'Helvetica Neue'`, `sans-serif`.
-
-**Button States:**
-*   **Default:** Styled with background color, shadow.
-*   **Hover:** Darker shade of background, increased shadow, potential scale transform.
-*   **Active/Clicked:** `active:scale-95` transform.
-*   **Focus:** Ring outline matching the button's theme color.
-*   **Disabled:** Reduced opacity, cursor-not-allowed, no shadow.
-*   **Loading/Success:** Shows spinner or checkmark icon, text changes (e.g., "Processing...", "Success!").
-
-**Animations / Transitions (from Tailwind Config & Observed):**
-*   `pulse-bg-once`: Gentle background pulse, e.g., for quick scan mode active banner.
-*   `fade-in`, `fade-out`: Used for modals, alerts, and content visibility changes.
-*   `slide-up`: Used for modal appearance.
-*   `scan-line-vertical`: Animated line in the QR scanner overlay.
-*   Standard Tailwind transitions for colors, transforms (`duration-150`, `duration-200`, `duration-300`).
-
-## Known Issues / Limitations
-*   **Missing Error Boundaries:** No global error handling for component failures
-*   **Large Components:** Budget component (673 lines) could benefit from splitting into smaller components
-*   **Budget Firebase Integration:** Budget feature uses localStorage only, not synced with Firebase
-*   **Testing Framework:** No test suite currently configured
-*   **Performance:** Large datasets in budget tracking may impact performance
-*   **Camera Permissions:** QR scanning requires explicit camera permissions from users
-*   **PDF Generation:** Complex layouts with many labels may have performance considerations
-*   **MARVIN Voice Limitations:** Voice quality depends on browser and platform (mobile browsers have limited voice options)
-*   **API Dependencies:** MARVIN and receipt scanning require external API keys (Gemini, Mindee, Picovoice) for full functionality
-*   **MARVIN Wake Word:** Picovoice access key required for "Let's Move Marvin" activation (optional feature)
-*   **Receipt Scanning Rate Limits:** Mindee free tier limited to 250 API calls/month, 20 calls/minute
-
-## Future Development Ideas
-
-### 🚀 **Enhanced Features**
-*   **Document Vault:** Secure storage for moving-related documents and contracts
-*   **Advanced Analytics:** Predictive spending analysis and cost optimization suggestions
-*   **Bulk Operations:** Enhanced bulk editing and batch operations for boxes
-*   **Image Management:** Direct device uploads and image optimization
-*   **Enhanced Receipt Processing:** Multi-receipt detection and batch processing capabilities
-
-### 🤖 **Enhanced AI Features**
-*   **Advanced MARVIN Capabilities:**
-    *   Smart suggestions for box contents based on room/context
-    *   Voice commands for hands-free box updates
-    *   AI-powered move progress summaries and insights
-    *   Enhanced inventory management integration
-*   **Smart Categorization:** Automatic expense categorization using AI
-*   **Workload Distribution:** AI-powered task delegation among move participants
-*   **Computer Vision:** Box content identification through camera
-*   **Predictive Analytics:** Moving timeline optimization and delay prediction
-
-### 📱 **Enhanced Mobile & Collaboration**
-*   **Progressive Web App:** Enhanced offline capabilities with Service Workers
-*   **Push Notifications:** Real-time alerts for move updates and budget warnings
-*   **In-App Messaging:** Team communication system for move coordination
-*   **Video Calls:** Integrated video chat for remote collaboration
-
-### 🗺️ **Location & Planning**
-*   **Google Maps Integration:** Route planning and moving day logistics
-*   **Google Calendar Integration:** External calendar sync with existing calendar system
-*   **Enhanced Timeline Features:** Advanced progress tracking and milestone management
-*   **Inventory Valuation:** Insurance and valuation tracking for belongings
-
-### 🔧 **Technical Improvements**
-*   **Enhanced PDF Customization:** Advanced label design and layout options
-*   **Advanced Reporting:** Comprehensive move analytics and export capabilities
-*   **API Integration:** Third-party integrations with moving services and vendors
-*   **Multi-language Support:** Internationalization for global users
 
 ## Credits & Licensing
 **Developed by:** AI Assistant (as part of a development exercise)

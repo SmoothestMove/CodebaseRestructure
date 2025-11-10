@@ -2,25 +2,31 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface BrandedLoaderProps
+ * @description Defines the properties for the BrandedLoader component.
+ */
 interface BrandedLoaderProps {
-  /** Loading variant */
+  /** The loading variant to be displayed. */
   variant?: 'spinner' | 'dots' | 'pulse' | 'wave' | 'boxes' | 'truck';
-  /** Size of the loader */
+  /** The size of the loader. */
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  /** Loading message */
+  /** An optional message to be displayed below the loader. */
   message?: string;
-  /** Show progress percentage */
+  /** An optional progress percentage to be displayed. */
   progress?: number;
-  /** Color scheme */
+  /** The color scheme of the loader. */
   color?: 'brand' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-  /** Custom CSS classes */
+  /** Optional additional CSS classes to apply to the loader container. */
   className?: string;
-  /** Center the loader */
+  /** Whether to center the loader. */
   centered?: boolean;
 }
 
 /**
- * BrandedLoader - Custom loading animations aligned with Smooth Moves branding
+ * A component that displays a custom loading animation aligned with the Smooth Moves branding.
+ * @param {BrandedLoaderProps} props - The properties for the BrandedLoader component.
+ * @returns {JSX.Element} The rendered BrandedLoader component.
  */
 const BrandedLoader: React.FC<BrandedLoaderProps> = ({
   variant = 'spinner',
@@ -298,7 +304,9 @@ const BrandedLoader: React.FC<BrandedLoaderProps> = ({
 };
 
 /**
- * FullScreenLoader - Full screen loading overlay
+ * A full-screen loading overlay.
+ * @param {Omit<BrandedLoaderProps, 'centered'> & { backdrop?: boolean; backdropOpacity?: number; }} props - The properties for the FullScreenLoader component.
+ * @returns {JSX.Element} The rendered FullScreenLoader component.
  */
 export const FullScreenLoader: React.FC<Omit<BrandedLoaderProps, 'centered'> & {
   /** Show backdrop */
@@ -331,7 +339,9 @@ export const FullScreenLoader: React.FC<Omit<BrandedLoaderProps, 'centered'> & {
 );
 
 /**
- * InlineLoader - Smaller inline loader for buttons and small spaces
+ * A smaller inline loader for buttons and other small spaces.
+ * @param {Pick<BrandedLoaderProps, 'variant' | 'color'>} props - The properties for the InlineLoader component.
+ * @returns {JSX.Element} The rendered InlineLoader component.
  */
 export const InlineLoader: React.FC<Pick<BrandedLoaderProps, 'variant' | 'color'>> = ({
   variant = 'spinner',

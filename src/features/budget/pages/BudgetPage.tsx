@@ -1,6 +1,10 @@
 import React from 'react';
 import Budgeting from '../components/Budgeting';
 
+/**
+ * The main page for the budgeting feature.
+ * @returns {JSX.Element} The rendered BudgetPage component.
+ */
 const BudgetPage: React.FC = () => {
   return (
     <div className="min-h-screen text-slate-300">

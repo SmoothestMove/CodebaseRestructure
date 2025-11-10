@@ -5,6 +5,21 @@ import { INITIAL_CATEGORIES } from '../constants/constants';
 import { AddExpenseAction, CreateBudgetCategoryAction, QueryBudgetAction } from '@/features/marvin/types';
 import usePersistentReducer from './usePersistentReducer';
 
+/**
+ * @typedef {object} Action
+ * @property {('ADD_EXPENSE' | 'UPDATE_EXPENSE' | 'DELETE_EXPENSE' | 'ADD_CATEGORY' | 'UPDATE_CATEGORY' | 'DELETE_CATEGORY' | 'SET_BUDGET' | 'SET_CATEGORY_BUDGETS' | 'SET_CATEGORIES')} type - The action type.
+ * @property {object} payload - The action payload.
+ */
+
+/**
+ * @typedef {object} AppState
+ * @property {Expense[]} expenses - A list of expenses.
+ * @property {Category[]} categories - A list of categories.
+ * @property {object} budget - The budget information.
+ * @property {number} budget.totalEstimatedAmount - The total estimated amount for the budget.
+ * @property {MoveType} budget.moveType - The type of move.
+ */
+
 // Types for the budget state
 type Action =
   | { type: 'ADD_EXPENSE'; payload: Omit<Expense, 'id'> }
@@ -26,7 +41,12 @@ interface AppState {
   };
 }
 
-// Reducer function
+/**
+ * The reducer function for managing the budget state.
+ * @param {AppState} state - The current state.
+ * @param {Action} action - The dispatched action.
+ * @returns {AppState} The new state.
+ */
 const budgetReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case 'ADD_EXPENSE':
@@ -100,6 +120,10 @@ const initialState: AppState = {
   }
 };
 
+/**
+ * A hook for managing the budget with MARVIN integration.
+ * @returns {object} The budget management functions and data.
+ */
 export const useMarvinBudget = () => {
   const [state, dispatch] = usePersistentReducer(budgetReducer, initialState, 'budget-tracker-state');
 

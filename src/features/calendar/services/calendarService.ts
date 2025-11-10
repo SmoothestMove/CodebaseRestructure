@@ -18,8 +18,18 @@ import { CalendarEvent, CalendarEventInput } from '../types/calendarTypes';
 // Helper to get the calendar events subcollection for a given move
 const getCalendarCollection = (moveId: string) => collection(db, 'moves', moveId, 'calendar_events');
 
+/**
+ * A service for managing calendar events in Firestore.
+ * @class
+ */
 export class CalendarService {
-  // Create a new calendar event
+  /**
+   * Creates a new calendar event.
+   * @param {string} moveId - The ID of the move.
+   * @param {string} userId - The ID of the user creating the event.
+   * @param {CalendarEventInput} eventData - The data for the new event.
+   * @returns {Promise<string>} The ID of the new event.
+   */
   static async createEvent(moveId: string, userId: string, eventData: CalendarEventInput): Promise<string> {
     try {
       const now = Timestamp.now();
@@ -37,7 +47,13 @@ export class CalendarService {
     }
   }
 
-  // Update an existing calendar event
+  /**
+   * Updates an existing calendar event.
+   * @param {string} moveId - The ID of the move.
+   * @param {string} eventId - The ID of the event to update.
+   * @param {Partial<CalendarEventInput>} eventData - The data to update.
+   * @returns {Promise<void>}
+   */
   static async updateEvent(moveId: string, eventId: string, eventData: Partial<CalendarEventInput>): Promise<void> {
     try {
       const calendarCollection = getCalendarCollection(moveId);
@@ -52,7 +68,12 @@ export class CalendarService {
     }
   }
 
-  // Delete a calendar event
+  /**
+   * Deletes a calendar event.
+   * @param {string} moveId - The ID of the move.
+   * @param {string} eventId - The ID of the event to delete.
+   * @returns {Promise<void>}
+   */
   static async deleteEvent(moveId: string, eventId: string): Promise<void> {
     try {
       const calendarCollection = getCalendarCollection(moveId);
@@ -64,7 +85,13 @@ export class CalendarService {
     }
   }
 
-  // Subscribe to calendar events for a specific move
+  /**
+   * Subscribes to calendar events for a specific move.
+   * @param {string} moveId - The ID of the move.
+   * @param {function(CalendarEvent[]): void} onEventsUpdate - A callback function for when events are updated.
+   * @param {function(FirestoreError): void} onError - A callback function for when an error occurs.
+   * @returns {Unsubscribe} A function to unsubscribe from the listener.
+   */
   static subscribeToEvents(
     moveId: string,
     onEventsUpdate: (events: CalendarEvent[]) => void,
@@ -99,7 +126,19 @@ export class CalendarService {
     );
   }
 
-  // Helper method to convert date strings to Date objects for Firebase storage
+  /**
+   * A helper method to convert date strings to Date objects for Firebase storage.
+   * @param {object} eventData - The event data.
+   * @param {string} eventData.title - The title of the event.
+   * @param {string} [eventData.description] - The description of the event.
+   * @param {string} eventData.startDate - The start date of the event in YYYY-MM-DD format.
+   * @param {string} [eventData.startTime] - The start time of the event in HH:MM format.
+   * @param {string} eventData.endDate - The end date of the event in YYYY-MM-DD format.
+   * @param {string} [eventData.endTime] - The end time of the event in HH:MM format.
+   * @param {boolean} [eventData.allDay] - Whether the event is an all-day event.
+   * @param {string[]} [eventData.assignees] - A list of assignee IDs.
+   * @returns {CalendarEventInput} The event data with Date objects.
+   */
   static createEventWithDates(eventData: {
     title: string;
     description?: string;

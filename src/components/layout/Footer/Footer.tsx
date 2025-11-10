@@ -1,1 +1,1 @@
-// Footer component containing links, copyright, and additional information.
+// Placeholder for Footer component

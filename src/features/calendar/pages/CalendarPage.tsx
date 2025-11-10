@@ -27,6 +27,10 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+/**
+ * The main page for the calendar feature.
+ * @returns {JSX.Element} The rendered CalendarPage component.
+ */
 export default function CalendarPage() {
   const { 
     events, 

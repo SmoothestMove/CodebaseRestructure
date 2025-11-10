@@ -1,1 +1,26 @@
-// CSS module for Footer component styling.
+.footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e7e7e7;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.nav {
+  margin-top: 10px;
+}
+
+.nav a {
+  margin: 0 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}

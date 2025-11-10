@@ -6,15 +6,28 @@ import TruckDiagram from '@/components/common/TruckDiagram';
 import { Box, TruckZone, VerticalPosition, TRUCK_ZONES } from '@/types';
 import { IconCheck } from '@/lib/config/constants';
 
+/**
+ * @interface TruckZoneSelectorModalProps
+ * @description Defines the properties for the TruckZoneSelectorModal component.
+ */
 interface TruckZoneSelectorModalProps {
+  /** Whether the modal is open. */
   isOpen: boolean;
+  /** A callback function to be called when the modal is closed. */
   onClose: () => void;
+  /** The box to be placed in the truck. */
   box: Box | null;
+  /** A callback function to be called when a truck zone and vertical position have been selected. */
   onPositionSelected: (boxId: string, zone: TruckZone, verticalPosition: VerticalPosition) => void;
 }
 
 const VERTICAL_POSITIONS: VerticalPosition[] = ['Bottom', 'Middle', 'Top'];
 
+/**
+ * A modal component that allows the user to select a truck zone and vertical position for a box.
+ * @param {TruckZoneSelectorModalProps} props - The properties for the TruckZoneSelectorModal component.
+ * @returns {JSX.Element} The rendered TruckZoneSelectorModal component.
+ */
 const TruckZoneSelectorModal: React.FC<TruckZoneSelectorModalProps> = ({
   isOpen,
   onClose,

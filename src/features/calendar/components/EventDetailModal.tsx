@@ -13,12 +13,23 @@ import { useCalendar } from '../hooks/useCalendar';
 import { useOwners } from '@/features/owners/hooks/useOwners';
 import { CalendarEvent } from '../types/calendarTypes';
 
+/**
+ * @interface EventDetailModalProps
+ * @property {boolean} isOpen - Whether the modal is open.
+ * @property {function(): void} onClose - A callback function for when the modal is closed.
+ * @property {CalendarEvent} event - The event to display.
+ */
 interface EventDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   event: CalendarEvent;
 }
 
+/**
+ * A modal for displaying the details of an event.
+ * @param {EventDetailModalProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered EventDetailModal component.
+ */
 export default function EventDetailModal({ isOpen, onClose, event }: EventDetailModalProps) {
   const { deleteEvent, loading } = useCalendar();
   const { owners } = useOwners();

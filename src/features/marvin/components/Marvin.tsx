@@ -16,6 +16,15 @@ declare global {
   }
 }
 
+/**
+ * @interface MarvinProps
+ * @property {AppData} appData - The application data.
+ * @property {function(any): Promise<any>} onCalendarAction - A callback function for calendar actions.
+ * @property {function(string): void} onNavigate - A callback function for navigation actions.
+ * @property {function(Omit<ChecklistItem, 'id' | 'completed'>[]): void} onUpdateChecklist - A callback function for updating the checklist.
+ * @property {function(): void} onWakeWordDetected - A callback function for when the wake word is detected.
+ * @property {function(AddExpenseAction | CreateBudgetCategoryAction | QueryBudgetAction): Promise<any>} [onBudgetAction] - A callback function for budget actions.
+ */
 interface MarvinProps {
   appData: AppData;
   onCalendarAction: (action: any) => Promise<any>;
@@ -34,6 +43,11 @@ const promptStarters = [
   "Set a reminder for Saturday."
 ];
 
+/**
+ * The main component for the MARVIN assistant.
+ * @param {MarvinProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered Marvin component.
+ */
 export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNavigate, onUpdateChecklist, onWakeWordDetected, onBudgetAction }) => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 'init', text: "Hello! I'm MARVIN, your moving assistant. How can I help you plan your relocation today?", sender: MessageSender.AI }
@@ -526,6 +540,13 @@ export const Marvin: React.FC<MarvinProps> = ({ appData, onCalendarAction, onNav
   );
 };
 
+/**
+ * A component for displaying a chat message.
+ * @param {object} props - The props for the component.
+ * @param {Message} props.message - The message to display.
+ * @param {boolean} [props.isCurrentlySpeaking=false] - Whether the assistant is currently speaking the message.
+ * @returns {JSX.Element} The rendered ChatMessage component.
+ */
 const ChatMessage: React.FC<{ message: Message, isCurrentlySpeaking?: boolean }> = ({ message, isCurrentlySpeaking = false }) => {
   const isUser = message.sender === MessageSender.USER;
   return (
@@ -545,6 +566,10 @@ const ChatMessage: React.FC<{ message: Message, isCurrentlySpeaking?: boolean }>
   );
 };
 
+/**
+ * A component for displaying a loading message.
+ * @returns {JSX.Element} The rendered LoadingMessage component.
+ */
 const LoadingMessage: React.FC = () => (
   <div className="flex items-start gap-4">
     <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-cyan-500"><BotIcon /></div>
@@ -552,6 +577,15 @@ const LoadingMessage: React.FC = () => (
   </div>
 );
 
+/**
+ * A toggle switch component.
+ * @param {object} props - The props for the component.
+ * @param {string} props.id - The ID of the component.
+ * @param {boolean} props.enabled - Whether the switch is enabled.
+ * @param {function(): void} props.onChange - A callback function for when the switch is toggled.
+ * @param {boolean} [props.disabled] - Whether the switch is disabled.
+ * @returns {JSX.Element} The rendered ToggleSwitch component.
+ */
 const ToggleSwitch = ({ id, enabled, onChange, disabled }: { id: string, enabled: boolean, onChange: () => void, disabled?: boolean }) => (
   <button 
     type="button" 

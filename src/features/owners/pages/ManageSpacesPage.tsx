@@ -15,6 +15,10 @@ import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrint
 import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
 
+/**
+ * The main page for managing spaces.
+ * @returns {JSX.Element} The rendered ManageSpacesPage component.
+ */
 const ManageSpacesPage: React.FC = () => {
   const { owners, isLoading: isLoadingOwners } = useOwners();
   const { settings } = useSettings(); 

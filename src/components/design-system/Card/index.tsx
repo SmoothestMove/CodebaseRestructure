@@ -1,22 +1,33 @@
 import React from 'react';
 import { colors, spacing, shadows } from '../foundations';
 
+/**
+ * @interface CardProps
+ * @extends React.HTMLAttributes<HTMLDivElement>
+ * @description Defines the properties for the Card component.
+ */
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Card visual variant */
+  /** The visual variant of the card. */
   variant?: 'default' | 'elevated' | 'outlined' | 'filled';
-  /** Padding size */
+  /** The padding size of the card. */
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  /** Enable hover effects */
+  /** Whether to enable hover effects. */
   hoverable?: boolean;
-  /** Make card clickable (adds cursor pointer and better hover) */
+  /** Whether the card is clickable. */
   clickable?: boolean;
-  /** Custom background color */
+  /** An optional custom background color. */
   background?: string;
-  /** Add loading state */
+  /** Whether the card is in a loading state. */
   loading?: boolean;
+  /** The content to be displayed inside the card. */
   children: React.ReactNode;
 }
 
+/**
+ * A versatile card component with different styles and states.
+ * @param {CardProps} props - The properties for the Card component.
+ * @returns {JSX.Element} The rendered Card component.
+ */
 const Card: React.FC<CardProps> = ({
   variant = 'default',
   padding = 'md',
@@ -93,6 +104,17 @@ const Card: React.FC<CardProps> = ({
 };
 
 // Specialized Card components
+/**
+ * A specialized card component for displaying statistics.
+ * @param {object} props - The properties for the StatsCard component.
+ * @param {string} props.title - The title of the statistic.
+ * @param {string | number} props.value - The value of the statistic.
+ * @param {string} [props.subtitle] - An optional subtitle for the statistic.
+ * @param {React.ReactNode} [props.icon] - An optional icon to be displayed.
+ * @param {'up' | 'down' | 'neutral'} [props.trend] - An optional trend indicator.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the card.
+ * @returns {JSX.Element} The rendered StatsCard component.
+ */
 export const StatsCard: React.FC<{
   title: string;
   value: string | number;
@@ -135,6 +157,19 @@ export const StatsCard: React.FC<{
   );
 };
 
+/**
+ * A specialized card component for displaying information about a box.
+ * @param {object} props - The properties for the BoxCard component.
+ * @param {string} props.title - The title of the box.
+ * @param {string} [props.description] - An optional description of the box.
+ * @param {string} props.status - The status of the box.
+ * @param {string} [props.owner] - The owner of the box.
+ * @param {string} [props.space] - The space where the box is located.
+ * @param {string} [props.qrCode] - An optional QR code for the box.
+ * @param {() => void} [props.onClick] - An optional callback function that is called when the card is clicked.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the card.
+ * @returns {JSX.Element} The rendered BoxCard component.
+ */
 export const BoxCard: React.FC<{
   title: string;
   description?: string;

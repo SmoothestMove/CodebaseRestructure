@@ -3,14 +3,29 @@ import { StatsCard } from '@/components/design-system';
 import { FaChartBar, FaDollarSign, FaWallet } from 'react-icons/fa';
 import { formatCurrency } from '../utils/formatCurrency';
 
+/**
+ * @interface BudgetOverviewProps
+ * @description Defines the properties for the BudgetOverview component.
+ */
 interface BudgetOverviewProps {
+  /** The total amount spent. */
   totalSpent: number;
+  /** The total budget amount. */
   totalBudget: number;
+  /** The remaining budget amount. */
   remainingBudget: number;
+  /** The percentage of the budget that has been spent. */
   budgetPercentage: number;
+  /** Optional additional CSS classes to apply to the component. */
   className?: string;
 }
 
+/**
+ * A component that displays an overview of the budget, including total spent,
+ * remaining budget, and a visual representation of the budget percentage used.
+ * @param {BudgetOverviewProps} props - The properties for the BudgetOverview component.
+ * @returns {JSX.Element} The rendered BudgetOverview component.
+ */
 const BudgetOverview: React.FC<BudgetOverviewProps> = ({
   totalSpent,
   totalBudget,

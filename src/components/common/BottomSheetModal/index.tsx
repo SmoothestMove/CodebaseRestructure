@@ -4,20 +4,41 @@ import Button from '@/components/common/Button';
 import { IconXMark } from '@/lib/config/constants';
 import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface BottomSheetModalProps
+ * @description Defines the properties for the BottomSheetModal component.
+ */
 interface BottomSheetModalProps {
+  /** Whether the modal is open or not. */
   isOpen: boolean;
+  /** Callback function to be called when the modal is closed. */
   onClose: () => void;
+  /** The title of the modal. */
   title: string;
+  /** The content to be displayed inside the modal. */
   children: ReactNode;
+  /** An optional footer to be displayed at the bottom of the modal. */
   footer?: ReactNode;
+  /** The size of the modal on larger screens. */
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  /** Whether to show the close button in the header. */
   showCloseButton?: boolean;
+  /** Whether to show the drag handle on mobile. */
   showDragHandle?: boolean;
+  /** Whether to close the modal when the backdrop is clicked. */
   dismissOnBackdrop?: boolean;
+  /** Whether to allow dismissing the modal by swiping down on mobile. */
   dismissOnSwipe?: boolean;
+  /** The maximum height of the modal on mobile. */
   maxHeight?: string;
 }
 
+/**
+ * A modal component that appears from the bottom of the screen on mobile devices
+ * and as a centered dialog on larger screens.
+ * @param {BottomSheetModalProps} props - The properties for the BottomSheetModal component.
+ * @returns {JSX.Element | null} The rendered BottomSheetModal component or null if it's not open.
+ */
 const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   isOpen,
   onClose,

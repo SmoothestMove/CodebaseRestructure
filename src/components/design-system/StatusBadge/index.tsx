@@ -1,21 +1,30 @@
 import React from 'react';
 import { colors } from '../foundations';
 
+/**
+ * @interface StatusBadgeProps
+ * @description Defines the properties for the StatusBadge component.
+ */
 export interface StatusBadgeProps {
-  /** The status type determines the color scheme */
+  /** The status type, which determines the color scheme of the badge. */
   status: 'success' | 'warning' | 'error' | 'info' | 'neutral' | 'prepared' | 'packed' | 'loaded' | 'unloaded' | 'delivered' | 'unpacked';
-  /** Size variant */
+  /** The size variant of the badge. */
   size?: 'sm' | 'md' | 'lg';
-  /** Display variant */
+  /** The display variant of the badge. */
   variant?: 'solid' | 'soft' | 'outlined';
-  /** Optional icon */
+  /** An optional icon to be displayed in the badge. */
   icon?: React.ReactNode;
-  /** Badge text */
+  /** The text to be displayed in the badge. */
   children: React.ReactNode;
-  /** Additional CSS classes */
+  /** Optional additional CSS classes to apply to the badge. */
   className?: string;
 }
 
+/**
+ * A component that displays a status badge with different colors, sizes, and variants.
+ * @param {StatusBadgeProps} props - The properties for the StatusBadge component.
+ * @returns {JSX.Element} The rendered StatusBadge component.
+ */
 const StatusBadge: React.FC<StatusBadgeProps> = ({
   status,
   size = 'md',
@@ -125,6 +134,15 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 };
 
 // Utility component for box status badges specifically
+/**
+ * A specialized status badge for displaying the status of a box.
+ * @param {object} props - The properties for the BoxStatusBadge component.
+ * @param {'prepared' | 'packed' | 'loaded' | 'unloaded' | 'delivered' | 'unpacked'} props.status - The status of the box.
+ * @param {'sm' | 'md' | 'lg'} [props.size='md'] - The size of the badge.
+ * @param {'solid' | 'soft' | 'outlined'} [props.variant='soft'] - The display variant of the badge.
+ * @param {string} [props.className] - Optional additional CSS classes to apply to the badge.
+ * @returns {JSX.Element} The rendered BoxStatusBadge component.
+ */
 export const BoxStatusBadge: React.FC<{
   status: 'prepared' | 'packed' | 'loaded' | 'unloaded' | 'delivered' | 'unpacked';
   size?: 'sm' | 'md' | 'lg';

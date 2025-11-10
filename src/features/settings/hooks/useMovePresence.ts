@@ -17,6 +17,15 @@ import {
 import { auth, firestore } from '@/main';
 import { toast } from 'react-toastify';
 
+/**
+ * @interface PresenceState
+ * @property {any} lastSeen - The timestamp of when the user was last seen.
+ * @property {boolean} online - Whether the user is online.
+ * @property {string} userId - The ID of the user.
+ * @property {string} moveId - The ID of the move.
+ * @property {string} [displayName] - The display name of the user.
+ * @property {string} [photoURL] - The photo URL of the user.
+ */
 export interface PresenceState {
   lastSeen: any;
   online: boolean;
@@ -27,8 +36,9 @@ export interface PresenceState {
 }
 
 /**
- * Custom hook to manage user presence in a move instance using Firestore
- * @param moveId - The ID of the move to track presence for
+ * A custom hook to manage user presence in a move instance using Firestore.
+ * @param {string | null} moveId - The ID of the move to track presence for.
+ * @returns {object} The presence state and functions.
  */
 export function useMovePresence(moveId: string | null) {
   const [presence, setPresence] = useState<Record<string, PresenceState>>({});

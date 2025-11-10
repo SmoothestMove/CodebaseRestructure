@@ -17,6 +17,10 @@ interface TTSState {
   hasTriedUserInteraction: boolean;
 }
 
+/**
+ * A service for handling text-to-speech functionality.
+ * @class
+ */
 class TTSService {
   private synth: SpeechSynthesis | null;
   private voices: SpeechSynthesisVoice[] = [];
@@ -43,6 +47,10 @@ class TTSService {
     }
   }
 
+  /**
+   * Initializes the service.
+   * @param {function(): void} onVoicesChanged - A callback function for when the voices change.
+   */
   initialize(onVoicesChanged: () => void) {
     if (!this.synth) return;
 
@@ -89,6 +97,10 @@ class TTSService {
     }, 5000);
   }
 
+  /**
+   * Gets the available voices.
+   * @returns {SpeechSynthesisVoice[]} A list of available voices.
+   */
   getAvailableVoices(): SpeechSynthesisVoice[] {
     if (!this.voices) return [];
     
@@ -126,11 +138,21 @@ class TTSService {
     return englishVoices;
   }
   
+  /**
+   * Gets the default voice URI.
+   * @returns {string | null} The default voice URI, or null if no voices are available.
+   */
   getDefaultVoiceURI(): string | null {
     const voices = this.getAvailableVoices();
     return voices.length > 0 ? voices[0].voiceURI : null;
   }
 
+  /**
+   * Speaks the given text.
+   * @param {string} text - The text to speak.
+   * @param {string | null} voiceURI - The URI of the voice to use.
+   * @param {SpeakOptions} options - The options for speaking.
+   */
   speak(text: string, voiceURI: string | null, options: SpeakOptions) {
     console.log('ttsService.speak() called:', {
       hasText: !!text.trim(),
@@ -259,16 +281,26 @@ class TTSService {
     this.synth.speak(utterance);
   }
 
+  /**
+   * Stops the speech synthesis.
+   */
   stop() {
     if (this.synth?.speaking) {
       this.synth.cancel();
     }
   }
 
+  /**
+   * Checks if the speech synthesis is currently speaking.
+   * @returns {boolean} Whether the speech synthesis is speaking.
+   */
   isSpeaking(): boolean {
     return this.synth?.speaking || false;
   }
 
+  /**
+   * Cleans up the service.
+   */
   cleanup() {
     if (this.keepAliveInterval) {
       clearInterval(this.keepAliveInterval);

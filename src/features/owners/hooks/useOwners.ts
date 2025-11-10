@@ -7,6 +7,16 @@ import { Owner, NewOwnerData } from '@/types';
 import * as ownerService from '../services/ownerService';
 import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
 
+/**
+ * @interface OwnersContextType
+ * @property {Owner[]} owners - A list of owners.
+ * @property {boolean} isLoading - Whether the owners are loading.
+ * @property {Error | null} error - An error object, if any.
+ * @property {function(NewOwnerData): Promise<Owner>} addOwner - A function to add a new owner.
+ * @property {function(string): Owner | undefined} getOwnerByUid - A function to get an owner by their UID.
+ * @property {function(string, Partial<Omit<Owner, 'uid'>>): Promise<void>} updateOwner - A function to update an owner.
+ * @property {function(string): Promise<void>} deleteOwnerByUid - A function to delete an owner by their UID.
+ */
 interface OwnersContextType {
   owners: Owner[];
   isLoading: boolean;
@@ -19,6 +29,12 @@ interface OwnersContextType {
 
 const OwnersContext = createContext<OwnersContextType | undefined>(undefined);
 
+/**
+ * The provider for the owners context.
+ * @param {object} props - The props for the component.
+ * @param {ReactNode} props.children - The children to render.
+ * @returns {JSX.Element} The rendered OwnersProvider component.
+ */
 export const OwnersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { move } = useMove();
   const moveId = move?.id;
@@ -90,6 +106,10 @@ export const OwnersProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   return React.createElement(OwnersContext.Provider, { value: value }, children);
 };
 
+/**
+ * A hook to use the owners context.
+ * @returns {OwnersContextType} The owners context.
+ */
 export const useOwners = (): OwnersContextType => {
   const context = useContext(OwnersContext);
   if (context === undefined) {

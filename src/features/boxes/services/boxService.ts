@@ -23,12 +23,23 @@ const getBoxesCollection = (moveId: string) => collection(db, 'moves', moveId, '
 // Note: This service provides one-time fetch operations. 
 // Real-time updates will be handled by the `useBoxes` hook using `onSnapshot`.
 
+/**
+ * Fetches all boxes for a given move.
+ * @param {string} moveId - The ID of the move.
+ * @returns {Promise<Box[]>} A promise that resolves with an array of boxes.
+ */
 export async function getBoxes(moveId: string): Promise<Box[]> {
   const boxesCollection = getBoxesCollection(moveId);
   const snapshot = await getDocs(boxesCollection);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Box));
 }
 
+/**
+ * Fetches a single box by its ID.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} boxId - The ID of the box.
+ * @returns {Promise<Box | undefined>} A promise that resolves with the box data, or undefined if not found.
+ */
 export async function getBox(moveId: string, boxId: string): Promise<Box | undefined> {
   const boxDocRef = doc(db, 'moves', moveId, 'boxes', boxId);
   const docSnap = await getDoc(boxDocRef);
@@ -66,6 +77,13 @@ async function generateUniqueBoxIdInTransaction(
   return `${ownerPrefix}${String(newNumericPart).padStart(2, '0')}`;
 }
 
+/**
+ * Adds a new box to a move.
+ * This function uses a transaction to ensure that the box ID is unique.
+ * @param {string} moveId - The ID of the move.
+ * @param {NewBoxData} boxData - The data for the new box.
+ * @returns {Promise<Box>} A promise that resolves with the newly created box object.
+ */
 export async function addBox(moveId: string, boxData: NewBoxData): Promise<Box> {
   const boxesCollection = getBoxesCollection(moveId);
   
@@ -131,6 +149,13 @@ function generateIdForBatch(ownerUid: string, ownerPrefix: string, existingBoxes
     return `${ownerPrefix}${String(newNumericPart).padStart(2, '0')}`;
 }
 
+/**
+ * Adds a batch of prepped boxes for a given owner.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} ownerUid - The UID of the owner.
+ * @param {number} count - The number of boxes to add.
+ * @returns {Promise<Box[]>} A promise that resolves with an array of the newly created box objects.
+ */
 export async function addPreppedBoxesForPrint(moveId: string, ownerUid: string, count: number): Promise<Box[]> {
     const owner = await getOwnerByUid(moveId, ownerUid);
     if (!owner) {
@@ -177,6 +202,13 @@ export async function addPreppedBoxesForPrint(moveId: string, ownerUid: string, 
     return newBoxes;
 }
 
+/**
+ * Updates an existing box.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} boxId - The ID of the box to update.
+ * @param {Partial<Omit<Box, 'id'>>} updatedData - The data to update.
+ * @returns {Promise<void>} A promise that resolves when the box has been updated.
+ */
 export async function updateBox(moveId: string, boxId: string, updatedData: Partial<Omit<Box, 'id'>>): Promise<void> {
   const boxDocRef = doc(db, 'moves', moveId, 'boxes', boxId);
   await updateDoc(boxDocRef, {
@@ -185,6 +217,16 @@ export async function updateBox(moveId: string, boxId: string, updatedData: Part
   });
 }
 
+/**
+ * Adds a scan entry to a box's history.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} boxId - The ID of the box.
+ * @param {object} scanData - The scan data to add.
+ * @param {string} scanData.location - The location of the scan.
+ * @param {string} [scanData.notes] - Optional notes for the scan.
+ * @param {ItemStatus} scanData.newStatus - The new status of the box.
+ * @returns {Promise<void>} A promise that resolves when the scan entry has been added.
+ */
 export async function addScanEntryToBox(
   moveId: string,
   boxId: string,
@@ -206,6 +248,12 @@ export async function addScanEntryToBox(
   });
 }
 
+/**
+ * Deletes a box.
+ * @param {string} moveId - The ID of the move.
+ * @param {string} boxId - The ID of the box to delete.
+ * @returns {Promise<void>} A promise that resolves when the box has been deleted.
+ */
 export async function deleteBox(moveId: string, boxId: string): Promise<void> {
   const boxDocRef = doc(db, 'moves', moveId, 'boxes', boxId);
   await deleteDoc(boxDocRef);

@@ -3,13 +3,27 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { shouldReduceMotion } from '@/lib/animations';
 
+/**
+ * @interface InputProps
+ * @extends React.InputHTMLAttributes<HTMLInputElement>
+ * @description Defines the properties for the Input component.
+ */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /** The label to be displayed above the input. */
   label?: string;
+  /** An error message to be displayed below the input. */
   error?: string;
+  /** Optional additional CSS classes to apply to the container of the input. */
   containerClassName?: string;
+  /** An icon to be displayed to the left of the input. */
   leftIcon?: React.ReactNode;
 }
 
+/**
+ * A styled input component with support for labels, errors, and icons.
+ * @param {InputProps} props - The properties for the Input component.
+ * @returns {JSX.Element} The rendered Input component.
+ */
 const Input: React.FC<InputProps> = ({ label, id, error, containerClassName = '', className = '', leftIcon, ...props }) => {
   const [isFocused, setIsFocused] = React.useState(false);
   

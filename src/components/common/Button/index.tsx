@@ -4,19 +4,39 @@ import { motion } from 'framer-motion';
 import { IconCheck } from '@/lib/config/constants';
 import { VARIANTS, shouldReduceMotion } from '@/lib/animations'; 
 
+/**
+ * @interface ButtonProps
+ * @extends React.ButtonHTMLAttributes<HTMLButtonElement>
+ * @description Defines the properties for the Button component.
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** The visual style of the button. */
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost';
+  /** The size of the button. */
   size?: 'sm' | 'md' | 'lg' | 'icon';
+  /** Whether the button is in a loading state. */
   isLoading?: boolean;
+  /** Whether the button is in a success state. */
   isSuccess?: boolean; 
+  /** An icon to be displayed to the left of the button's content. */
   leftIcon?: React.ReactNode;
+  /** An icon to be displayed to the right of the button's content. */
   rightIcon?: React.ReactNode;
+  /** The content of the button. */
   children?: React.ReactNode; 
+  /** Whether to show a success icon when in the success state. */
   showSuccessIcon?: boolean;
+  /** An accessible label for the button. */
   ariaLabel?: string;
+  /** The ID of an element that describes the button. */
   ariaDescribedBy?: string;
 }
 
+/**
+ * A versatile button component with different styles, sizes, and states.
+ * @param {ButtonProps} props - The properties for the Button component.
+ * @returns {JSX.Element} The rendered Button component.
+ */
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',

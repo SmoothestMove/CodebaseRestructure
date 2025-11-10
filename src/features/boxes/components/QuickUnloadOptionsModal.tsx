@@ -7,14 +7,28 @@ import { Box } from '@/types';
 import { IconCheck, IconHome, IconBox as IconBoxCustom } from '@/lib/config/constants'; 
 import Alert from '@/components/common/Alert';
 
+/**
+ * @interface QuickUnloadOptionsModalProps
+ * @description Defines the properties for the QuickUnloadOptionsModal component.
+ */
 interface QuickUnloadOptionsModalProps {
+  /** Whether the modal is open. */
   isOpen: boolean;
+  /** A callback function to be called when the modal is closed. */
   onClose: () => void;
+  /** The box to be unloaded. */
   box: Box | null;
+  /** A callback function to be called when the box is delivered. */
   onDeliver: (box: Box) => void;
+  /** A callback function to be called when the box is staged. */
   onStage: (box: Box, stagingLocation: string) => void;
 }
 
+/**
+ * A modal component that provides options for unloading a box.
+ * @param {QuickUnloadOptionsModalProps} props - The properties for the QuickUnloadOptionsModal component.
+ * @returns {JSX.Element | null} The rendered QuickUnloadOptionsModal component or null if no box is provided.
+ */
 const QuickUnloadOptionsModal: React.FC<QuickUnloadOptionsModalProps> = ({
   isOpen,
   onClose,

@@ -6,20 +6,39 @@ import { useMove } from '@/features/settings/hooks/MoveContext';
 import { Box, NewBoxData, ItemStatus } from '@/types';
 import * as boxService from '@/features/boxes/services/boxService';
 
+/**
+ * @interface BoxesContextType
+ * @description Defines the shape of the boxes context.
+ */
 interface BoxesContextType {
+  /** An array of boxes for the current move. */
   boxes: Box[];
+  /** Whether the boxes are currently being loaded. */
   isLoading: boolean;
+  /** An error object if an error occurred while fetching the boxes. */
   error: Error | null;
+  /** A function to add a new box. */
   addBox: (boxData: NewBoxData) => Promise<Box>;
+  /** A function to get a box by its ID. */
   getBox: (id: string) => Box | undefined;
+  /** A function to update a box. */
   updateBox: (boxId: string, updatedData: Partial<Omit<Box, 'id'>>) => Promise<void>;
+  /** A function to add a scan entry to a box. */
   addScanEntryToBox: (boxId: string, scanData: { location: string; notes?: string; newStatus: ItemStatus }) => Promise<void>;
+  /** A function to delete a box by its ID. */
   deleteBoxById: (boxId: string) => Promise<void>;
+  /** A function to add prepped boxes for printing. */
   addPreppedBoxes: (ownerUid: string, count: number) => Promise<Box[]>;
 }
 
 const BoxesContext = createContext<BoxesContextType | undefined>(undefined);
 
+/**
+ * A component that provides boxes context to its children.
+ * @param {object} props - The properties for the BoxesProvider component.
+ * @param {ReactNode} props.children - The child components to be rendered within the provider.
+ * @returns {JSX.Element} The rendered BoxesProvider component.
+ */
 export const BoxesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { move } = useMove();
   const moveId = move?.id;
@@ -109,6 +128,11 @@ export const BoxesProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return React.createElement(BoxesContext.Provider, { value: value }, children);
 };
 
+/**
+ * A custom hook that provides access to the boxes context.
+ * @returns {BoxesContextType} The boxes context.
+ * @throws {Error} If used outside of a BoxesProvider.
+ */
 export const useBoxes = (): BoxesContextType => {
   const context = useContext(BoxesContext);
   if (context === undefined) {
