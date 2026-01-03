@@ -69,6 +69,9 @@ interface CalendarContextType extends CalendarState {
   setView: (view: CalendarView) => void;
   setDate: (date: Date) => void;
   refreshEvents: () => void;
+  goToToday: () => void;
+  navigateBack: () => void;
+  navigateForward: () => void;
 }
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
@@ -173,6 +176,40 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     }
   }, [moveId]);
 
+  // Navigation functions
+  const goToToday = useCallback(() => {
+    const today = new Date();
+    dispatch({ type: 'SET_DATE', payload: today });
+  }, []);
+
+  const navigateBack = useCallback(() => {
+    const newDate = new Date(state.currentDate);
+    if (state.currentView === 'month') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else if (state.currentView === 'week') {
+      newDate.setDate(newDate.getDate() - 7);
+    } else if (state.currentView === 'day') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (state.currentView === 'agenda') {
+      newDate.setDate(newDate.getDate() - 7);
+    }
+    dispatch({ type: 'SET_DATE', payload: newDate });
+  }, [state.currentDate, state.currentView]);
+
+  const navigateForward = useCallback(() => {
+    const newDate = new Date(state.currentDate);
+    if (state.currentView === 'month') {
+      newDate.setMonth(newDate.getMonth() + 1);
+    } else if (state.currentView === 'week') {
+      newDate.setDate(newDate.getDate() + 7);
+    } else if (state.currentView === 'day') {
+      newDate.setDate(newDate.getDate() + 1);
+    } else if (state.currentView === 'agenda') {
+      newDate.setDate(newDate.getDate() + 7);
+    }
+    dispatch({ type: 'SET_DATE', payload: newDate });
+  }, [state.currentDate, state.currentView]);
+
   const value: CalendarContextType = {
     ...state,
     createEvent,
@@ -182,6 +219,9 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     setView,
     setDate,
     refreshEvents,
+    goToToday,
+    navigateBack,
+    navigateForward,
   };
 
   return (

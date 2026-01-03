@@ -18,6 +18,12 @@ A web application to manage moving projects: QR-labeled box tracking, owners/spa
 - MARVIN Assistant: Gemini-powered assistant; optional wake-word with Porcupine
 - Mobile-First UI: Responsive, with camera integration for scanning
 
+## Future Features
+
+- MARVIN Assistant: AI-powered assistant; optional wake-word with Porcupine
+- Pre-built task lists: "Local Move", "Cross-Country", "Storage + Move", "Apartment to House"
+  - Example: Click "2BR Apartment Move" → 68 pre-filled tasks appear instantly
+
 ## Tech Stack
 
 - Frontend: React 19.1, TypeScript 5.7
@@ -107,5 +113,3 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`. See
 ## License
 
 No LICENSE file is present in this repository. Add one if you intend to open-source.
-
-

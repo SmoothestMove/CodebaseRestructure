@@ -2,9 +2,8 @@
 
 ## 📌 Project Information
 - **App Name:** smooth-move-app
-- **Version:** 0.2.0
-- **Last Updated:** September 10, 2025
-- **Developer:** Justin Ketcham
+- **Version:** 0.2.
+- **Developer:** 
 ---
 ### BUG-001
 - **Component:**  

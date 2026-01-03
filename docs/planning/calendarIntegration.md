@@ -233,10 +233,10 @@ Acceptance Criteria
 - No layout shift between breakpoints; toolbar adapts cleanly.
 
 Implementation Checklist
-- [ ] Redesign `CalendarStyles.css` to align with design tokens.
-- [ ] Update `CalendarPage.tsx` header/toolbar for sticky, responsive layout; add FAB on mobile.
-- [ ] Tweak `TimeEventComponent`/`AgendaEventComponent` for pill/card consistency and truncation.
-- [ ] Update modals for mobile sheet behavior and accessible focus management.
-- [ ] Audit keyboard navigation and add missing handlers.
+- [X] Redesign `CalendarStyles.css` to align with design tokens.
+- [X] Update `CalendarPage.tsx` header/toolbar for sticky, responsive layout; add FAB on mobile.
+- [X] Tweak `TimeEventComponent`/`AgendaEventComponent` for pill/card consistency and truncation.
+- [X] Update modals for mobile sheet behavior and accessible focus management.
+- [ ] **Next: Audit keyboard navigation and add missing handlers.**
 - [ ] Validate on xs/sm/md/lg across Month/Week/Day/Agenda.
 
