@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Button from '@/components/common/Button';
 import Input from '@/components/common/Input';
 import Alert from '@/components/common/Alert';
@@ -347,6 +348,7 @@ const AuthPage: React.FC = () => {
     children: React.ReactNode;
   }> = ({ tabName, currentTab, children }) => (
     <button
+      id={`tab-${tabName}`}
       onClick={() => handleTabChange(tabName)}
       disabled={authState.isLoading}
       className={`w-1/2 py-3 text-center font-semibold border-b-2 transition-colors duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed
@@ -356,6 +358,8 @@ const AuthPage: React.FC = () => {
         }`}
       role="tab"
       aria-selected={currentTab === tabName}
+      aria-controls={`panel-${tabName}`}
+      tabIndex={currentTab === tabName ? 0 : -1}
     >
       {children}
     </button>
@@ -400,7 +404,7 @@ const AuthPage: React.FC = () => {
                     value={option}
                     checked={moveMode === option}
                     onChange={() => handleMoveModeChange(option)}
-                    className="h-4 w-4 text-brand-tertiary dark:text-orange-400 border-slate-300 dark:border-slate-600 focus:ring-brand-tertiary dark:focus:ring-orange-400 dark:bg-slate-700"
+                    className="h-4 w-4 text-brand-tertiary dark:text-orange-400 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-tertiary dark:focus:ring-orange-400 dark:bg-slate-700"
                     disabled={authState.isLoading}
                   />
                   <span className="ml-2">
@@ -435,168 +439,176 @@ const AuthPage: React.FC = () => {
           <TabButton tabName="register" currentTab={activeTab}>Register</TabButton>
         </div>
 
-        {/* Alerts */}
-        {authState.error && (
-          <Alert 
-            type="error" 
-            message={authState.error} 
-            onClose={() => updateAuthState({ error: null })} 
-            className="mb-6" 
-          />
-        )}
-        {authState.successMessage && (
-          <Alert 
-            type="success" 
-            message={authState.successMessage} 
-            onClose={() => updateAuthState({ successMessage: null })} 
-            className="mb-6" 
-          />
-        )}
+        <div
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+          className="focus:outline-none"
+        >
+          {/* Alerts */}
+          {authState.error && (
+            <Alert 
+              type="error" 
+              message={authState.error} 
+              onClose={() => updateAuthState({ error: null })} 
+              className="mb-6" 
+            />
+          )}
+          {authState.successMessage && (
+            <Alert 
+              type="success" 
+              message={authState.successMessage} 
+              onClose={() => updateAuthState({ successMessage: null })} 
+              className="mb-6" 
+            />
+          )}
 
-        {/* Auth Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {activeTab === 'register' && (
-            <Input
-              id="fullName"
-              label="Full Name"
-              type="text"
-              value={formData.fullName}
-              onChange={(e) => updateFormData('fullName', e.target.value)}
-              placeholder="e.g., Alex Smith"
-              disabled={authState.isLoading}
-              required
-              aria-required="true"
-            />
-          )}
-          
-          <Input
-            id="email"
-            label="Email Address"
-            type="email"
-            value={formData.email}
-            onChange={(e) => updateFormData('email', e.target.value)}
-            placeholder="you@example.com"
-            disabled={authState.isLoading}
-            required
-            aria-required="true"
-          />
-          
-          <div className="relative">
-            <Input
-              id="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={(e) => updateFormData('password', e.target.value)}
-              placeholder={activeTab === 'register' ? "Min. 8 characters" : "Enter your password"}
-              disabled={authState.isLoading}
-              required
-              aria-required="true"
-              aria-describedby={activeTab === 'register' ? "password-hint" : undefined}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-[38px] text-slate-400 hover:text-brand-tertiary dark:hover:text-orange-400 transition-colors"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={authState.isLoading}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-            </button>
-          </div>
-          
-          {activeTab === 'register' && (
-            <p id="password-hint" className="text-xs text-brand-secondary/80 dark:text-slate-400/80 -mt-3 mb-2">
-              Must be at least 8 characters long.
-            </p>
-          )}
-          
-          {activeTab === 'signin' && (
-            <div className="text-right -mt-2 mb-2">
-              <Link 
-                to="#" 
-                onClick={(e) => { 
-                  e.preventDefault(); 
-                  alert("Forgot password functionality not implemented yet.");
-                }}
-                className="text-xs font-medium text-brand-tertiary dark:text-orange-400 hover:text-brand-tertiary-dark dark:hover:text-orange-300 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-          )}
-          
-          {activeTab === 'register' && (
-            <div className="relative">
+          {/* Auth Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {activeTab === 'register' && (
               <Input
-                id="confirmPassword"
-                label="Confirm Password"
-                type={showConfirmPassword ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={(e) => updateFormData('confirmPassword', e.target.value)}
-                placeholder="Re-type your password"
+                id="fullName"
+                label="Full Name"
+                type="text"
+                value={formData.fullName}
+                onChange={(e) => updateFormData('fullName', e.target.value)}
+                placeholder="e.g., Alex Smith"
                 disabled={authState.isLoading}
                 required
                 aria-required="true"
+              />
+            )}
+            
+            <Input
+              id="email"
+              label="Email Address"
+              type="email"
+              value={formData.email}
+              onChange={(e) => updateFormData('email', e.target.value)}
+              placeholder="you@example.com"
+              disabled={authState.isLoading}
+              required
+              aria-required="true"
+            />
+            
+            <div className="relative">
+              <Input
+                id="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) => updateFormData('password', e.target.value)}
+                placeholder={activeTab === 'register' ? "Min. 8 characters" : "Enter your password"}
+                disabled={authState.isLoading}
+                required
+                aria-required="true"
+                aria-describedby={activeTab === 'register' ? "password-hint" : undefined}
                 className="pr-10"
               />
               <button
                 type="button"
                 className="absolute right-3 top-[38px] text-slate-400 hover:text-brand-tertiary dark:hover:text-orange-400 transition-colors"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() => setShowPassword(!showPassword)}
                 disabled={authState.isLoading}
-                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
             </div>
-          )}
-          
+            
+            {activeTab === 'register' && (
+              <p id="password-hint" className="text-xs text-brand-secondary/80 dark:text-slate-400/80 -mt-3 mb-2">
+                Must be at least 8 characters long.
+              </p>
+            )}
+            
+            {activeTab === 'signin' && (
+              <div className="text-right -mt-2 mb-2">
+                <Link 
+                  to="#" 
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    toast.info("Forgot password functionality is not yet implemented.");
+                  }}
+                  className="text-xs font-medium text-brand-tertiary dark:text-orange-400 hover:text-brand-tertiary-dark dark:hover:text-orange-300 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
+            
+            {activeTab === 'register' && (
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={(e) => updateFormData('confirmPassword', e.target.value)}
+                  placeholder="Re-type your password"
+                  disabled={authState.isLoading}
+                  required
+                  aria-required="true"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-[38px] text-slate-400 hover:text-brand-tertiary dark:hover:text-orange-400 transition-colors"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={authState.isLoading}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                </button>
+              </div>
+            )}
+            
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              size="lg"
+              isLoading={authState.isLoading && !authState.successMessage}
+              disabled={authState.isLoading}
+              leftIcon={activeTab === 'signin' ? <FaSignInAlt /> : <FaUserPlus />}
+            >
+              {activeTab === 'signin' ? 'Sign In' : 'Create Account'}
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="my-6 flex items-center">
+            <hr className="flex-grow border-slate-300 dark:border-slate-600" />
+            <span className="mx-4 text-sm font-medium text-brand-secondary dark:text-slate-400">OR</span>
+            <hr className="flex-grow border-slate-300 dark:border-slate-600" />
+          </div>
+
+          {/* Google Auth Button */}
           <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
+            variant="secondary" 
+            className="w-full bg-white hover:bg-slate-50 dark:bg-slate-700 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-500 text-black dark:text-slate-200 hover:text-black dark:hover:text-slate-50"
             size="lg"
+            onClick={handleGoogleAuth}
             isLoading={authState.isLoading && !authState.successMessage}
             disabled={authState.isLoading}
-            leftIcon={activeTab === 'signin' ? <FaSignInAlt /> : <FaUserPlus />}
+            leftIcon={<IconGoogle className="w-5 h-5" />}
           >
-            {activeTab === 'signin' ? 'Sign In' : 'Create Account'}
+            {activeTab === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
           </Button>
-        </form>
 
-        {/* Divider */}
-        <div className="my-6 flex items-center">
-          <hr className="flex-grow border-slate-300 dark:border-slate-600" />
-          <span className="mx-4 text-sm font-medium text-brand-secondary dark:text-slate-400">OR</span>
-          <hr className="flex-grow border-slate-300 dark:border-slate-600" />
+          {/* Switch Auth Mode */}
+          <p className="mt-8 text-center text-sm text-brand-secondary dark:text-slate-400">
+            {activeTab === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
+            <button 
+              onClick={() => handleTabChange(activeTab === 'signin' ? 'register' : 'signin')} 
+              disabled={authState.isLoading}
+              className="font-medium text-brand-tertiary dark:text-orange-400 hover:text-brand-tertiary-dark dark:hover:text-orange-300 hover:underline focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {activeTab === 'signin' ? 'Sign Up' : 'Sign In'}
+            </button>
+          </p>
         </div>
-
-        {/* Google Auth Button */}
-        <Button
-          variant="secondary" 
-          className="w-full bg-white hover:bg-slate-50 dark:bg-slate-700 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-500 text-black dark:text-slate-200 hover:text-black dark:hover:text-slate-50"
-          size="lg"
-          onClick={handleGoogleAuth}
-          isLoading={authState.isLoading && !authState.successMessage}
-          disabled={authState.isLoading}
-          leftIcon={<IconGoogle className="w-5 h-5" />}
-        >
-          {activeTab === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
-        </Button>
-
-        {/* Switch Auth Mode */}
-        <p className="mt-8 text-center text-sm text-brand-secondary dark:text-slate-400">
-          {activeTab === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
-          <button 
-            onClick={() => handleTabChange(activeTab === 'signin' ? 'register' : 'signin')} 
-            disabled={authState.isLoading}
-            className="font-medium text-brand-tertiary dark:text-orange-400 hover:text-brand-tertiary-dark dark:hover:text-orange-300 hover:underline focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {activeTab === 'signin' ? 'Sign Up' : 'Sign In'}
-          </button>
-        </p>
       </div>
       
       <footer className="text-center text-xs text-brand-secondary dark:text-slate-500 mt-12">

@@ -312,6 +312,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
               size="icon"
               onClick={onClose}
               className="ml-2 min-w-[32px] min-h-[32px]"
+              ariaLabel="Close search"
             >
               <FaTimes className="w-4 h-4" />
             </Button>

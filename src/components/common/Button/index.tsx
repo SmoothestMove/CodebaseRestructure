@@ -6,6 +6,10 @@ import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost';
+  /**
+   * @warning When using the 'icon' size, you MUST provide an `ariaLabel`
+   * if there are no visible children to ensure accessibility.
+   */
   size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   isSuccess?: boolean; 
@@ -41,12 +45,12 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const variantStyles = {
-    primary: "bg-brand-tertiary hover:bg-brand-tertiary-dark text-white focus:ring-brand-tertiary/50 dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-400/50",
-    secondary: "bg-brand-secondary hover:bg-brand-secondary-dark focus:ring-brand-secondary/50 dark:bg-slate-600 dark:hover:bg-slate-500 dark:focus:ring-slate-500/50", // Removed text-white and dark:text-slate-100
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-400 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-400/70",
-    success: "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-500/70",
-    warning: "bg-brand-accent hover:bg-brand-accent-dark text-white focus:ring-brand-accent/50 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:text-slate-900 dark:focus:ring-yellow-400/50",
-    ghost: "bg-transparent hover:bg-brand-primary/10 text-brand-primary focus:ring-brand-primary/30 dark:hover:bg-slate-700 dark:text-slate-300 dark:focus:ring-slate-600/50",
+    primary: "bg-primary hover:bg-primary-dark text-text-on-primary focus:ring-primary/50 dark:bg-primary-light dark:hover:bg-primary dark:focus:ring-primary-light/50",
+    secondary: "bg-secondary hover:bg-secondary-dark text-text-on-secondary focus:ring-secondary/50 dark:bg-secondary-dark dark:hover:bg-secondary dark:focus:ring-secondary-dark/50",
+    danger: "bg-danger hover:bg-danger-dark text-text-on-danger focus:ring-danger/50 dark:bg-danger-dark dark:hover:bg-danger dark:focus:ring-danger-dark/50",
+    success: "bg-success hover:bg-success-dark text-text-on-primary focus:ring-success/50 dark:bg-success-dark dark:hover:bg-success dark:focus:ring-success-dark/50",
+    warning: "bg-accent hover:bg-accent-dark text-white focus:ring-accent/50 dark:bg-accent-dark dark:hover:bg-accent dark:focus:ring-accent-dark/50",
+    ghost: "bg-transparent hover:bg-primary/10 text-primary focus:ring-primary/30 dark:text-primary-light dark:hover:bg-primary-light/10 dark:focus:ring-primary-light/30",
   };
 
   const loadingStyles = isLoading ? "opacity-75 cursor-not-allowed" : "";

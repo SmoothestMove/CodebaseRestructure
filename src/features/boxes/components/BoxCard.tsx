@@ -115,7 +115,7 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
                 </Button>
               </Link>
               <Link to={`/app/box/${box.id}?edit=true`} onClick={(e) => e.stopPropagation()}> 
-                  <Button variant="ghost" size="icon" title="Edit Box Details">
+                  <Button variant="ghost" size="icon" title="Edit Box Details" ariaLabel="Edit Box Details">
                       <IconEdit className="w-4 h-4 text-brand-primary dark:text-slate-300" />
                   </Button>
               </Link>
@@ -124,6 +124,7 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
                   size="icon" 
                   onClick={handleDelete}
                   title="Delete Box"
+                  ariaLabel="Delete Box"
               >
                   <IconTrash className="w-4 h-4 text-red-500 dark:text-red-400" />
               </Button>

@@ -275,6 +275,7 @@ const OwnerCard: React.FC<OwnerCardProps> = ({ owner, isCommunal = false }) => {
                   variant="ghost"
                   size="icon"
                   title={`Print New Labels for ${ownerDisplayName}`}
+                  ariaLabel={`Print New Labels for ${ownerDisplayName}`}
                   onClick={() => setIsPrintLabelsModalOpen(true)}
                 >
                   <FaPrint className="w-4 h-4 text-green-600 dark:text-green-400" />
@@ -285,6 +286,7 @@ const OwnerCard: React.FC<OwnerCardProps> = ({ owner, isCommunal = false }) => {
                       variant="ghost"
                       size="icon"
                       title="Reprint Labels"
+                      ariaLabel="Reprint Labels"
                       onClick={handleReprintBatch}
                     >
                       <FaRedo className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -293,6 +295,7 @@ const OwnerCard: React.FC<OwnerCardProps> = ({ owner, isCommunal = false }) => {
                       variant="ghost" 
                       size="icon" 
                       title={`Delete ${ownerTypeLabel}`}
+                      ariaLabel={`Delete ${ownerTypeLabel}`}
                       onClick={handleDelete}
                     >
                       <IconTrash className="w-4 h-4 text-red-500 dark:text-red-400" />
@@ -304,6 +307,7 @@ const OwnerCard: React.FC<OwnerCardProps> = ({ owner, isCommunal = false }) => {
                     variant="ghost" 
                     size="icon" 
                     title="Delete Custom Space"
+                    ariaLabel="Delete Custom Space"
                     onClick={handleDelete} 
                   >
                     <IconTrash className="w-4 h-4 text-red-500 dark:text-red-400" />

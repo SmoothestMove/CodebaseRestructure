@@ -138,7 +138,11 @@ const Navbar: React.FC = () => {
   return (
     <>
       {/* --- Desktop Sidebar (Fixed) --- */}
-      <aside className="hidden md:flex md:flex-col md:w-64 bg-brand-primary dark:bg-slate-800 text-white dark:text-slate-100 fixed h-full top-0 left-0 z-50 shadow-xl p-5 space-y-4">
+      <aside 
+        className="hidden md:flex md:flex-col md:w-64 bg-brand-primary dark:bg-slate-800 text-white dark:text-slate-100 fixed h-full top-0 left-0 z-50 shadow-xl p-5 space-y-4"
+        role="navigation"
+        aria-label="Main Navigation"
+      >
         <NavLink 
           to="/app"
           className="flex items-center text-white dark:text-slate-100 font-bold text-2xl hover:opacity-80 transition-opacity pt-2 pb-4 mb-2 border-b border-brand-primary-dark/50 dark:border-slate-700/50"
@@ -206,36 +210,38 @@ const Navbar: React.FC = () => {
 
       {/* --- Mobile Bottom Navigation Bar (Fixed) --- */}
       <div className="md:hidden h-20"></div> {/* Spacer for fixed bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-[0_-1px_3px_rgba(0,0,0,0.07)] dark:shadow-[0_-1px_3px_rgba(255,255,255,0.05)] touch-manipulation">
+      <nav 
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-[0_-1px_3px_rgba(0,0,0,0.07)] dark:shadow-[0_-1px_3px_rgba(255,255,255,0.05)] touch-manipulation"
+        role="navigation"
+        aria-label="Mobile Navigation"
+      >
         <div className="flex justify-around items-end h-20 px-2">
           {mobileCategories.map((category) => {
             const CategoryIcon = category.icon;
             const isActive = currentCategory === category.id;
             const isSelected = selectedCategory === category.id;
             
-            if (category.special) {
-              // Special scan button (center, elevated)
-              return (
-                <NavLink
-                  key={category.id}
-                  to={category.primary}
-                  state={category.items[0]?.state}
-                  className="flex flex-col items-center justify-center text-xs pt-2 pb-2 min-w-[44px] min-h-[44px] flex-1 focus:outline-none focus:ring-2 focus:ring-brand-tertiary dark:focus:ring-orange-400 focus:ring-opacity-50 rounded-lg transition-all duration-200"
-                  style={{ overflow: 'visible' }}
-                  aria-label={category.label}
-                >
-                  <div 
-                    className={`w-14 h-14 ${isActive ? 'bg-brand-tertiary dark:bg-orange-500' : 'bg-brand-tertiary/80 dark:bg-orange-500/80'} rounded-full flex items-center justify-center shadow-lg border-3 border-white dark:border-slate-800 mb-1 transition-all duration-150 ease-out hover:shadow-xl hover:bg-brand-tertiary-dark dark:hover:bg-orange-600 active:scale-95`}
-                    style={{ transform: 'translateY(-16px)' }}
+              if (category.special) {
+                // Special scan button (center, elevated)
+                return (
+                  <NavLink
+                    key={category.id}
+                    to={category.primary}
+                    state={category.items[0]?.state}
+                    className="flex flex-col items-center justify-center text-xs pt-2 pb-2 min-w-[44px] min-h-[44px] flex-1 focus:outline-none focus:ring-2 focus:ring-brand-tertiary dark:focus:ring-orange-400 focus:ring-opacity-50 rounded-lg transition-all duration-200 overflow-visible"
+                    aria-label={category.label}
                   >
-                    <CategoryIcon className="w-6 h-6 text-white" />
-                  </div>
-                  <span className={`text-[10px] ${isActive ? 'text-brand-tertiary dark:text-orange-400' : 'text-brand-secondary dark:text-slate-400'}`}>
-                    {category.label}
-                  </span>
-                </NavLink>
-              );
-            }
+                    <div 
+                      className={`w-14 h-14 ${isActive ? 'bg-brand-tertiary dark:bg-orange-500' : 'bg-brand-tertiary/80 dark:bg-orange-500/80'} rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-slate-800 mb-1 transition-all duration-150 ease-out hover:shadow-xl hover:bg-brand-tertiary-dark dark:hover:bg-orange-600 active:scale-95 -translate-y-4`}
+                    >
+                      <CategoryIcon className="w-6 h-6 text-white" />
+                    </div>
+                    <span className={`text-[10px] ${isActive ? 'text-brand-tertiary dark:text-orange-400' : 'text-brand-secondary dark:text-slate-400'}`}>
+                      {category.label}
+                    </span>
+                  </NavLink>
+                );
+              }
             
             // Regular category buttons
             return (
