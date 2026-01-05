@@ -1,5 +1,4 @@
-import type { Config } from 'tailwindcss'
-
+/** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
   content: [
@@ -40,7 +39,7 @@ export default {
           main: '#FFFFFF',
           alt: '#F4F4F4',
         },
-        // Mapping existing brand colors to new tokens (or keeping them if used extensively)
+        // Mapping existing brand colors to new tokens
         brand: {
           primary: '#4A90E2',
           secondary: '#64748b', // slate-500
@@ -68,10 +67,10 @@ export default {
         'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Assuming Inter is used or preferred
-        heading: ['Outfit', 'sans-serif'], // Assuming Outfit for headings
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
       }
     },
   },
   plugins: [],
-} satisfies Config
+}

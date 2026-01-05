@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom'; 
 import { IconHome, IconListBullet, IconSmoothMovesLogo, IconSettings } from '@/lib/config/constants'; 
@@ -83,7 +82,7 @@ const Navbar: React.FC = () => {
         { to: '/app/owners', label: 'Owners', icon: FaUserGroup },
         { to: '/app/spaces', label: 'Spaces', icon: FaHouseUser }
       ]
-    }
+    },
   ];
 
   // Get current category based on location

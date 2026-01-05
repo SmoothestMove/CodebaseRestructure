@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { IconCheck } from '@/lib/config/constants';
@@ -38,10 +37,10 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyles = "font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-opacity-50 flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none touch-manipulation";
   
   const sizeStyles = {
-    sm: "px-4 py-3 text-xs min-h-[40px]", // 40px for small buttons (close to 44px)
-    md: "px-5 py-3 text-sm min-h-[44px]", // 44px minimum touch target
-    lg: "px-7 py-4 text-base min-h-[48px]", // 48px for large buttons
-    icon: "p-3 min-w-[44px] min-h-[44px]", // 44x44px minimum for icon buttons
+    sm: "px-4 py-3 text-xs min-h-[40px]",
+    md: "px-5 py-3 text-sm min-h-[44px]",
+    lg: "px-7 py-4 text-base min-h-[48px]",
+    icon: "p-3 min-w-[44px] min-h-[44px]",
   };
 
   const variantStyles = {
