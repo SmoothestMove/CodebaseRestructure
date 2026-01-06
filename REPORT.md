@@ -15,14 +15,12 @@ The application is functional and aesthetically cohesive. The "Owner Creation" w
 
 ### 1. Visual Hierarchy & Discoverability
 - **Owners Page:** The "Add New Personal Owner" button is visually prominent (orange on dark/light background) and clearly labeled.
-- **Boxes Page (Workflow Paradigm):** There is no direct "Add Box" button on the Boxes List page. Instead, the workflow is designed to be **Label-Driven**:
+- **Boxes Page (Workflow Paradigm):** The workflow is **Label-Driven**:
     1.  User adds an Owner.
     2.  User clicks the "Print" (printer icon) button on the Owner card.
     3.  User specifies a batch size (e.g., 9 labels).
-    4.  The system generates 9 "Prepared" boxes and a PDF of QR codes.
-    5.  These boxes then appear in the Boxes List, ready to be packed and updated.
-
-    This workflow is efficient for high-volume moves but differs from a typical "CRUD" (Create-Read-Update-Delete) app where users might expect to "Add Item" one by one.
+    4.  The system generates "Prepared" boxes and a PDF of QR codes.
+    5.  These boxes appear in the Boxes List.
 
 ### 2. Consistency & Design System
 - **Styling:** The application uses a consistent color palette and spacing system.
@@ -30,8 +28,8 @@ The application is functional and aesthetically cohesive. The "Owner Creation" w
 - **Dark Mode:** The application supports dark mode.
 
 ### 3. Functional Workflow
-- **Printing:** The batch print functionality correctly acts as the "Create" trigger for boxes. The modal allows setting quantity, and the system updates the "Prepared" count immediately.
-- **Manifest:** The Boxes page correctly displays these "Prepared" boxes once generated, allowing for further management.
+- **Printing:** The batch print functionality correctly acts as the "Create" trigger for boxes.
+- **Status Updates:** While status updates are primarily driven by QR scanning, manual updates are fully supported. Users can click the yellow "Details" icon on any box card in the manifest to access the "Box Details" page. From there, they can manually update the status (e.g., from "Prepared" to "Packed") and location via the "Update Location/Status" modal.
 
 ## Recommendations
 1.  **Onboarding / Empty State Enhancement:** On the Boxes page, explicitly explain the "Label-First" concept. The current empty state links to Owners to "Print More Labels", but adding text like "To create boxes, print labels for an Owner first" would bridge the mental model gap.
@@ -43,4 +41,4 @@ The application is functional and aesthetically cohesive. The "Owner Creation" w
 - `6-boxes-page.png`: Boxes page (Empty state).
 
 ## Conclusion
-The "Smooth Moves" app implements a logical, albeit specific, workflow centered on physical labeling. The UI supports this well once the user understands that **Printing = Creating**. Enhancing the in-app guidance for this concept will resolve the initial discoverability friction.
+The "Smooth Moves" app implements a logical, albeit specific, workflow centered on physical labeling. The UI supports this well once the user understands that **Printing = Creating**. Enhancing the in-app guidance for this concept will resolve the initial discoverability friction. Manual status updates are accessible and functional via the details view.
