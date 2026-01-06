@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.2",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
