@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smooth Moves Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2f4a81", "background-light": "#f6f7f8", "background-dark": "#14171e"}, fontFamily: {display: "Nunito Sans"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>.conic-gradient-75 {
+            background: conic-gradient(theme('colors.primary') 75%, theme('colors.slate.200') 0);
+        }
+        .dark .conic-gradient-75 {
+            background: conic-gradient(theme('colors.primary') 75%, theme('colors.slate.700') 0);
+        }.scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }.scrollbar-hide {
+            -ms-overflow-style: none;scrollbar-width: none;}
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white transition-colors duration-200">
+<div class="relative flex h-[100dvh] w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<div class="flex-none flex items-center bg-white dark:bg-slate-900 px-4 py-3 justify-between border-b border-slate-200 dark:border-slate-800 z-20">
+<div class="flex size-10 shrink-0 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-slate-100 dark:ring-slate-700 shadow-sm cursor-pointer" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA6yZgHqEVVDOqrCRbHxKtTTV0CBi4HOFPMNTCKGf9abSftG6VHt-KoSYrcoPmLcTHvAQ6gyaR20GjLVrbn68eS-_mk80khDy2VMuPvlkf-fvCAiebAn-F7dPQknvN0N2d-8z51SymbXLBaieglxe5u-nw7tkn90RHoZXCKog7Xlv0noZfbEa3M3ViqGtuo159YMOA2vj829gYl4uUH6NtRnjp4r3TVOUO4BFHHwj5dHOAuOVIsRIMlBoWMP7j-R5tyjz4v5NCHOnA");'></div>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Dashboard</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="relative flex cursor-pointer items-center justify-center rounded-full h-9 w-9 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-white dark:border-slate-900"></span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto scrollbar-hide bg-background-light dark:bg-background-dark">
+<div class="flex flex-col gap-5 px-4 pb-6 pt-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight">Hi, Alex! 📦</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Let's get moving.</p>
+</div>
+<div class="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="flex items-stretch p-4 gap-4">
+<div class="flex-1 flex flex-col justify-center gap-2">
+<div>
+<p class="text-primary text-xs font-bold uppercase tracking-wider mb-1">Current Move</p>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">123 Maple St.</h3>
+</div>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">calendar_month</span>
+<span>Oct 15th • 5 Days to go</span>
+</div>
+</div>
+<div class="w-24 bg-center bg-no-repeat bg-cover rounded-lg shrink-0 shadow-inner" data-alt="Map view of the destination location" data-location="Maple St" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCsZmXPeZ7zMJaJ5AByfKhpvcvjYEblGcF06ctfa8CafKD3WQelfmaMnFcZ5Wl03RpWZsX4xdJqIUmbbV0xjbJYECfnvSy7KygXsxbiLHE_zVFu0twXpnRlBnMDVyGT2VMngJulUJspWHTIBvfJ3ZPUtyMIsE5gb537f3Ky1VxTcSvsf-v5FJXMsYo2E4MWit8eShefCr7JRiqbZyLii5qdHbQb2FGb1Ce7NALSMxaZDm1iXRw8M2D2xLbFP_jvkPtqvOcS56Um5eA");'></div>
+</div>
+<div class="h-1 w-full bg-slate-100 dark:bg-slate-700">
+<div class="h-full bg-primary w-[85%] rounded-r-full"></div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Total Progress</h3>
+<button class="text-primary text-sm font-medium hover:opacity-80">View Report</button>
+</div>
+<div class="bg-white dark:bg-slate-800 rounded-lg p-5 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col gap-5">
+<div class="flex items-center gap-6">
+<div class="relative size-24 shrink-0 rounded-full conic-gradient-75 flex items-center justify-center transform -rotate-90">
+<div class="size-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center transform rotate-90 shadow-sm">
+<span class="text-slate-900 dark:text-white text-sm font-bold">75%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="flex flex-col">
+<span class="text-2xl font-bold text-slate-900 dark:text-white tabular-nums">120<span class="text-slate-400 text-lg font-medium">/160</span></span>
+<span class="text-slate-500 dark:text-slate-400 text-sm">Boxes Packed</span>
+</div>
+<div class="flex gap-2">
+<span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/30 px-2 py-1 text-xs font-medium text-green-700 dark:text-green-300 ring-1 ring-inset ring-green-600/20">
+                                        On Track
+                                    </span>
+</div>
+</div>
+</div>
+<div class="h-px bg-slate-100 dark:bg-slate-700 w-full"></div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-white text-sm font-medium">Ready to Move</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">65%</p>
+</div>
+<div class="h-2.5 w-full rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+</div>
+<p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Estimated completion: Oct 14th</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Spaces</h3>
+<button class="flex items-center justify-center size-8 rounded-full bg-slate-100 dark:bg-slate-700 text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="group flex flex-col gap-3 rounded-lg bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-100 dark:border-slate-700 active:scale-95 transition-transform duration-100">
+<div class="flex justify-between items-start">
+<div class="flex items-center justify-center size-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">chair</span>
+</div>
+<span class="inline-flex items-center rounded-full bg-yellow-50 dark:bg-yellow-900/30 px-2 py-0.5 text-[10px] font-medium text-yellow-700 dark:text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+                                    Packing
+                                </span>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-white font-bold text-base">Living Room</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">15 Boxes</p>
+</div>
+</div>
+<div class="group flex flex-col gap-3 rounded-lg bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-100 dark:border-slate-700 active:scale-95 transition-transform duration-100">
+<div class="flex justify-between items-start">
+<div class="flex items-center justify-center size-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined">kitchen</span>
+</div>
+<span class="inline-flex items-center rounded-full bg-slate-50 dark:bg-slate-700 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-slate-500/20">
+                                    To Do
+                                </span>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-white font-bold text-base">Kitchen</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">30 Boxes</p>
+</div>
+</div>
+<div class="group flex flex-col gap-3 rounded-lg bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-100 dark:border-slate-700 active:scale-95 transition-transform duration-100">
+<div class="flex justify-between items-start">
+<div class="flex items-center justify-center size-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+<span class="material-symbols-outlined">bed</span>
+</div>
+<span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/30 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-300 ring-1 ring-inset ring-green-600/20">
+                                    Done
+                                </span>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-white font-bold text-base">Master Bed</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">10 Boxes</p>
+</div>
+</div>
+<div class="group flex flex-col gap-3 rounded-lg bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-100 dark:border-slate-700 active:scale-95 transition-transform duration-100">
+<div class="flex justify-between items-start">
+<div class="flex items-center justify-center size-10 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">garage_home</span>
+</div>
+<span class="inline-flex items-center rounded-full bg-yellow-50 dark:bg-yellow-900/30 px-2 py-0.5 text-[10px] font-medium text-yellow-700 dark:text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+                                    Packing
+                                </span>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-white font-bold text-base">Garage</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">22 Boxes</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Truck Load</h3>
+<div class="relative overflow-hidden rounded-lg bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 p-4 text-white shadow-md">
+<div class="absolute right-0 bottom-0 opacity-10 transform translate-y-1/4 translate-x-1/4">
+<span class="material-symbols-outlined" style="font-size: 140px;">local_shipping</span>
+</div>
+<div class="relative z-10 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+<span class="material-symbols-outlined text-white">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-sm">26' U-Haul</span>
+<span class="text-xs text-white/70">Reserved for Oct 15</span>
+</div>
+</div>
+<span class="font-bold text-lg">15% Full</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden backdrop-blur-sm">
+<div class="bg-primary h-full rounded-full shadow-[0_0_10px_theme('colors.primary')]" style="width: 15%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-lg bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="flex justify-between items-end mb-3">
+<div class="flex flex-col gap-1">
+<h3 class="text-slate-900 dark:text-white text-base font-bold">Budget Tracker</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Moving Supplies &amp; Fees</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white font-bold tabular-nums">$1,200</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs tabular-nums">of $2,000</p>
+</div>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 60%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-6">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Movers Crew</h3>
+<button class="text-primary text-sm font-medium hover:opacity-80">Invite</button>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="relative">
+<div class="size-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-800 shadow-sm" data-alt="User avatar 1" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2l0_aKYT_o_t9Bxn2tlYStLDQeQ7oqo3X6Bub3u8v-8QN_lUbDIVBsvOi5ZUSf0f9zt27bv__911oGSwKtVUkjALFLUtU1VPYYha1-wYslVQizfmH5rXrfmGQslSYQKAYhkohbwkgaeWLIDKLtNBqE6h3K-yGc1PdyxsrnKhP7w7sWyHc6UrpCLsXn0jj3-gB-VFIvM1zz1Eqr5LlSN0OawK24PCaggJ-ggpQ9u2n2lLVJ9gLMcMmkLUK5F_pwN5UKMHiOc5BZEo");'></div>
+<span class="absolute bottom-0 right-0 block size-3.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-slate-800"></span>
+</div>
+<span class="text-xs font-medium text-slate-900 dark:text-white">You</span>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="relative">
+<div class="size-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-800 shadow-sm" data-alt="User avatar 2" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMY7RrGFrhaAX_7Qhn-rT0ds60DlOnsqaMpfLFqY54T5ovv6Q2UGDYZ1RkSv7ir2tWBYaFcLgV2BS6BtOj9VEGYkgeyjFkJynlREe5ieLM0IPqTG4cS4XEqGefN991xndizPeDAa6YVAzYVL3laAsys4sVawBIMiYLv36v1-RiIWV_zfNm3c6-pltu0j-lc5TBT-2EdbT5SjAV2EaWwblqCb5FTbO5FkIeaeSkjG6zKuS3OasKCG4J_coQ0_ojPSZpx36gAe2KUd8");'></div>
+<span class="absolute bottom-0 right-0 block size-3.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-slate-800"></span>
+</div>
+<span class="text-xs font-medium text-slate-900 dark:text-white">Sarah</span>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="relative">
+<div class="size-14 rounded-full bg-cover bg-center border-2 border-white dark:border-slate-800 shadow-sm" data-alt="User avatar 3" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBbG9-0QmKoo7XIZPnMEKbHMXP0WYbppRj7KJsnYP8bVzUwgxOixGG_FbaHH0LIIg8lyfVBky48E4CD2hEpBLXaZ6wtYzy-zhLrtk-aws2Ibx7j5fYvSQ4FlFevA4-C-2VPsmOBqK7fUTaUyq_8dpDk9VyQlEVyRK-Xj88uY2AjodSFvfKjkuoOtiUMjKjs9-vdyWQRa5soAWunJ0bd85KNKNK-bh6vYB8hGZtUNbbEJKHbOLrLoUtt5CzgNHjnOx0ZiA6dEF2_tg4");'></div>
+<span class="absolute bottom-0 right-0 block size-3.5 rounded-full bg-slate-300 ring-2 ring-white dark:ring-slate-800"></span>
+</div>
+<span class="text-xs font-medium text-slate-900 dark:text-white">Mike</span>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<button class="flex items-center justify-center size-14 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<span class="text-xs font-medium text-slate-500">Add</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-none w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-30 pb-safe">
+<div class="flex h-16 items-center justify-around px-2">
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-primary">
+<span class="material-symbols-outlined filled" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-medium leading-none">Dashboard</span>
+</button>
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-200">payments</span>
+<span class="text-[10px] font-medium leading-none">Budget</span>
+</button>
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-200">calendar_month</span>
+<span class="text-[10px] font-medium leading-none">Calendar</span>
+</button>
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-200">assignment</span>
+<span class="text-[10px] font-medium leading-none">Planner</span>
+</button>
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-200">settings</span>
+<span class="text-[10px] font-medium leading-none">Settings</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

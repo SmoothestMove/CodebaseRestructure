@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="light dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smooth Moves - Settings</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2f4a81", "background-light": "#f6f7f8", "background-dark": "#14171e", "surface-light": "#ffffff", "surface-dark": "#1c1c1e", "border-light": "#e5e5ea", "border-dark": "#38383a", "text-primary-light": "#000000", "text-primary-dark": "#ffffff", "text-secondary-light": "#8e8e93", "text-secondary-dark": "#98989d", danger: "#ff3b30"}, fontFamily: {display: "Nunito Sans"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display antialiased min-h-screen selection:bg-primary selection:text-white pb-12">
+<!-- Navigation Bar -->
+<div class="sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-border-light/50 dark:border-border-dark/50 transition-colors duration-200">
+<div class="flex items-center justify-between px-4 h-12">
+<div class="w-16 flex items-center justify-start text-primary cursor-pointer hover:opacity-80">
+<span class="material-symbols-outlined text-[28px]">chevron_left</span>
+<span class="text-[17px] leading-tight -ml-1">Back</span>
+</div>
+<!-- Empty center for title if needed, but using large title below -->
+<div class="w-16 flex items-center justify-end">
+<button class="text-[17px] font-semibold text-primary hover:opacity-80">Done</button>
+</div>
+</div>
+<div class="px-4 pb-2">
+<h1 class="text-[34px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">Settings</h1>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="px-4 w-full max-w-2xl mx-auto pt-2">
+<!-- Section: Move Specifics -->
+<div class="mb-6">
+<h3 class="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider px-4 mb-2 pt-4">Move Specifics</h3>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm">
+<!-- List Item: Current Move -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-gray-100 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-primary w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">package_2</span>
+</div>
+<span class="text-[17px] font-normal truncate">Current Move</span>
+</div>
+<div class="flex items-center gap-2 pl-2 shrink-0">
+<span class="text-[17px] text-text-secondary-light dark:text-text-secondary-dark truncate max-w-[140px] sm:max-w-xs">Downtown Apt</span>
+<span class="material-symbols-outlined text-text-secondary-light/50 dark:text-text-secondary-dark/50 text-[20px]">chevron_right</span>
+</div>
+</div>
+<div class="ml-14 border-b border-border-light dark:border-border-dark"></div>
+<!-- List Item: Move Date -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-gray-100 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-primary w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+</div>
+<span class="text-[17px] font-normal truncate">Move Date</span>
+</div>
+<div class="flex items-center gap-2 pl-2 shrink-0 bg-gray-100 dark:bg-gray-700/50 px-2 py-1 rounded text-sm sm:text-[15px] font-medium text-primary">
+                        Oct 24, 2023
+                    </div>
+</div>
+</div>
+<p class="px-4 mt-2 text-[13px] text-text-secondary-light dark:text-text-secondary-dark">
+                Changing the active move will update your dashboard widgets.
+            </p>
+</div>
+<!-- Section: Appearance -->
+<div class="mb-6">
+<h3 class="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider px-4 mb-2">Appearance</h3>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm">
+<!-- List Item: Theme -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-gray-100 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-gray-500 w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</div>
+<span class="text-[17px] font-normal truncate">Theme</span>
+</div>
+<div class="flex items-center gap-2 pl-2 shrink-0">
+<span class="text-[17px] text-text-secondary-light dark:text-text-secondary-dark">System Default</span>
+<span class="material-symbols-outlined text-text-secondary-light/50 dark:text-text-secondary-dark/50 text-[20px]">chevron_right</span>
+</div>
+</div>
+<div class="ml-14 border-b border-border-light dark:border-border-dark"></div>
+<!-- List Item: Compact Mode (Switch) -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px]">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-gray-500 w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">view_list</span>
+</div>
+<span class="text-[17px] font-normal truncate">Compact Mode</span>
+</div>
+<div class="shrink-0">
+<!-- Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-[51px] h-[31px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[27px] after:w-[27px] after:transition-all peer-checked:bg-primary border border-transparent shadow-inner"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Data Management -->
+<div class="mb-6">
+<h3 class="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider px-4 mb-2">Data Management</h3>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm">
+<!-- List Item: Sync Status -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px]">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-green-500 w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">cloud_sync</span>
+</div>
+<span class="text-[17px] font-normal truncate">Sync Status</span>
+</div>
+<div class="flex items-center gap-2 pl-2 shrink-0">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-[17px] text-text-secondary-light dark:text-text-secondary-dark">Up to date</span>
+</div>
+</div>
+<div class="ml-14 border-b border-border-light dark:border-border-dark"></div>
+<!-- List Item: Export Inventory -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-gray-100 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="flex items-center justify-center rounded bg-indigo-500 w-8 h-8 shrink-0 text-white shadow-sm">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</div>
+<span class="text-[17px] font-normal truncate">Export Inventory (CSV)</span>
+</div>
+<div class="flex items-center pl-2 shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light/50 dark:text-text-secondary-dark/50 text-[20px]">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Danger Zone -->
+<div class="mb-8">
+<h3 class="text-xs font-medium text-danger uppercase tracking-wider px-4 mb-2">Danger Zone</h3>
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm ring-1 ring-danger/30">
+<!-- List Item: Reset Current Move -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-red-50 dark:active:bg-red-900/10 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<span class="material-symbols-outlined text-[24px] text-danger">restart_alt</span>
+<span class="text-[17px] font-normal truncate text-danger">Reset Current Move</span>
+</div>
+</div>
+<div class="ml-4 border-b border-border-light dark:border-border-dark"></div>
+<!-- List Item: Delete Account -->
+<div class="group flex items-center justify-between px-4 py-3 min-h-[52px] cursor-pointer active:bg-red-50 dark:active:bg-red-900/10 transition-colors">
+<div class="flex items-center gap-3 overflow-hidden">
+<span class="material-symbols-outlined text-[24px] text-danger">delete_forever</span>
+<span class="text-[17px] font-normal truncate text-danger">Delete Account</span>
+</div>
+</div>
+</div>
+<p class="px-4 mt-2 text-[13px] text-text-secondary-light dark:text-text-secondary-dark">
+                These actions are irreversible. Please proceed with caution.
+            </p>
+</div>
+<!-- Footer Version -->
+<div class="flex flex-col items-center justify-center pb-8 gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+<span class="text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark">Smooth Moves</span>
+</div>
+<p class="text-[13px] text-text-secondary-light/70 dark:text-text-secondary-dark/70">
+                Version 2.4.0 (Build 342)
+            </p>
+</div>
+</div>
+</body></html>

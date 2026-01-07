@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smooth Moves - Box Details</title>
+<!-- Google Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#2f4b83",
+              "background-light": "#f6f7f8",
+              "background-dark": "#14171e",
+              "surface-dark": "#1f232c",
+              "surface-light": "#ffffff",
+            },
+            fontFamily: {
+              "display": ["Public Sans", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "1rem", 
+              "xl": "1.5rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar hide for cleaner UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-white pb-24">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Box Details</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</nav>
+<main class="max-w-md mx-auto w-full px-4 pt-4">
+<!-- Hero Header -->
+<header class="mb-6">
+<h2 class="text-2xl font-bold leading-tight mb-3">Kitchen - Pots &amp; Pans</h2>
+<div class="flex flex-wrap gap-2 items-center">
+<!-- Status Badge (Prominent) -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span>
+<span class="text-xs font-bold uppercase tracking-wide">In Transit</span>
+</div>
+<!-- ID Badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-200 dark:bg-surface-dark border border-slate-300 dark:border-slate-700">
+<span class="text-xs font-medium text-slate-600 dark:text-slate-400">#BX-892</span>
+</div>
+<!-- Owner Badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50">
+<span class="material-symbols-outlined text-[16px]">person</span>
+<span class="text-xs font-medium">Dad's Stuff</span>
+</div>
+</div>
+</header>
+<!-- Visuals & Details Split View -->
+<section class="grid grid-cols-[40%_1fr] gap-4 mb-6">
+<!-- Left Column: Visuals -->
+<div class="flex flex-col gap-3">
+<!-- Main Box Image -->
+<div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-dark border border-slate-800 group">
+<img alt="Photo of kitchen pots and pans in a box" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Open cardboard box revealing stainless steel pots and kitchenware" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUBll0gy2_xmTrgS1BcMmpcXB5Wru9CYEWoxlRQu9i_vxop5aUo_834tW012vH-VNrkJsqq7USvMbv1Ro2gxMNBLqgNnbHcHXgZRrLdsVssGQKasiznAAH5sAESmGNh12jcPV3TvFDtJ171-UUtvrrjMtYBNL19KMBHjWpO5vADfThpPwMDwAbkeuDeasxUkLxJrl1cwUcCi38wgS_05aDA8C33SwUShz1a7lybSHIqJdwSblYSS6E09yI8GrHwovvfp76Uh3n_iA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute bottom-2 right-2 w-8 h-8 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">zoom_in</span>
+</button>
+</div>
+<!-- Box QR Label Preview -->
+<div class="bg-white rounded-lg p-2 flex flex-col items-center justify-center gap-1 shadow-sm">
+<img alt="QR Code for Box BX-892" class="w-full aspect-square object-contain mix-blend-multiply opacity-90" data-alt="Black and white QR code pattern on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhrNYN6pVIGZpJHcbErmAfP0uPgfhQHfufGCqiYn3tdgmGbH4u_vzobCjWB724VnQvm42G1Cx1DTjar2GT_y7lPn9cr69mSdC2b9qrTKp-7kxu24tVcPT77Jgte8rC05OuZc9ZW7V74P8KPQ0U8eWS9X81b7DvFGg9H1boVjiIdOFrsfAHFesanZtXybHLONqsGGSX_0r_UPYPuRlsozwu74fgMNFmPIyZUtNqJ5elahJzXiPfe4mFzXaCSWXt21WfNXLsEeOQEp4"/>
+<span class="text-[10px] font-bold text-black tracking-widest uppercase">Scan Me</span>
+</div>
+</div>
+<!-- Right Column: Data Grid -->
+<div class="bg-white dark:bg-surface-dark rounded-lg p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
+<div class="flex flex-col gap-4">
+<div class="group">
+<p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                            Last Seen
+                        </p>
+<p class="text-sm font-medium text-slate-900 dark:text-white leading-tight">Warehouse Zone A</p>
+</div>
+<div class="h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="group">
+<p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">meeting_room</span>
+                            Destination
+                        </p>
+<p class="text-sm font-medium text-slate-900 dark:text-white leading-tight">Master Kitchen</p>
+</div>
+<div class="h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="group">
+<p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">local_shipping</span>
+                            Truck Pos.
+                        </p>
+<p class="text-sm font-medium text-slate-900 dark:text-white leading-tight">Zone B (Top)</p>
+</div>
+<div class="h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="group">
+<p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">calendar_today</span>
+                            Packed On
+                        </p>
+<p class="text-sm font-medium text-slate-900 dark:text-white leading-tight">Oct 12, 2023</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Contents Description -->
+<section class="mb-8">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+                Contents
+            </h3>
+<div class="bg-white dark:bg-surface-dark p-4 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Contains non-stick frying pans (set of 3), large stock pot (20L), colander, and various baking sheets. <span class="text-primary font-medium">Fragile items wrapped in bubble wrap.</span>
+</p>
+</div>
+</section>
+<!-- Moving History -->
+<section class="mb-24">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                Moving History
+            </h3>
+<div class="relative pl-2">
+<!-- Vertical Line -->
+<div class="absolute left-[19px] top-2 bottom-4 w-[2px] bg-slate-200 dark:bg-slate-800"></div>
+<!-- Timeline Item 1 (Latest) -->
+<div class="relative flex gap-4 mb-6 group">
+<div class="relative z-10 w-10 h-10 shrink-0 rounded-full bg-primary flex items-center justify-center border-4 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-white text-[20px]">local_shipping</span>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Loaded onto Truck</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">9:00 AM</span>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-400 mb-1">Scanned by <span class="text-slate-900 dark:text-slate-200 font-medium">Mike R.</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-500">Location: Warehouse Loading Dock 4</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative flex gap-4 mb-6 group">
+<div class="relative z-10 w-10 h-10 shrink-0 rounded-full bg-surface-dark border border-slate-700 flex items-center justify-center border-4 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-slate-400 text-[20px]">inventory</span>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Staged for Loading</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Yesterday</span>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-400">Scanned by <span class="text-slate-900 dark:text-slate-200 font-medium">System</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-500">Location: Warehouse Zone A</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative flex gap-4 group">
+<div class="relative z-10 w-10 h-10 shrink-0 rounded-full bg-surface-dark border border-slate-700 flex items-center justify-center border-4 border-background-light dark:border-background-dark shadow-sm">
+<span class="material-symbols-outlined text-slate-400 text-[20px]">package_2</span>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Sealed &amp; Tagged</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Oct 12</span>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-400">Scanned by <span class="text-slate-900 dark:text-slate-200 font-medium">Sarah M.</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-500">Location: Old House (Kitchen)</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-50">
+<div class="max-w-md mx-auto grid grid-cols-[auto_1fr] gap-3">
+<!-- Secondary Actions -->
+<div class="flex gap-2">
+<button class="flex flex-col items-center justify-center w-14 h-12 rounded-lg bg-slate-200 dark:bg-surface-dark hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+<span class="text-[9px] font-bold mt-0.5">Edit</span>
+</button>
+<button class="flex flex-col items-center justify-center w-14 h-12 rounded-lg bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors text-red-600 dark:text-red-400">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+<span class="text-[9px] font-bold mt-0.5">Delete</span>
+</button>
+</div>
+<!-- Primary Action -->
+<button class="h-12 rounded-lg bg-primary hover:bg-primary/90 transition-all flex items-center justify-center gap-2 text-white font-bold shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined">update</span>
+                Update Location
+            </button>
+</div>
+</div>
+</body></html>
