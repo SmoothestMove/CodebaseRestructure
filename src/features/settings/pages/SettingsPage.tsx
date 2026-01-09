@@ -17,6 +17,8 @@ import {
   validateResetPermissions
 } from '../services/dataResetService';
 import { useAuth } from '@/features/auth/hooks/AuthContext'; 
+import InstallButton from '@/components/pwa/InstallButton';
+import { FaMobileAlt } from 'react-icons/fa';
 
 interface AppMetadata {
   name: string;
@@ -481,6 +483,21 @@ const SettingsPage: React.FC = () => {
            <p className="text-xs text-brand-secondary/80 dark:text-slate-400 -mt-2">
               Currently: {isDarkMode ? 'Dark Theme' : 'Light Theme'}
             </p>
+        </div>
+      </section>
+
+      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
+        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3 flex items-center">
+          <FaMobileAlt className="w-6 h-6 mr-3 text-brand-tertiary dark:text-orange-400" />
+          Mobile Application
+        </h2>
+        <div className="space-y-4">
+          <p className="text-brand-secondary dark:text-slate-300">
+            Install Smooth Moves on your device for quick access, full-screen experience, and offline capabilities.
+          </p>
+          <div className="flex items-center space-x-4">
+            <InstallButton />
+          </div>
         </div>
       </section>
 
