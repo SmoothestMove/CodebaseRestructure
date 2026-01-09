@@ -7,7 +7,7 @@ import { AuthProvider } from '@/features/auth/hooks/AuthContext';
 import { ThemeProvider } from '@/hooks/useTheme';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { firebaseConfig } from '@/lib/config/constants';
 import { ToastContainer } from 'react-toastify';
@@ -18,7 +18,14 @@ const app = initializeApp(firebaseConfig);
 
 // Export Firebase services
 export const auth = getAuth(app);
-export const firestore = getFirestore(app);
+
+// Initialize Firestore with offline persistence
+export const firestore = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
+  })
+});
+
 export const storage = getStorage(app);
 
 const rootElement = document.getElementById('root');

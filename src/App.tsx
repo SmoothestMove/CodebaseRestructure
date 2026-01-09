@@ -23,8 +23,44 @@ import { useAuth } from '@/features/auth/hooks/AuthContext';
 import { MoveProvider } from '@/features/settings/hooks/MoveContext';
 import { CalendarProvider } from '@/features/calendar/hooks/useCalendar';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
+import { useRegisterSW } from 'virtual:pwa-register/react';
+import { toast } from 'react-toastify';
+import Button from '@/components/common/Button';
 
 const MainAppLayout: React.FC = () => {
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      console.log('SW Registered: ' + r);
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
+
+  useEffect(() => {
+    if (needRefresh) {
+      toast.info(
+        <div className="flex flex-col gap-2">
+          <span>New content available!</span>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => updateServiceWorker(true)}
+          >
+            Reload
+          </Button>
+        </div>,
+        {
+          autoClose: false,
+          closeOnClick: false,
+          draggable: false,
+        }
+      );
+    }
+  }, [needRefresh, updateServiceWorker]);
   const { moveId, loading: authLoading, currentUser } = useAuth();
   const [isInitialized, setIsInitialized] = useState(false);
   const [showOwnerModal, setShowOwnerModal] = useState(false);
