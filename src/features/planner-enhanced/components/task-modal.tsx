@@ -41,7 +41,7 @@ const MultiSelect = ({ options, selectedOptions, onChange, placeholder }) => {
     <div className="relative" ref={selectRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-full flex justify-between items-center p-2 rounded-md text-left bg-slate-700 border-slate-600 text-slate-100"
+        className="flex h-10 w-full items-center justify-between rounded-md border border-border bg-surface-elevated px-3 py-2 text-sm text-text-main"
       >
         <span className="truncate">
           {selectedOptions.length > 0 ? `${selectedOptions.length} selected` : (placeholder || "Select...")}
@@ -51,7 +51,7 @@ const MultiSelect = ({ options, selectedOptions, onChange, placeholder }) => {
         </svg>
       </button>
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-slate-700 border border-slate-600 rounded-md shadow-lg">
+        <div className="absolute z-50 w-full mt-1 bg-[#1a2230] border border-border rounded-md shadow-lg">
           <div className="p-2 space-y-1 max-h-48 overflow-y-auto">
             {options.map(o => {
               const isSelected = selectedOptions.some(s => s.name === o.name)
@@ -59,9 +59,9 @@ const MultiSelect = ({ options, selectedOptions, onChange, placeholder }) => {
                 <button 
                   key={o.name} 
                   onClick={() => handleOptionToggle(o)} 
-                  className={`w-full text-left px-3 py-2 rounded text-sm hover:bg-slate-600 flex items-center gap-3 ${isSelected ? "bg-slate-600/70" : ""}`}
+                  className={`w-full text-left px-3 py-2 rounded text-sm hover:bg-surface-elevated flex items-center gap-3 ${isSelected ? "bg-surface-elevated" : ""}`}
                 >
-                  <div className={`w-4 h-4 rounded border-2 ${isSelected ? 'bg-blue-500 border-blue-400' : 'border-slate-400'} flex items-center justify-center`}>
+                  <div className={`w-4 h-4 rounded border-2 ${isSelected ? 'bg-accent border-accent' : 'border-border'} flex items-center justify-center`}>
                     {isSelected && (
                       <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -69,7 +69,7 @@ const MultiSelect = ({ options, selectedOptions, onChange, placeholder }) => {
                     )}
                   </div>
                   <div className={`w-3 h-3 rounded-sm ${o.color}`}></div>
-                  <span>{o.name}</span>
+                  <span className="text-text-main">{o.name}</span>
                 </button>
               )
             })}
@@ -1285,7 +1285,7 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, isCreating = false 
               
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Labels</label>
+                  <label className="text-xs text-text-muted mb-1.5 block font-medium">Labels</label>
                   <MultiSelect 
                     options={LABEL_OPTIONS} 
                     selectedOptions={localTask.labels || []} 
@@ -1295,48 +1295,48 @@ export function TaskModal({ task, isOpen, onClose, onUpdate, isCreating = false 
                 </div>
                 
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Priority</label>
+                  <label className="text-xs text-text-muted mb-1.5 block font-medium">Priority</label>
                   <Select value={localTask.priority || "none"} onValueChange={handlePriorityChange}>
-                    <SelectTrigger className="bg-slate-700">
+                    <SelectTrigger className="bg-surface-elevated border-border text-text-main">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#1a2230] border-border">
                       <SelectItem value="none">None</SelectItem>
                       <SelectItem value="critical">
-                        <span className="text-red-500 font-semibold">Critical</span>
+                        <span className="text-semantic-error font-semibold">Critical</span>
                       </SelectItem>
                       <SelectItem value="high">
                         <span className="text-orange-500 font-semibold">High</span>
                       </SelectItem>
                       <SelectItem value="medium">
-                        <span className="text-yellow-500 font-semibold">Medium</span>
+                        <span className="text-semantic-warning font-semibold">Medium</span>
                       </SelectItem>
                       <SelectItem value="low">
-                        <span className="text-green-500 font-semibold">Low</span>
+                        <span className="text-semantic-success font-semibold">Low</span>
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Status</label>
+                  <label className="text-xs text-text-muted mb-1.5 block font-medium">Status</label>
                   <Select value={localTask.status || "none"} onValueChange={handleStatusChange}>
-                    <SelectTrigger className="bg-slate-700">
+                    <SelectTrigger className="bg-surface-elevated border-border text-text-main">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#1a2230] border-border">
                       <SelectItem value="none">None</SelectItem>
                       <SelectItem value="not-started">
-                        <span className="text-slate-400">Not Started</span>
+                        <span className="text-text-muted">Not Started</span>
                       </SelectItem>
                       <SelectItem value="in-progress">
-                        <span className="text-blue-400">In Progress</span>
+                        <span className="text-accent">In Progress</span>
                       </SelectItem>
                       <SelectItem value="completed">
-                        <span className="text-green-400">Completed</span>
+                        <span className="text-semantic-success">Completed</span>
                       </SelectItem>
                       <SelectItem value="cancelled">
-                        <span className="text-red-400">Cancelled</span>
+                        <span className="text-semantic-error">Cancelled</span>
                       </SelectItem>
                     </SelectContent>
                   </Select>

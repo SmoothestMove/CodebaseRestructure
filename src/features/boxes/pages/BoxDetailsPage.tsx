@@ -12,7 +12,6 @@ import Select from '@/components/common/Select';
 import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import TruckZoneSelectorModal from '@/features/boxes/components/TruckZoneSelectorModal';
-import { IconChevronLeft, IconEdit, IconCamera, IconTrash, IconCheck, IconQrCode } from '@/lib/config/constants';
 import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '@/utils/statusUtils';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 
@@ -277,7 +276,7 @@ const BoxDetailsPage: React.FC = () => {
   if (error && !box) return (
     <div className="max-w-xl mx-auto text-center py-10">
       <Alert type="error" message={error} onClose={() => setError(null)} />
-      <Button onClick={() => navigate('/boxes')} variant="secondary" className="mt-6" leftIcon={<IconChevronLeft />}>
+      <Button onClick={() => navigate('/boxes')} variant="secondary" className="mt-6" leftIcon={<span className="material-symbols-outlined text-lg">arrow_back_ios</span>}>
         Back to All Boxes
       </Button>
     </div>
@@ -316,34 +315,35 @@ const BoxDetailsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <Button onClick={() => navigate(-1)} variant="ghost" size="md" className="text-brand-secondary dark:text-slate-400 hover:text-brand-secondary-dark dark:hover:text-slate-300" leftIcon={<IconChevronLeft className="w-5 h-5"/>}>
-        Back
-      </Button>
+      <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-text-muted hover:text-text-main transition-colors mb-4">
+        <span className="material-symbols-outlined text-xl">arrow_back_ios</span>
+        <span className="text-sm font-medium">Back</span>
+      </button>
 
       {successMessage && <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} duration={5000} />}
       {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
 
-      <div className="bg-white dark:bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
-        <div className="bg-brand-primary dark:bg-slate-700 text-white dark:text-slate-100 p-6 md:p-8">
+      <div className="bg-surface shadow-lg rounded-xl overflow-hidden">
+        <div className="bg-accent text-white p-6 md:p-8">
           <div className="md:flex justify-between items-start">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold break-words">{box.name}</h1>
               {currentOwnerEntity ? (
                 <div className="flex items-center mt-1.5">
                   <span
-                    className="w-4 h-4 rounded-full inline-block mr-2 border-2 border-white/50 dark:border-slate-400/50"
+                    className="w-4 h-4 rounded-full inline-block mr-2 border-2 border-white/50"
                     style={{ backgroundColor: currentOwnerColor }}
                     title={`${currentOwnerDisplayName} color`}
                   />
-                  <span className="text-sm text-brand-light-gray dark:text-slate-300">
+                  <span className="text-sm text-white/80">
                     {currentOwnerLabelPrefix}
                     {currentOwnerDisplayName}
                   </span>
                 </div>
               ) : (
-                <p className="text-sm text-brand-light-gray dark:text-slate-300 mt-1.5">Assignment: Unassigned</p>
+                <p className="text-sm text-white/80 mt-1.5">Assignment: Unassigned</p>
               )}
-              <p className="text-sm text-brand-light-gray/80 dark:text-slate-400/80 mt-1 font-mono">Box ID: {box.id}</p>
+              <p className="text-sm text-white/60 mt-1 font-mono">Box ID: {box.id}</p>
             </div>
             <div className={`mt-4 md:mt-0 px-3 py-1.5 text-sm font-semibold rounded-full border-2 whitespace-nowrap ${statusPillStyle(box.currentStatus)} shadow-sm text-center`}>
               Current Stage: {getItemStatusDisplayLabel(box.currentStatus)}
@@ -352,44 +352,44 @@ const BoxDetailsPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-7 gap-0">
-          <div className="md:col-span-3 p-6 bg-slate-50 dark:bg-slate-800/50 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 flex flex-col items-center space-y-6">
+          <div className="md:col-span-3 p-6 bg-surface-elevated border-b md:border-b-0 md:border-r border-border flex flex-col items-center space-y-6">
             {displayImage ? (
               <img
                 src={box.imageUrl}
                 alt={`Image of ${box.name}`}
-                className="w-full max-w-sm h-auto object-cover rounded-lg shadow-xl border-4 border-white dark:border-slate-700"
+                className="w-full max-w-sm h-auto object-cover rounded-lg shadow-xl border-4 border-border"
               />
             ) : (
               <div className="w-full max-w-sm flex items-center justify-center p-4">
                 <QRCodeDisplay
                   value={box.qrCodeValue}
-                  size={Math.min(300, window.innerWidth * 0.6)} // Responsive size
-                  className="rounded-lg shadow-xl border-4 border-white dark:border-slate-700"
+                  size={Math.min(300, window.innerWidth * 0.6)}
+                  className="rounded-lg shadow-xl border-4 border-border"
                 />
               </div>
             )}
-            <div className="text-center p-4 bg-white dark:bg-slate-700 rounded-lg shadow-md">
-              <p className="text-sm text-brand-secondary dark:text-slate-300 mb-2 font-medium">Box QR Label:</p>
-              <QRCodeDisplay value={box.qrCodeValue} size={200} className="border-2 border-brand-light-gray dark:border-slate-600 rounded-md" />
+            <div className="text-center p-4 bg-surface rounded-lg shadow-md border border-border">
+              <p className="text-sm text-text-secondary mb-2 font-medium">Box QR Label:</p>
+              <QRCodeDisplay value={box.qrCodeValue} size={200} className="border-2 border-border rounded-md" />
             </div>
           </div>
 
           <div className="md:col-span-4 p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-3">Box Details</h2>
-              <p className="text-brand-secondary dark:text-slate-300 leading-relaxed prose prose-sm dark:prose-invert max-w-none">{box.contents || <span className="italic">No contents list provided.</span>}</p>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm text-brand-secondary/80 dark:text-slate-400/80">
-                <p><strong>Last Seen:</strong> <span className="text-brand-secondary-dark dark:text-slate-300">{box.currentLocation || 'N/A'}</span></p>
-                {box.destinationRoom && <p><strong>Destination Room:</strong> <span className="text-brand-secondary-dark dark:text-slate-300">{box.destinationRoom}</span></p>}
+              <h2 className="text-2xl font-semibold text-text-main mb-3">Box Details</h2>
+              <p className="text-text-secondary leading-relaxed">{box.contents || <span className="italic text-text-muted">No contents list provided.</span>}</p>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm text-text-muted">
+                <p><strong className="text-text-secondary">Last Seen:</strong> <span className="text-text-main">{box.currentLocation || 'N/A'}</span></p>
+                {box.destinationRoom && <p><strong className="text-text-secondary">Destination Room:</strong> <span className="text-text-main">{box.destinationRoom}</span></p>}
                 {box.currentStatus === ItemStatus.LOADED && box.truckZone && (
-                  <p><strong>Truck Placement:</strong> <span className="text-brand-secondary-dark dark:text-slate-300">{box.truckZone} ({box.truckVerticalPosition})</span></p>
+                  <p><strong className="text-text-secondary">Truck Placement:</strong> <span className="text-text-main">{box.truckZone} ({box.truckVerticalPosition})</span></p>
                 )}
-                <p><strong>Packed On:</strong> <span className="text-brand-secondary-dark dark:text-slate-300">{new Date(box.createdAt).toLocaleString()}</span></p>
-                <p><strong>Last Update:</strong> <span className="text-brand-secondary-dark dark:text-slate-300">{new Date(box.updatedAt).toLocaleString()}</span></p>
+                <p><strong className="text-text-secondary">Packed On:</strong> <span className="text-text-main">{new Date(box.createdAt).toLocaleString()}</span></p>
+                <p><strong className="text-text-secondary">Last Update:</strong> <span className="text-text-main">{new Date(box.updatedAt).toLocaleString()}</span></p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-6 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap gap-3 pt-6 border-t border-border">
               <Button onClick={() => { 
                 // Determine if current assignment is to a person or space
                 const isCurrentlySpace = box.ownerUid ? adapter.isSpace(box.ownerUid) : false;
@@ -404,39 +404,39 @@ const BoxDetailsPage: React.FC = () => {
                 }); 
                 setError(null); 
                 setIsEditModalOpen(true); 
-              }} variant="primary" leftIcon={<IconEdit />}>
+              }} variant="primary" leftIcon={<span className="material-symbols-outlined text-lg">edit</span>}>
                 Edit Details
               </Button>
-              <Button onClick={() => { setScanFormData({ location: box.currentLocation || '', notes: '', newStatus: box.currentStatus }); setError(null); setIsScanModalOpen(true); }} variant="success" leftIcon={<IconCamera />}>
+              <Button onClick={() => { setScanFormData({ location: box.currentLocation || '', notes: '', newStatus: box.currentStatus }); setError(null); setIsScanModalOpen(true); }} variant="success" leftIcon={<span className="material-symbols-outlined text-lg">photo_camera</span>}>
                 Update Location/Status
               </Button>
-              <Button onClick={handleDelete} variant="danger" leftIcon={<IconTrash />}>
+              <Button onClick={handleDelete} variant="danger" leftIcon={<span className="material-symbols-outlined text-lg">delete</span>}>
                 Delete Box
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 rounded-b-xl">
-          <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4">Moving History <span className="text-brand-secondary dark:text-slate-400 font-normal">({box.history.length} entries)</span></h2>
+        <div className="p-6 border-t border-border bg-surface-elevated rounded-b-xl">
+          <h2 className="text-xl font-semibold text-text-main mb-4">Moving History <span className="text-text-muted font-normal">({box.history.length} entries)</span></h2>
           {box.history.length > 0 ? (
             <ul className="space-y-4 max-h-[30rem] overflow-y-auto pr-2 custom-scrollbar">
               {[...box.history].sort((a,b) => b.timestamp - a.timestamp).map((entry, index) => (
-                <li key={index} className="p-4 bg-white dark:bg-slate-700 rounded-lg shadow-md border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-shadow">
+                <li key={index} className="p-4 bg-surface rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-center mb-1.5">
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${statusPillStyle(entry.statusChange || ItemStatus.UNKNOWN)}`}>
                       {getItemStatusDisplayLabel(entry.statusChange || ItemStatus.UNKNOWN)}
                     </span>
-                    <span className="text-xs text-brand-secondary/80 dark:text-slate-400/80">{new Date(entry.timestamp).toLocaleString()}</span>
+                    <span className="text-xs text-text-muted">{new Date(entry.timestamp).toLocaleString()}</span>
                   </div>
-                  <p className="text-sm text-brand-secondary-dark dark:text-slate-300"><strong>Location:</strong> {entry.location}</p>
-                  {entry.notes && <p className="text-xs text-brand-secondary dark:text-slate-400 mt-1.5 bg-brand-light-gray/30 dark:bg-slate-600/50 p-2 rounded-md border border-brand-light-gray/50 dark:border-slate-500/50"><em>Notes:</em> {entry.notes}</p>}
+                  <p className="text-sm text-text-secondary"><strong>Location:</strong> {entry.location}</p>
+                  {entry.notes && <p className="text-xs text-text-muted mt-1.5 bg-surface-elevated p-2 rounded-md border border-border"><em>Notes:</em> {entry.notes}</p>}
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="text-center py-8 text-brand-secondary dark:text-slate-400">
-                <IconQrCode className="w-12 h-12 mx-auto mb-3 text-brand-secondary/60 dark:text-slate-500/60" />
+            <div className="text-center py-8 text-text-muted">
+                <span className="material-symbols-outlined text-5xl mb-3 opacity-60">qr_code_2</span>
                 <p>No moving history recorded for this box yet.</p>
                 <p className="text-xs mt-1">Scan the box label to track its journey to your new home.</p>
             </div>
@@ -541,7 +541,7 @@ const BoxDetailsPage: React.FC = () => {
             <Button type="button" variant="secondary" onClick={() => setIsEditModalOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} leftIcon={<IconCheck />}>
+            <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} leftIcon={<span className="material-symbols-outlined text-lg">check</span>}>
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
@@ -579,7 +579,7 @@ const BoxDetailsPage: React.FC = () => {
             <Button type="button" variant="secondary" onClick={() => setIsScanModalOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" variant="success" isLoading={isSubmitting} disabled={isSubmitting} leftIcon={<IconCheck />}>
+            <Button type="submit" variant="success" isLoading={isSubmitting} disabled={isSubmitting} leftIcon={<span className="material-symbols-outlined text-lg">check</span>}>
               {isSubmitting ? 'Saving...' : 'Save Update'}
             </Button>
           </div>

@@ -44,12 +44,12 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const variantStyles = {
-    primary: "bg-primary hover:bg-primary-dark text-text-on-primary focus:ring-primary/50 dark:bg-primary-light dark:hover:bg-primary dark:focus:ring-primary-light/50",
-    secondary: "bg-secondary hover:bg-secondary-dark text-text-on-secondary focus:ring-secondary/50 dark:bg-secondary-dark dark:hover:bg-secondary dark:focus:ring-secondary-dark/50",
-    danger: "bg-danger hover:bg-danger-dark text-text-on-danger focus:ring-danger/50 dark:bg-danger-dark dark:hover:bg-danger dark:focus:ring-danger-dark/50",
-    success: "bg-success hover:bg-success-dark text-text-on-primary focus:ring-success/50 dark:bg-success-dark dark:hover:bg-success dark:focus:ring-success-dark/50",
-    warning: "bg-accent hover:bg-accent-dark text-white focus:ring-accent/50 dark:bg-accent-dark dark:hover:bg-accent dark:focus:ring-accent-dark/50",
-    ghost: "bg-transparent hover:bg-primary/10 text-primary focus:ring-primary/30 dark:text-primary-light dark:hover:bg-primary-light/10 dark:focus:ring-primary-light/30",
+    primary: "bg-accent hover:bg-accent-hover hover:border-accent-hover text-background border border-slate-300 dark:border-slate-600 focus:ring-accent/50 shadow-lg shadow-accent/20 transition-all duration-200",
+    secondary: "bg-surface hover:bg-surface-elevated hover:border-accent text-text-main border border-slate-300 dark:border-slate-600 focus:ring-accent/30 transition-all duration-200",
+    danger: "bg-semantic-error hover:opacity-90 text-white border border-slate-300 dark:border-slate-600 focus:ring-semantic-error/50 shadow-md transition-all duration-200",
+    success: "bg-semantic-success hover:opacity-90 text-white border border-slate-300 dark:border-slate-600 focus:ring-semantic-success/50 shadow-md transition-all duration-200",
+    warning: "bg-semantic-warning hover:opacity-90 text-background border border-slate-300 dark:border-slate-600 focus:ring-semantic-warning/50 shadow-md transition-all duration-200",
+    ghost: "bg-transparent hover:bg-accent/10 text-accent border border-transparent hover:border-accent/30 focus:ring-accent/30 transition-all duration-200",
   };
 
   const loadingStyles = isLoading ? "opacity-75 cursor-not-allowed" : "";

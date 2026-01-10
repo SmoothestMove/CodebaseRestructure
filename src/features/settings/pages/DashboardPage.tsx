@@ -10,8 +10,6 @@ import { DynamicBentoGrid } from '../components/DynamicBentoGrid';
 import { TruckLayoutVisualization } from '../components/TruckLayoutVisualization';
 import { BudgetOverviewWidget } from '../components/BudgetOverviewWidget';
 import { ParticipantsSkeleton } from '@/components/design-system';
-import { BsQuestionCircle } from 'react-icons/bs';
-import { FaUser, FaBuilding } from 'react-icons/fa';
 import { generateEnhancedRandomizedMoveData, type EnhancedRandomizedData } from '@/lib/utils/randomization-enhanced';
 import { SeparationTestWidget } from '@/features/owners/components/SeparationTestWidget';
 
@@ -113,14 +111,14 @@ const DashboardPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-8 p-6">
+      <div className="space-y-6">
         <div className="animate-pulse">
-          <div className="bg-slate-200 dark:bg-slate-700 h-8 w-64 rounded mb-4"></div>
-          <div className="bg-slate-200 dark:bg-slate-700 h-64 rounded-xl mb-6"></div>
-          <div className="bg-slate-200 dark:bg-slate-700 h-32 rounded-xl mb-6"></div>
+          <div className="bg-surface-elevated h-8 w-64 rounded mb-4"></div>
+          <div className="bg-surface-elevated h-64 rounded-xl mb-6"></div>
+          <div className="bg-surface-elevated h-32 rounded-xl mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-slate-200 dark:bg-slate-700 h-32 rounded-xl"></div>
+              <div key={i} className="bg-surface-elevated h-32 rounded-xl"></div>
             ))}
           </div>
         </div>
@@ -129,24 +127,34 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Header */}
-      <header className="bg-brand-primary dark:bg-slate-800 shadow-xl rounded-xl p-6 text-white dark:text-slate-100 relative">
+    <div className="space-y-6">
+      {/* Greeting Header */}
+      <header className="flex flex-col gap-1">
+        <h1 className="text-text-main tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+          Hi there! 📦
+        </h1>
+        <p className="text-text-secondary text-sm font-medium">
+          Let's get moving.
+        </p>
+        {move && (
+          <p className="text-text-muted text-xs">Move Code: {move.moveCode}</p>
+        )}
+        
         {/* Dev Mode Randomization Button */}
         {import.meta.env.DEV && (
-          <div className="absolute top-4 right-4 flex gap-2">
+          <div className="flex gap-2 mt-2">
             <button
               onClick={handleRandomize}
-              className="bg-brand-tertiary hover:bg-opacity-80 text-white p-2 rounded-lg transition-colors duration-200 flex items-center gap-1 text-sm"
+              className="bg-accent hover:bg-accent-hover text-background px-3 py-1.5 rounded-lg transition-colors duration-200 flex items-center gap-1 text-sm"
               title="Randomize data for testing (Dev Mode Only)"
             >
-              <BsQuestionCircle className="w-4 h-4" />
+              <span className="material-symbols-outlined text-base">shuffle</span>
               Randomize
             </button>
             {isRandomized && (
               <button
                 onClick={handleResetRandomization}
-                className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors duration-200 text-sm"
+                className="bg-semantic-error hover:opacity-80 text-white px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm"
                 title="Reset to real data"
               >
                 Reset
@@ -155,23 +163,15 @@ const DashboardPage: React.FC = () => {
           </div>
         )}
         
-        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
-        <p className="mt-2 text-brand-light-gray dark:text-slate-300">
-          Track your moving progress across all aspects of your relocation
-        </p>
-        {move && (
-          <p className="mt-1 text-sm opacity-75">Move Code: {move.moveCode}</p>
-        )}
-        
         {/* Enhanced separation statistics */}
         {!isRandomized && stats.totalEntities > 0 && (
-          <div className="mt-3 flex items-center space-x-4 text-sm text-brand-light-gray dark:text-slate-300">
+          <div className="mt-2 flex items-center space-x-4 text-sm text-text-secondary">
             <div className="flex items-center space-x-1">
-              <FaUser className="w-3 h-3" />
+              <span className="material-symbols-outlined text-base">person</span>
               <span>{stats.personalOwners} Personal Owners</span>
             </div>
             <div className="flex items-center space-x-1">
-              <FaBuilding className="w-3 h-3" />
+              <span className="material-symbols-outlined text-base">apartment</span>
               <span>{stats.communalSpaces} Communal Spaces</span>
             </div>
           </div>
@@ -179,17 +179,17 @@ const DashboardPage: React.FC = () => {
         
         {isRandomized && (
           <div className="mt-2 space-y-1">
-            <p className="text-sm bg-orange-500 text-white px-2 py-1 rounded inline-block">
+            <p className="text-sm bg-semantic-warning text-background px-2 py-1 rounded inline-block">
               🎲 Viewing randomized data
             </p>
             {randomizedData && (
-              <div className="flex items-center space-x-4 text-xs text-brand-light-gray dark:text-slate-300">
+              <div className="flex items-center space-x-4 text-xs text-text-muted">
                 <div className="flex items-center space-x-1">
-                  <FaUser className="w-3 h-3" />
+                  <span className="material-symbols-outlined text-sm">person</span>
                   <span>{randomizedData.personalOwners.length} Random Owners</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <FaBuilding className="w-3 h-3" />
+                  <span className="material-symbols-outlined text-sm">apartment</span>
                   <span>{randomizedData.communalSpaces.length} Random Spaces</span>
                 </div>
                 <span>{randomizedData.boxes.length} Random Boxes</span>
@@ -202,10 +202,10 @@ const DashboardPage: React.FC = () => {
       {/* Box Packing Progress Chart */}
       {progressData && (
         <section>
-          <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
-            Box Packing Progress
+          <h2 className="text-lg font-bold text-text-main mb-3">
+            Total Progress
           </h2>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+          <div className="bg-surface rounded-xl shadow-sm border border-border p-4">
             <BoxPackingProgressChart boxes={displayBoxes} owners={displayEntities} />
           </div>
         </section>
@@ -221,7 +221,7 @@ const DashboardPage: React.FC = () => {
       {/* Separation Test Widget - Dev Mode Only */}
       {import.meta.env.DEV && (
         <section>
-          <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
+          <h2 className="text-lg font-bold text-text-main mb-3">
             Development: Separation Status
           </h2>
           <SeparationTestWidget />
@@ -230,8 +230,8 @@ const DashboardPage: React.FC = () => {
 
       {/* Dynamic Bento Grid - Spaces Overview */}
       <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
-          Spaces Overview
+        <h2 className="text-lg font-bold text-text-main mb-3">
+          Spaces
         </h2>
         <DynamicBentoGrid boxes={displayBoxes} entities={displayEntities} />
       </section>
@@ -239,8 +239,8 @@ const DashboardPage: React.FC = () => {
       {/* Truck Layout Visualization - Conditional */}
       {hasLoadedBoxes && (
         <section>
-          <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
-            Truck Load Status
+          <h2 className="text-lg font-bold text-text-main mb-3">
+            Truck Load
           </h2>
           <TruckLayoutVisualization boxes={displayBoxes} entities={displayEntities} />
         </section>
@@ -248,7 +248,7 @@ const DashboardPage: React.FC = () => {
 
       {/* Budget Overview */}
       <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
+        <h2 className="text-lg font-bold text-text-main mb-3">
           Budget Overview
         </h2>
         <BudgetOverviewWidget 
@@ -256,53 +256,56 @@ const DashboardPage: React.FC = () => {
         />
       </section>
 
-      {/* Move Participants - Simplified */}
+      {/* Move Participants */}
       <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-4">
-          Move Participants
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-text-main">
+            Movers Crew
+          </h2>
+          <button className="text-accent text-sm font-medium hover:opacity-80">Invite</button>
+        </div>
         {moveLoading ? (
           <ParticipantsSkeleton count={3} />
         ) : moveError ? (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <div className="text-red-500">
+          <div className="bg-surface shadow-sm rounded-xl border border-border p-4">
+            <div className="text-semantic-error">
               <p className="font-semibold">Error loading participants</p>
               <p className="text-sm">{moveError.message}</p>
             </div>
           </div>
         ) : move && move.participants ? (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Object.keys(move.participants || {}).map((userId) => {
-                const participantPresence: ParticipantPresence = 
-                  presence?.[`${move.id}_${userId}`] || presence?.[userId] || {};
-                const isOnline = participantPresence?.online || false;
-                const displayName = participantPresence?.displayName || 'Loading...';
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+            {Object.keys(move.participants || {}).map((userId) => {
+              const participantPresence: ParticipantPresence = 
+                presence?.[`${move.id}_${userId}`] || presence?.[userId] || {};
+              const isOnline = participantPresence?.online || false;
+              const displayName = participantPresence?.displayName || 'Loading...';
 
-                return (
-                  <div key={userId} className="flex items-center space-x-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700">
-                    <div className="w-8 h-8 rounded-full bg-brand-tertiary text-white flex items-center justify-center text-sm font-semibold">
+              return (
+                <div key={userId} className="flex flex-col items-center gap-2 min-w-[72px]">
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-full bg-accent text-background flex items-center justify-center text-lg font-semibold shadow-sm">
                       {displayName.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
-                        {displayName}
-                      </p>
-                      <div className="flex items-center space-x-1">
-                        <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {isOnline ? 'Online' : 'Offline'}
-                        </span>
-                      </div>
-                    </div>
+                    <span className={`absolute bottom-0 right-0 block w-3.5 h-3.5 rounded-full ring-2 ring-background ${isOnline ? 'bg-semantic-success' : 'bg-text-muted'}`}></span>
                   </div>
-                );
-              })}
+                  <span className="text-xs font-medium text-text-main truncate max-w-[72px]">
+                    {displayName.split(' ')[0]}
+                  </span>
+                </div>
+              );
+            })}
+            {/* Add button */}
+            <div className="flex flex-col items-center gap-2 min-w-[72px]">
+              <button className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-dashed border-border bg-surface text-text-muted hover:border-accent hover:text-accent transition-colors">
+                <span className="material-symbols-outlined">add</span>
+              </button>
+              <span className="text-xs font-medium text-text-muted">Add</span>
             </div>
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <p className="text-slate-500 dark:text-slate-400">No participants found for this move.</p>
+          <div className="bg-surface shadow-sm rounded-xl border border-border p-4">
+            <p className="text-text-secondary">No participants found for this move.</p>
           </div>
         )}
       </section>

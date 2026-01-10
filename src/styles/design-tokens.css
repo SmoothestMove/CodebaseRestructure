@@ -1,19 +1,44 @@
-/* Design tokens and base color palette */
-:root {
-  --brand-primary: #1e3a5f;
-  --brand-primary-dark: #162b45;
-  --brand-secondary: #708090;
-  --brand-secondary-dark: #5a6875;
-  --brand-tertiary: #ff7e00;
-  --brand-tertiary-dark: #e67100;
-  --brand-accent: #e1a95f;
-  --brand-accent-dark: #ca9854;
+/* Design tokens - Stitch UI Redesign
+   Dark mode default with light toggle
+   Mobile-first, responsive design */
 
+:root {
+  /* Background & Surface - Dark theme default */
+  --background: #14171e;
+  --surface: #1a2230;
+  --surface-elevated: #1f2937;
+
+  /* Primary Accent - Teal/Cyan */
+  --primary-accent: #06b6d4;
+  --primary-accent-hover: #0891b2;
+  --primary-accent-muted: rgba(6, 182, 212, 0.2);
+
+  /* Brand Colors (preserved) */
+  --brand-primary: #1e3a5f;
+  --brand-tertiary: #ff7e00;
+  --brand-accent: #e1a95f;
+
+  /* Text */
+  --text-main: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  /* Semantic Colors */
   --semantic-success: #22c55e;
   --semantic-warning: #f59e0b;
   --semantic-error: #ef4444;
   --semantic-info: #3b82f6;
 
+  /* Priority Badges */
+  --priority-high: #f87171;
+  --priority-medium: #fbbf24;
+  --priority-low: #60a5fa;
+
+  /* Borders */
+  --border-default: #374151;
+  --border-muted: #1f2937;
+
+  /* Neutrals (for gradients and nuance) */
   --neutral-50: #f8fafc;
   --neutral-100: #f1f5f9;
   --neutral-200: #e2e8f0;
@@ -26,9 +51,16 @@
   --neutral-900: #0f172a;
 }
 
-.dark {
-  --brand-primary: #1e293b;
-  --brand-secondary: #475569;
-  --brand-tertiary: #f97316;
-  --brand-accent: #eab308;
+/* Light theme override */
+.light {
+  --background: #f6f7f8;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+
+  --text-main: #111318;
+  --text-secondary: #616f89;
+  --text-muted: #9ca3af;
+
+  --border-default: #e5e7eb;
+  --border-muted: #f3f4f6;
 }

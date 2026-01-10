@@ -15,9 +15,8 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, firestore } from '@/main';
 import { createMove, joinMove, getUserMoves } from '@/features/settings/services/moveService';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
-import { IconSmoothMovesLogo, IconGoogle } from '@/lib/config/constants'; 
-import { FaSignInAlt, FaUserPlus, FaIdBadge, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSettings } from '@/features/settings/hooks/useSettings';
+
 
 type AuthMode = 'signin' | 'register';
 type MoveMode = 'new' | 'join';
@@ -351,10 +350,10 @@ const AuthPage: React.FC = () => {
       id={`tab-${tabName}`}
       onClick={() => handleTabChange(tabName)}
       disabled={authState.isLoading}
-      className={`w-1/2 py-3 text-center font-semibold border-b-2 transition-colors duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed
+      className={`w-1/2 py-3 text-center font-semibold border-b-[3px] transition-colors duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed
         ${currentTab === tabName 
-          ? 'border-brand-tertiary dark:border-orange-400 text-brand-tertiary dark:text-orange-400' 
-          : 'border-transparent text-brand-secondary dark:text-slate-400 hover:border-brand-tertiary/50 dark:hover:border-orange-400/50 hover:text-brand-tertiary dark:hover:text-orange-400'
+          ? 'border-accent text-text-main' 
+          : 'border-transparent text-text-muted hover:text-text-secondary'
         }`}
       role="tab"
       aria-selected={currentTab === tabName}
@@ -366,17 +365,20 @@ const AuthPage: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 dark:bg-slate-900 py-8 md:py-12 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background py-8 md:py-12 px-4">
+      <div className="w-full max-w-md bg-surface p-8 rounded-xl border border-slate-600 shadow-[0_0_30px_rgba(100,149,237,0.2)]">
         <div className="text-center mb-6">
-          <div className="inline-block mb-4">
-            <IconSmoothMovesLogo className="h-16 w-16 text-brand-primary dark:text-orange-400" />
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
+              <span className="material-symbols-outlined text-2xl text-accent">local_shipping</span>
+            </div>
+            <span className="text-xl font-bold text-text-main">Smooth Moves</span>
           </div>
           
-          <h1 className="text-3xl font-bold text-brand-primary dark:text-slate-100">
+          <h1 className="text-2xl font-bold text-text-main">
             {activeTab === 'signin' ? 'Welcome Back!' : 'Create Your Account'}
           </h1>
-          <p className="text-brand-secondary dark:text-slate-300 mt-2">
+          <p className="text-text-secondary mt-2">
             {activeTab === 'signin' 
               ? 'Sign in to access your move dashboard.' 
               : 'Join Smooth Moves for an effortless relocation.'
@@ -384,7 +386,8 @@ const AuthPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Move Mode Selection */}
+        {/* Move Mode Selection - Only show for Register */}
+        {activeTab === 'register' && (
         <div className="mb-6">
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium text-brand-secondary dark:text-slate-300 mb-1.5">
@@ -404,7 +407,7 @@ const AuthPage: React.FC = () => {
                     value={option}
                     checked={moveMode === option}
                     onChange={() => handleMoveModeChange(option)}
-                    className="h-4 w-4 text-brand-tertiary dark:text-orange-400 border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-tertiary dark:focus:ring-orange-400 dark:bg-slate-700"
+                    className="h-4 w-4 text-accent border-slate-300 dark:border-slate-600 accent-accent focus:outline-none dark:bg-slate-700"
                     disabled={authState.isLoading}
                   />
                   <span className="ml-2">
@@ -415,6 +418,7 @@ const AuthPage: React.FC = () => {
             </div>
           </fieldset>
         </div>
+        )}
 
         {/* Move ID Input for Join Mode */}
         {moveMode === 'join' && (
@@ -429,7 +433,7 @@ const AuthPage: React.FC = () => {
             required
             aria-required="true"
             containerClassName="mb-6"
-            leftIcon={<FaIdBadge className="text-slate-400 dark:text-slate-500"/>}
+            leftIcon={<span className="material-symbols-outlined text-lg text-text-muted">badge</span>}
           />
         )}
 
@@ -513,7 +517,7 @@ const AuthPage: React.FC = () => {
                 disabled={authState.isLoading}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                <span className="material-symbols-outlined text-xl">{showPassword ? 'visibility_off' : 'visibility'}</span>
               </button>
             </div>
             
@@ -559,7 +563,7 @@ const AuthPage: React.FC = () => {
                   disabled={authState.isLoading}
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
-                  {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  <span className="material-symbols-outlined text-xl">{showConfirmPassword ? 'visibility_off' : 'visibility'}</span>
                 </button>
               </div>
             )}
@@ -571,7 +575,7 @@ const AuthPage: React.FC = () => {
               size="lg"
               isLoading={authState.isLoading && !authState.successMessage}
               disabled={authState.isLoading}
-              leftIcon={activeTab === 'signin' ? <FaSignInAlt /> : <FaUserPlus />}
+              leftIcon={<span className="material-symbols-outlined text-xl">{activeTab === 'signin' ? 'login' : 'person_add'}</span>}
             >
               {activeTab === 'signin' ? 'Sign In' : 'Create Account'}
             </Button>
@@ -587,12 +591,21 @@ const AuthPage: React.FC = () => {
           {/* Google Auth Button */}
           <Button
             variant="secondary" 
-            className="w-full bg-white hover:bg-slate-50 dark:bg-slate-700 dark:hover:bg-slate-600 border border-slate-300 dark:border-slate-500 text-black dark:text-slate-200 hover:text-black dark:hover:text-slate-50"
+            className="w-full bg-surface hover:bg-surface-elevated border border-border text-text-main"
             size="lg"
             onClick={handleGoogleAuth}
             isLoading={authState.isLoading && !authState.successMessage}
             disabled={authState.isLoading}
-            leftIcon={<IconGoogle className="w-5 h-5" />}
+            leftIcon={
+              <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                  <path d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" fill="#4285F4"/>
+                  <path d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" fill="#34A853"/>
+                  <path d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" fill="#FBBC05"/>
+                  <path d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" fill="#EA4335"/>
+                </g>
+              </svg>
+            }
           >
             {activeTab === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
           </Button>
