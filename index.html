@@ -1,152 +1,226 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#14171e">
-  <title>Smooth Moves</title>
-  
-  <!-- Google Fonts: Nunito + Material Symbols -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet">
-  
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@^19.1.0",
-      "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-      "react-router-dom": "https://esm.sh/react-router-dom@^7.6.0",
-      "react/": "https://esm.sh/react@^19.1.0/",
-      "react-icons/": "https://esm.sh/react-icons@^5.5.0/",
-      "react-icons/io5": "https://esm.sh/react-icons@^5.5.0/io5",
-      "react-icons/fc": "https://esm.sh/react-icons@^5.5.0/fc",
-      "jspdf": "https://esm.sh/jspdf@^3.0.1"
-    }
-  }
-  </script>
-  
-  <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-</head>
-<body> 
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-  
-  <!-- Cache-busting and error recovery -->
-  <script>
-    // Add version parameter to force fresh load of resources
-    const version = '1.0.0';
-    
-    // Function to reload with cache-busting
-    function forceReload() {
-      const url = new URL(window.location.href);
-      url.searchParams.set('v', version + '.' + Date.now());
-      window.location.href = url.toString();
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#14171e" />
+    <title>Smooth Moves</title>
 
-    // Detect if critical resources failed to load
-    window.addEventListener('error', function(e) {
-      // Filter out extension-related errors
-      const extensionUrls = ['chrome-extension://', 'moz-extension://', 'safari-web-extension://'];
-      const resourceUrl = e.target?.src || e.target?.href || '';
-      const isExtensionError = extensionUrls.some(prefix => resourceUrl.includes(prefix));
-      
-      if (isExtensionError) {
-        console.log('Ignoring extension resource error:', resourceUrl);
-        return; // Don't trigger reload for extension errors
-      }
-      
-      // Check if it's a resource loading error
-      if (e.target !== window) {
-        console.log('Resource failed to load:', resourceUrl);
-        // Show a user-visible message
-        const root = document.getElementById('root');
-        if (root) {
-          root.innerHTML = `
-            <div class="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center p-4">
-              <div class="text-center max-w-md">
-                <h2 class="text-xl font-bold mb-4 text-brand-primary dark:text-white">Loading Issue Detected</h2>
-                <p class="mb-6 text-slate-600 dark:text-slate-300">We're having trouble loading the app. Refreshing in 2 seconds...</p>
-                <button onclick="forceReload()" class="px-4 py-2 bg-brand-tertiary text-white rounded-md hover:bg-opacity-90 transition-colors">
-                  Refresh Now
-                </button>
-              </div>
-            </div>
-          `;
+    <!-- Google Fonts: Nunito + Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@^19.1.0",
+          "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+          "react-router-dom": "https://esm.sh/react-router-dom@^7.6.0",
+          "react/": "https://esm.sh/react@^19.1.0/",
+          "react-icons/": "https://esm.sh/react-icons@^5.5.0/",
+          "react-icons/io5": "https://esm.sh/react-icons@^5.5.0/io5",
+          "react-icons/fc": "https://esm.sh/react-icons@^5.5.0/fc",
+          "jspdf": "https://esm.sh/jspdf@^3.0.1"
         }
-        // Auto-refresh after a brief delay
-        setTimeout(forceReload, 2000);
       }
-    }, true); // Use capture phase to catch more errors
+    </script>
 
-    // Detect unhandled JavaScript errors
-    window.addEventListener('unhandledrejection', function(e) {
-      console.log('Unhandled promise rejection:', e.reason);
-      
-      // Filter out common browser extension errors that shouldn't trigger app reload
-      const ignoredErrors = [
-        'backgroundScript.runPageLoadHook',
-        'Extension context invalidated',
+    <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Cache-busting and error recovery -->
+    <script>
+      // Add version parameter to force fresh load of resources
+      const version = '1.0.0';
+
+      // Reload attempt tracking — prevents infinite reload loops
+      const RELOAD_MAX_ATTEMPTS = 3;
+      const RELOAD_WINDOW_MS = 60000; // Reset counter after 60 seconds
+
+      function getReloadAttempts() {
+        try {
+          const data = JSON.parse(sessionStorage.getItem('_reloadAttempts') || '{}');
+          // Reset if the window has elapsed
+          if (data.timestamp && Date.now() - data.timestamp > RELOAD_WINDOW_MS) {
+            sessionStorage.removeItem('_reloadAttempts');
+            return 0;
+          }
+          return data.count || 0;
+        } catch {
+          return 0;
+        }
+      }
+
+      function incrementReloadAttempts() {
+        try {
+          sessionStorage.setItem(
+            '_reloadAttempts',
+            JSON.stringify({
+              count: getReloadAttempts() + 1,
+              timestamp: Date.now(),
+            })
+          );
+        } catch {
+          /* sessionStorage unavailable */
+        }
+      }
+
+      // Function to reload with cache-busting (guarded)
+      function forceReload() {
+        if (getReloadAttempts() >= RELOAD_MAX_ATTEMPTS) {
+          console.warn(
+            'Max reload attempts (' + RELOAD_MAX_ATTEMPTS + ') reached. Stopping auto-reload.'
+          );
+          return;
+        }
+        incrementReloadAttempts();
+        const url = new URL(window.location.href);
+        url.searchParams.set('v', version + '.' + Date.now());
+        window.location.href = url.toString();
+      }
+
+      // URLs/patterns to always ignore (not app failures)
+      const ignoredUrlPrefixes = [
         'chrome-extension://',
         'moz-extension://',
-        'Script error',
-        'Non-Error promise rejection captured'
+        'safari-web-extension://',
+        'file:///',
       ];
-      
-      const errorString = String(e.reason);
-      const shouldIgnore = ignoredErrors.some(ignored => errorString.includes(ignored));
-      
-      if (shouldIgnore) {
-        console.log('Ignoring browser extension error:', errorString);
-        return; // Don't trigger reload for extension errors
-      }
-      
-      // Show a user-visible message for actual app errors
-      const root = document.getElementById('root');
-      if (root) {
-        root.innerHTML = `
-          <div class="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center p-4">
-            <div class="text-center max-w-md">
-              <h2 class="text-xl font-bold mb-4 text-brand-primary dark:text-white">Something Went Wrong</h2>
-              <p class="mb-6 text-slate-600 dark:text-slate-300">We've encountered an issue. Refreshing in 2 seconds...</p>
-              <button onclick="forceReload()" class="px-4 py-2 bg-brand-tertiary text-white rounded-md hover:bg-opacity-90 transition-colors">
-                Refresh Now
-              </button>
-            </div>
-          </div>
-        `;
-      }
-      setTimeout(forceReload, 2000);
-    });
 
-    // Add a version parameter to all script and link tags to prevent caching
-    document.addEventListener('DOMContentLoaded', function() {
-      const versionParam = 'v=' + version + '.' + Date.now();
-      
-      // Update script tags
-      document.querySelectorAll('script[src]').forEach(script => {
-        if (!script.src.includes('?')) {
-          script.src += '?' + versionParam;
-        } else if (!script.src.includes('v=')) {
-          script.src += '&' + versionParam;
+      function isIgnoredResourceUrl(url) {
+        return ignoredUrlPrefixes.some(function (prefix) {
+          return url.indexOf(prefix) !== -1;
+        });
+      }
+
+      function isCriticalResource(target) {
+        if (!target || !target.tagName) return false;
+        var tag = target.tagName.toUpperCase();
+        return tag === 'SCRIPT' || tag === 'LINK';
+      }
+
+      // Detect if critical resources failed to load
+      window.addEventListener(
+        'error',
+        function (e) {
+          var resourceUrl = e.target?.src || e.target?.href || '';
+
+          // Ignore extension and local file errors
+          if (isIgnoredResourceUrl(resourceUrl)) {
+            console.log('Ignoring non-app resource error:', resourceUrl);
+            return;
+          }
+
+          // Only auto-reload for critical resources (scripts, stylesheets) — not images
+          if (e.target !== window && isCriticalResource(e.target)) {
+            console.error('Critical resource failed to load:', resourceUrl);
+            var root = document.getElementById('root');
+            if (root) {
+              root.innerHTML =
+                '\
+            <div class="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center p-4">\
+              <div class="text-center max-w-md">\
+                <h2 class="text-xl font-bold mb-4 text-brand-primary dark:text-white">Loading Issue Detected</h2>\
+                <p class="mb-6 text-slate-600 dark:text-slate-300">We\'re having trouble loading the app. Refreshing in 2 seconds...</p>\
+                <button onclick="forceReload()" class="px-4 py-2 bg-brand-tertiary text-white rounded-md hover:bg-opacity-90 transition-colors">\
+                  Refresh Now\
+                </button>\
+              </div>\
+            </div>';
+            }
+            setTimeout(forceReload, 2000);
+          } else if (e.target !== window) {
+            // Non-critical resource (e.g. <img>) — log but don't reload
+            console.warn(
+              'Non-critical resource failed to load (no reload):',
+              resourceUrl || e.target?.tagName
+            );
+          }
+        },
+        true
+      ); // Use capture phase to catch more errors
+
+      // Detect unhandled JavaScript errors
+      window.addEventListener('unhandledrejection', function (e) {
+        console.log('Unhandled promise rejection:', e.reason);
+
+        // Filter out common browser extension errors that shouldn't trigger app reload
+        var ignoredErrors = [
+          'backgroundScript.runPageLoadHook',
+          'Extension context invalidated',
+          'chrome-extension://',
+          'moz-extension://',
+          'file:///',
+          'Script error',
+          'Non-Error promise rejection captured',
+        ];
+
+        var errorString = String(e.reason);
+        var shouldIgnore = ignoredErrors.some(function (ignored) {
+          return errorString.indexOf(ignored) !== -1;
+        });
+
+        if (shouldIgnore) {
+          console.log('Ignoring non-app error:', errorString);
+          return;
         }
-      });
-      
-      // Update link tags (for CSS, etc.)
-      document.querySelectorAll('link[rel="stylesheet"][href]').forEach(link => {
-        if (!link.href.includes('?')) {
-          link.href += '?' + versionParam;
-        } else if (!link.href.includes('v=')) {
-          link.href += '&' + versionParam;
+
+        // Show a user-visible message for actual app errors
+        var root = document.getElementById('root');
+        if (root) {
+          root.innerHTML =
+            '\
+          <div class="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center p-4">\
+            <div class="text-center max-w-md">\
+              <h2 class="text-xl font-bold mb-4 text-brand-primary dark:text-white">Something Went Wrong</h2>\
+              <p class="mb-6 text-slate-600 dark:text-slate-300">We\'ve encountered an issue. Refreshing in 2 seconds...</p>\
+              <button onclick="forceReload()" class="px-4 py-2 bg-brand-tertiary text-white rounded-md hover:bg-opacity-90 transition-colors">\
+                Refresh Now\
+              </button>\
+            </div>\
+          </div>';
         }
+        setTimeout(forceReload, 2000);
       });
-    });
-  </script>
-</body>
+
+      // Add a version parameter to all script and link tags to prevent caching
+      document.addEventListener('DOMContentLoaded', function () {
+        const versionParam = 'v=' + version + '.' + Date.now();
+
+        // Update script tags
+        document.querySelectorAll('script[src]').forEach((script) => {
+          if (!script.src.includes('?')) {
+            script.src += '?' + versionParam;
+          } else if (!script.src.includes('v=')) {
+            script.src += '&' + versionParam;
+          }
+        });
+
+        // Update link tags (for CSS, etc.)
+        document.querySelectorAll('link[rel="stylesheet"][href]').forEach((link) => {
+          if (!link.href.includes('?')) {
+            link.href += '?' + versionParam;
+          } else if (!link.href.includes('v=')) {
+            link.href += '&' + versionParam;
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

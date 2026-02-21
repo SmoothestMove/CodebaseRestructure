@@ -15,6 +15,14 @@ import TruckZoneSelectorModal from '@/features/boxes/components/TruckZoneSelecto
 import { getItemStatusDisplayLabel, getItemStatusOptionsForSelect } from '@/utils/statusUtils';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 
+/** Check if a URL is a valid web image URL (not file:/// or placeholder) */
+const isValidWebImageUrl = (url?: string): boolean => {
+  if (!url) return false;
+  if (url.startsWith('file:///')) return false;
+  if (url.includes('picsum.photos')) return false;
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image');
+};
+
 const BoxDetailsPage: React.FC = () => {
   const { boxId } = useParams<{ boxId: string }>();
   const navigate = useNavigate();
@@ -34,6 +42,7 @@ const BoxDetailsPage: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const [editFormData, setEditFormData] = useState<Partial<NewBoxData> & { ownerUid?: string; spaceUid?: string }>({});
   const [scanFormData, setScanFormData] = useState<{ location: string; notes?: string; newStatus: ItemStatus }>({ location: '', notes: '', newStatus: ItemStatus.PACKED });
@@ -285,7 +294,7 @@ const BoxDetailsPage: React.FC = () => {
   if (!box) return null; // Should not happen if loading and error states are handled
 
   const currentOwnerDetails = box.ownerUid ? getOwnerByUid(box.ownerUid) : null;
-  const displayImage = box.imageUrl && !box.imageUrl.includes('picsum.photos');
+  const displayImage = isValidWebImageUrl(box.imageUrl) && !imageError;
 
   const currentOwnerEntity = box.ownerUid ? adapter.findById(box.ownerUid) : null;
   const currentOwnerColor = currentOwnerEntity?.color ?? currentOwnerDetails?.color ?? '#CBD5E1';
@@ -358,6 +367,7 @@ const BoxDetailsPage: React.FC = () => {
                 src={box.imageUrl}
                 alt={`Image of ${box.name}`}
                 className="w-full max-w-sm h-auto object-cover rounded-lg shadow-xl border-4 border-border"
+                onError={() => setImageError(true)}
               />
             ) : (
               <div className="w-full max-w-sm flex items-center justify-center p-4">
