@@ -31,7 +31,7 @@ One source of truth for pending work distilled from existing plans. Implemented 
 ### C) Accessibility & UX Guardrails
 - Wire `@axe-core/react` in dev for key pages; add docs for running a11y checks.
 - Respect reduced motion across custom animations; confirm focus-visible styles everywhere.
-- Action source: `docs/design/UI-UX-Implementation-Plan.md`, `docs/planForResponsiveUIDesign.md` (Sections 7)
+- Action source: `docs/design/ui-ux-implementation-plan.md`, `docs/planForResponsiveUIDesign.md` (Sections 7)
 
 ### D) Testing, Linting, CI
 - Add ESLint + Prettier with TS/React presets; `npm run lint` script.
@@ -46,7 +46,7 @@ One source of truth for pending work distilled from existing plans. Implemented 
 
 ### F) Documentation Hygiene
 - Remove outdated Express/server references and align on Vercel hosting in all docs (`src/claude.md`, `src/utils/GEMINI.md`, `docs/development/claude-instructions.md`).
-- Scrub any real API keys from Mindee OCR docs and replace with placeholders (`docs/development/MindeeOCR/*`).
+- Scrub any real API keys from Mindee OCR docs and replace with placeholders (`docs/development/mindee-ocr/*`).
 - Confirm screenshots paths or move large/unreferenced media to `docs/archive/`.
 
 ### G) Build/Perf Tuning
@@ -68,5 +68,5 @@ One source of truth for pending work distilled from existing plans. Implemented 
 - Tokens/DS: `src/components/design-system/*`, `src/lib/animations/*`
 - OCR: `src/features/budget/services/ReceiptScanningService.ts`
 - Auth/Move: `src/features/auth/pages/AuthPage.tsx`, `firebase/firestore.rules`
-- Docs: `docs/planForResponsiveUIDesign.md`, `docs/design/UI-UX-Implementation-Plan.md`, `docs/development/MindeeOCR/*`
+- Docs: `docs/planForResponsiveUIDesign.md`, `docs/design/ui-ux-implementation-plan.md`, `docs/development/mindee-ocr/*`
 
