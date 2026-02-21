@@ -74,7 +74,7 @@ Smooth Moves is a React + TypeScript (Vite) web app for managing residential mov
   - Storage rules: `firebase/storage.rules` (added)
 - Hosting: Vercel for production (static deploy of Vite `dist/`)
 - Google Gemini (@google/genai): API key via `VITE_GEMINI_API_KEY`; used in MARVIN feature.
-- Mindee Receipt OCR: Endpoint `https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict` (see docs under `docs/development/MindeeOCR/`).
+- Mindee Receipt OCR: Endpoint `https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict` (see docs under `docs/development/mindee-ocr/`).
 - Picovoice Porcupine: Wake word model files in `public/` for optional voice activation.
 
 ## Configuration & env vars
@@ -105,10 +105,10 @@ Smooth Moves is a React + TypeScript (Vite) web app for managing residential mov
 1) Docs reference Express/`npm start` server; start now uses Vite preview — reconcile docs (`README.md`, `src/claude.md`, `docs/development/*`). [In progress]
 2) README files show encoding artifacts — clean up for readability (`README.md`, `README2.md`)
 3) No `test` or `lint` scripts configured — add ESLint/Prettier/Jest and CI hooks (`package.json`)
-4) Sensitive API key values appear in docs — scrub `docs/development/MindeeOCR/*`
+4) Sensitive API key values appear in docs — scrub `docs/development/mindee-ocr/*`
 5) `firebase/storage.rules` not found — add storage rules and reference in `firebase.json` [Done]
 6) Ensure `.env.local` is populated; Firebase init will fail otherwise (`src/main.tsx`, `src/lib/config/constants.tsx`)
 7) Access control assumes participants array present — validate creation flows enforce this (`firebase/firestore.rules`)
-8) Mindee/Gemini error handling & rate limits — centralize retries/backoff (`docs/development/MindeeOCR/*`, MARVIN services)
+8) Mindee/Gemini error handling & rate limits — centralize retries/backoff (`docs/development/mindee-ocr/*`, MARVIN services)
 9) Large Porcupine model files in `public/` — verify licensing and lazy loading
 10) OptimizeDeps forced re-bundle may slow dev — confirm necessity (`vite.config.ts`)

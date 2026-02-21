@@ -104,7 +104,7 @@ The app reads these via `import.meta.env` in `src/lib/config/constants.tsx`. See
 
 - Do not commit API keys. Use `.env.local` which is gitignored.
 - Firestore access is restricted to move owners/participants; see `firebase/firestore.rules`.
-- Documentation under `docs/development/MindeeOCR/` contains example API references; ensure no real secrets are committed.
+- Documentation under `docs/development/mindee-ocr/` contains example API references; ensure no real secrets are committed.
 
 ## Screenshots (optional)
 

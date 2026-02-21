@@ -110,10 +110,10 @@
   
   **Additional Documentation**:
   - Quick start: `README.md`
-  - Developer guide: `docs/DevDoc.md`
+  - Developer guide: `docs/developer-guide.md`
   - Environment setup: `docs/development/environment.md`
   - MARVIN troubleshooting: `docs/development/MARVIN Troubleshooting.md`
-  - Mindee OCR integration: `docs/development/MindeeOCR/`
+  - Mindee OCR integration: `docs/development/mindee-ocr/`
 
 **BUSINESS CONTEXT + DOMAIN KNOWLEDGE**
 
@@ -172,7 +172,7 @@
   6. Centralize Mindee/Gemini error handling with retry logic and rate limit backoff
   7. Verify Porcupine model file licensing and implement lazy loading to reduce initial bundle size
   8. Review `vite.config.ts` optimizeDeps forced re-bundle—may slow dev server startup unnecessarily
-  9. Some sensitive API key values appear in docs—scrub `docs/development/MindeeOCR/*`
+  9. Some sensitive API key values appear in docs—scrub `docs/development/mindee-ocr/*`
   10. No CI/CD pipeline configured—no GitHub Actions or automated deployment workflows detected
   
   **Areas Under Active Development**:
