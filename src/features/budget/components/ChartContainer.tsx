@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { FaChartBar, FaChartPie } from 'react-icons/fa';

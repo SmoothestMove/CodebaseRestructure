@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="light dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smooth Moves - Budget Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2f4a81", "background-light": "#f6f7f8", "background-dark": "#14171e"}, fontFamily: {display: "Nunito Sans"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>
+        body {
+            font-family: 'Inter', "Noto Sans", sans-serif;
+        }.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark h-[100dvh] w-full text-[#111318] dark:text-white flex justify-center">
+<div class="relative flex h-full w-full max-w-md flex-col bg-white dark:bg-[#111318] shadow-2xl overflow-hidden">
+<header class="shrink-0 flex items-center justify-between px-4 py-3 bg-white dark:bg-[#111318] border-b border-[#f0f2f4] dark:border-[#2a303c] z-30">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-transparent">
+<img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhx8ZfgfeZoJ5K9pP2FJFdIjpiu4lkKR7aAVWdu_tbrM8H8e794Cz3RTaf6LysRMHla29V9hfODUcCpgGWZVZtDnB-jB65Of5dbNESYsIzQ-D7AphWH_L8gz7K5vnEcSZHEsEZo3vSlRT5sD3Blk1n9xtWWT2GZeR8-39seoa03VaEPW9R4wLGHa9YAt32swiFqv46WJJpP4eRbRglURzJrxWvVuQOqx_IWfFajDrPeBG4Z97kAaNHqijFVJnwHYVj-gQJJ8cW0-w"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-[#616f89] dark:text-[#9ca3af] font-medium">Welcome back</span>
+<span class="text-sm font-bold text-[#111318] dark:text-white leading-none mt-0.5">Alex Doe</span>
+</div>
+</div>
+<button class="relative p-2 text-[#616f89] dark:text-[#9ca3af] hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c] rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">notifications</span>
+<span class="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#111318]"></span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto no-scrollbar relative">
+<div class="flex items-center justify-between p-4 sticky top-0 z-20 bg-white/95 dark:bg-[#111318]/95 backdrop-blur-sm transition-all">
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em] text-[#111318] dark:text-white">Moving Budget</h2>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center rounded-full h-10 w-10 bg-[#f0f2f4] dark:bg-[#1e232e] hover:bg-[#e1e4e8] dark:hover:bg-[#2a303c] transition-colors">
+<span class="material-symbols-outlined text-[#111318] dark:text-white" style="font-size: 20px;">group_add</span>
+</button>
+<button class="flex items-center justify-center rounded-full h-10 w-10 bg-[#f0f2f4] dark:bg-[#1e232e] hover:bg-[#e1e4e8] dark:hover:bg-[#2a303c] transition-colors">
+<span class="material-symbols-outlined text-[#111318] dark:text-white" style="font-size: 20px;">more_horiz</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-4 px-4 pt-2">
+<div class="grid grid-cols-2 gap-3">
+<div class="col-span-2 flex flex-col gap-1 rounded-xl p-5 bg-[#f0f2f4] dark:bg-[#1e232e] relative">
+<div class="flex justify-between items-start">
+<p class="text-[#616f89] dark:text-[#9ca3af] text-sm font-medium">Total Budget</p>
+<span class="material-symbols-outlined text-primary" style="font-size: 24px;">account_balance_wallet</span>
+</div>
+<div class="flex justify-between items-end mt-2">
+<p class="text-[#111318] dark:text-white text-3xl font-bold tracking-tight">$5,000</p>
+<button class="flex items-center justify-center rounded-full bg-primary hover:bg-blue-600 shadow-md text-white px-4 py-2 gap-1.5 transition-colors text-xs font-bold">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+    Add Expense
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-[#fff0f0] dark:bg-[#381e1e]">
+<p class="text-[#b91c1c] dark:text-[#f87171] text-xs font-semibold uppercase tracking-wider">Total Spent</p>
+<p class="text-[#111318] dark:text-white text-xl font-bold">$1,240</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-[#f0fdf4] dark:bg-[#163c26]">
+<p class="text-[#15803d] dark:text-[#4ade80] text-xs font-semibold uppercase tracking-wider">Remaining</p>
+<p class="text-[#111318] dark:text-white text-xl font-bold">$3,760</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 pt-2">
+<div class="flex gap-6 justify-between items-end">
+<p class="text-[#111318] dark:text-white text-sm font-medium">25% Used</p>
+<p class="text-[#616f89] dark:text-[#9ca3af] text-xs">Reset on Nov 1</p>
+</div>
+<div class="h-3 w-full rounded-full bg-[#f0f2f4] dark:bg-[#2a303c] overflow-hidden">
+<div class="h-full rounded-full bg-primary" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+<div class="px-4 py-6 sticky top-[72px] z-10 bg-white dark:bg-[#111318]">
+<div class="flex h-12 w-full items-center justify-center rounded-xl bg-[#f0f2f4] dark:bg-[#1e232e] p-1">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-[10px] px-2 bg-white dark:bg-[#2b6cee] shadow-sm text-[#111318] dark:text-white text-sm font-semibold transition-all">
+<span>Expenses</span>
+<input checked="" class="invisible w-0" name="tabs" type="radio" value="Expenses"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-[10px] px-2 text-[#616f89] dark:text-[#9ca3af] hover:text-[#111318] dark:hover:text-white text-sm font-medium transition-all">
+<span>Categories</span>
+<input class="invisible w-0" name="tabs" type="radio" value="Categories"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-[10px] px-2 text-[#616f89] dark:text-[#9ca3af] hover:text-[#111318] dark:hover:text-white text-sm font-medium transition-all">
+<span>Charts</span>
+<input class="invisible w-0" name="tabs" type="radio" value="Charts"/>
+</label>
+</div>
+</div>
+<div class="flex gap-2 px-4 pb-2 overflow-x-auto no-scrollbar">
+<button class="shrink-0 rounded-full bg-[#111318] dark:bg-white text-white dark:text-[#111318] px-4 py-2 text-sm font-medium">All</button>
+<button class="shrink-0 rounded-full border border-[#dbdfe6] dark:border-[#2a303c] bg-transparent text-[#111318] dark:text-white px-4 py-2 text-sm font-medium hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c]">Movers</button>
+<button class="shrink-0 rounded-full border border-[#dbdfe6] dark:border-[#2a303c] bg-transparent text-[#111318] dark:text-white px-4 py-2 text-sm font-medium hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c]">Packing</button>
+<button class="shrink-0 rounded-full border border-[#dbdfe6] dark:border-[#2a303c] bg-transparent text-[#111318] dark:text-white px-4 py-2 text-sm font-medium hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c]">Deposits</button>
+<button class="shrink-0 rounded-full border border-[#dbdfe6] dark:border-[#2a303c] bg-transparent text-[#111318] dark:text-white px-4 py-2 text-sm font-medium hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c]">Utilities</button>
+</div>
+<div class="flex justify-between items-center gap-3 px-4 py-3 border-b border-[#f0f2f4] dark:border-[#2a303c]">
+<p class="text-sm font-semibold text-[#616f89] dark:text-[#9ca3af]">Today</p>
+<div class="flex gap-2">
+<button class="p-2 text-[#616f89] dark:text-[#9ca3af] hover:bg-[#f0f2f4] dark:hover:bg-[#2a303c] rounded-lg">
+<span class="material-symbols-outlined" style="font-size: 20px;">filter_list</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col px-4 pb-32">
+<div class="flex items-center gap-4 py-4 border-b border-[#f0f2f4] dark:border-[#2a303c] group active:bg-gray-50 dark:active:bg-gray-800 transition-colors rounded-lg px-2 -mx-2">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eef4ff] dark:bg-[#1a2333] text-primary">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#111318] dark:text-white text-base font-semibold leading-normal">U-Haul Rental</p>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Transportation</span>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">•</span>
+<div class="flex items-center gap-1">
+<div class="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center text-[8px] text-white font-bold">A</div>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Paid by Alex</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center">
+<p class="text-[#111318] dark:text-white text-base font-bold leading-normal">$145.00</p>
+<p class="text-[#616f89] dark:text-[#9ca3af] text-xs">10:42 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-4 border-b border-[#f0f2f4] dark:border-[#2a303c] group active:bg-gray-50 dark:active:bg-gray-800 transition-colors rounded-lg px-2 -mx-2">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#fff4e5] dark:bg-[#33261a] text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#111318] dark:text-white text-base font-semibold leading-normal">Home Depot</p>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Supplies</span>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">•</span>
+<div class="flex items-center gap-1">
+<div class="h-4 w-4 rounded-full bg-teal-500 flex items-center justify-center text-[8px] text-white font-bold">S</div>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Paid by Sam</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center">
+<p class="text-[#111318] dark:text-white text-base font-bold leading-normal">$62.50</p>
+<p class="text-[#616f89] dark:text-[#9ca3af] text-xs">09:15 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-4 border-b border-[#f0f2f4] dark:border-[#2a303c] group active:bg-gray-50 dark:active:bg-gray-800 transition-colors rounded-lg px-2 -mx-2">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#fceefc] dark:bg-[#301c30] text-pink-600 dark:text-pink-400">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#111318] dark:text-white text-base font-semibold leading-normal">Pizza for helpers</p>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Food</span>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">•</span>
+<div class="flex items-center gap-1">
+<div class="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center text-[8px] text-white font-bold">A</div>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Paid by Alex</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center">
+<p class="text-[#111318] dark:text-white text-base font-bold leading-normal">$45.00</p>
+<p class="text-[#616f89] dark:text-[#9ca3af] text-xs">12:30 PM</p>
+</div>
+</div>
+<div class="pt-6 pb-2">
+<p class="text-sm font-semibold text-[#616f89] dark:text-[#9ca3af]">Yesterday</p>
+</div>
+<div class="flex items-center gap-4 py-4 border-b border-[#f0f2f4] dark:border-[#2a303c] group active:bg-gray-50 dark:active:bg-gray-800 transition-colors rounded-lg px-2 -mx-2">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f4f1] dark:bg-[#18302b] text-teal-700 dark:text-teal-400">
+<span class="material-symbols-outlined">real_estate_agent</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#111318] dark:text-white text-base font-semibold leading-normal">Apartment Deposit</p>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Rent</span>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">•</span>
+<div class="flex items-center gap-1">
+<div class="h-4 w-4 rounded-full bg-teal-500 flex items-center justify-center text-[8px] text-white font-bold">S</div>
+<span class="text-[#616f89] dark:text-[#9ca3af] text-xs">Paid by Sam</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center">
+<p class="text-[#111318] dark:text-white text-base font-bold leading-normal">$980.00</p>
+<p class="text-[#616f89] dark:text-[#9ca3af] text-xs">02:15 PM</p>
+</div>
+</div>
+</div>
+</main>
+<nav class="shrink-0 h-[84px] bg-white dark:bg-[#111318] border-t border-[#f0f2f4] dark:border-[#2a303c] grid grid-cols-5 items-start pt-3 pb-8 z-50">
+<button class="flex flex-col items-center gap-1 text-[#616f89] dark:text-[#9ca3af] hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">grid_view</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[24px] fill-current">account_balance_wallet</span>
+<span class="text-[10px] font-medium">Budget</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#616f89] dark:text-[#9ca3af] hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">calendar_month</span>
+<span class="text-[10px] font-medium">Calendar</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#616f89] dark:text-[#9ca3af] hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">assignment</span>
+<span class="text-[10px] font-medium">Planner</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#616f89] dark:text-[#9ca3af] hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</div>
+</body></html>

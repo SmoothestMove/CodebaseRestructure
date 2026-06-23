@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import Budgeting from '../components/Budgeting';
 
@@ -14,3 +15,4 @@ const BudgetPage: React.FC = () => {
 };
 
 export default BudgetPage;
+

@@ -1,18 +1,18 @@
-
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import Modal from '@/components/common/Modal';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import { Owner } from '@/types';
-import { IconQrCode, IconCheck } from '@/lib/config/constants';
+import type { OwnerOrSpace } from '@/types';
+import { getDisplayName } from '@/types';
+import { IconQrCode } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
-import { useSettings } from '@/features/settings/hooks/useSettings'; // Import useSettings
+import { useSettings } from '@/features/settings/hooks/useSettings';
 
 interface PrintLabelsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  owner: Owner | null;
-  onConfirmPrint: (owner: Owner, numLabels: number) => Promise<void>;
+  owner: OwnerOrSpace | null;
+  onConfirmPrint: (owner: OwnerOrSpace, numLabels: number) => Promise<void>;
 }
 
 const PrintLabelsModal: React.FC<PrintLabelsModalProps> = ({
@@ -21,15 +21,17 @@ const PrintLabelsModal: React.FC<PrintLabelsModalProps> = ({
   owner,
   onConfirmPrint,
 }) => {
-  const { settings } = useSettings(); // Get settings
+  const { settings } = useSettings();
   const [numLabelsInput, setNumLabelsInput] = useState<string>(String(settings.defaultBatchPrintCount || 9));
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [printSuccess, setPrintSuccess] = useState(false);
 
+  const ownerDisplayName = useMemo(() => owner ? getDisplayName(owner) : '', [owner]);
+
   useEffect(() => {
     if (isOpen) {
-      setNumLabelsInput(String(settings.defaultBatchPrintCount || 9)); // Use settings for default
+      setNumLabelsInput(String(settings.defaultBatchPrintCount || 9));
       setError(null);
       setIsLoading(false);
       setPrintSuccess(false);
@@ -55,19 +57,13 @@ const PrintLabelsModal: React.FC<PrintLabelsModalProps> = ({
         onClose(); 
       }, 1500);
     } catch (err) {
-      setPrintError(err instanceof Error ? err.message : "An unexpected error occurred during printing.");
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred during printing.');
     } finally {
       setIsLoading(false);
     }
   };
   
-  const setPrintError = (message: string) => { 
-    setError(message);
-  }
-
   if (!owner) return null;
-
-  const ownerDisplayName = `${owner.firstName} ${owner.lastName && owner.lastName !== '(Communal)' && owner.lastName !== '(Custom Space)' ? owner.lastName : ''}`.trim();
 
   return (
     <Modal 

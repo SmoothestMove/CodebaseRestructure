@@ -1,5 +1,6 @@
-import React from 'react';
-import { Owner, Box } from '@/types';
+﻿import React from 'react';
+import type { OwnerOrSpace, Box } from '@/types';
+import { getDisplayName } from '@/types';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import { FaPrint, FaBoxOpen, FaHashtag } from 'react-icons/fa'; 
@@ -18,7 +19,7 @@ interface ReprintBatchesModalProps {
   onClose: () => void;
   onReprint: (batchId: string) => void;
   batches: Batch[];
-  owner: Owner;
+  owner: OwnerOrSpace;
 }
 
 const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
@@ -29,6 +30,7 @@ const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
   owner,
 }) => {
   const [selectedBatch, setSelectedBatch] = React.useState<string | null>(null);
+  const ownerDisplayName = React.useMemo(() => getDisplayName(owner), [owner]);
 
   const handleReprint = () => {
     if (selectedBatch) {
@@ -61,10 +63,10 @@ const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
         <div className="flex items-center">
           <FaHashtag className="mr-1" />
           <span>{batch.boxes.length} {batch.boxes.length === 1 ? 'box' : 'boxes'}</span>
-          <span className="mx-2">•</span>
+          <span className="mx-2">|</span>
           <FaBoxOpen className="mr-1" />
           <span>Status: {status}</span>
-          <span className="mx-2">•</span>
+          <span className="mx-2">|</span>
           <span>Created: {createdDate}</span>
         </div>
       </div>
@@ -75,7 +77,7 @@ const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Reprint Batches">
       <div className="space-y-4">
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Select a batch to reprint for {owner.firstName} {owner.lastName || ''}
+          Select a batch to reprint for {ownerDisplayName}
         </p>
         
         <div className="max-h-96 overflow-y-auto border rounded-lg divide-y divide-slate-200 dark:divide-slate-700">
@@ -145,3 +147,4 @@ const ReprintBatchesModal: React.FC<ReprintBatchesModalProps> = ({
 };
 
 export default ReprintBatchesModal;
+

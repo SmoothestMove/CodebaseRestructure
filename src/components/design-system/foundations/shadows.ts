@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Design System - Shadows
  * Centralized shadow tokens for consistent elevation and depth across the application

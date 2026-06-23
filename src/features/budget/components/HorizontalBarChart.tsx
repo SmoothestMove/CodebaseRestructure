@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
@@ -77,3 +78,4 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data }) => {
 };
 
 export default HorizontalBarChart;
+

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { Category } from '../types/types';

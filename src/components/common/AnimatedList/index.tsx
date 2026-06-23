@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
+import { shouldReduceMotion } from '@/lib/animations';
 
 interface AnimatedListProps {
   /** Children components to animate */
@@ -11,8 +11,6 @@ interface AnimatedListProps {
   as?: 'div' | 'ul' | 'ol' | 'section';
   /** Stagger delay between items (in seconds) */
   staggerDelay?: number;
-  /** Animation variant to use */
-  variant?: 'fadeUp' | 'slideIn' | 'scale';
   /** Layout ID for shared element transitions */
   layoutId?: string;
 }
@@ -35,70 +33,7 @@ interface AnimatedListItemProps {
 }
 
 // Custom variants for different list item animations
-const listItemVariants = {
-  fadeUp: {
-    initial: { opacity: 0, y: 20 },
-    animate: (index: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        delay: index * 0.05,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    }),
-    exit: {
-      opacity: 0,
-      y: -10,
-      transition: {
-        duration: 0.2,
-        ease: [0.4, 0, 0.6, 1],
-      },
-    },
-  },
-  slideIn: {
-    initial: { opacity: 0, x: -30, scale: 0.95 },
-    animate: (index: number) => ({
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: {
-        duration: 0.25,
-        delay: index * 0.05,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    }),
-    exit: {
-      opacity: 0,
-      x: 30,
-      scale: 0.95,
-      transition: {
-        duration: 0.2,
-        ease: [0.4, 0, 0.6, 1],
-      },
-    },
-  },
-  scale: {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: (index: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        delay: index * 0.05,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    }),
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      transition: {
-        duration: 0.2,
-        ease: [0.4, 0, 0.6, 1],
-      },
-    },
-  },
-};
+// simple per-item animations are computed inline
 
 /**
  * AnimatedList - Container component for staggered list animations
@@ -107,7 +42,6 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
   children,
   className = '',
   as: Component = 'div',
-  variant = 'fadeUp',
   layoutId,
 }) => {
   // Skip animations if user prefers reduced motion
@@ -155,16 +89,29 @@ export const AnimatedListItem: React.FC<AnimatedListItemProps> = ({
     );
   }
 
-  const variants = listItemVariants[variant];
+  // Compute simple animation per item to avoid Variants typing issues
+  const initial = variant === 'slideIn'
+    ? { opacity: 0, x: -30, scale: 0.95 }
+    : variant === 'scale'
+      ? { opacity: 0, scale: 0.8 }
+      : { opacity: 0, y: 20 };
+  const animate = variant === 'slideIn'
+    ? { opacity: 1, x: 0, scale: 1, transition: { duration: 0.25, delay: index * 0.05 } }
+    : variant === 'scale'
+      ? { opacity: 1, scale: 1, transition: { duration: 0.3, delay: index * 0.05 } }
+      : { opacity: 1, y: 0, transition: { duration: 0.3, delay: index * 0.05 } };
+  const exitAnim = variant === 'slideIn'
+    ? { opacity: 0, x: 30, scale: 0.95, transition: { duration: 0.2 } }
+    : variant === 'scale'
+      ? { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
+      : { opacity: 0, y: -10, transition: { duration: 0.2 } };
 
   return (
     <motion.div
       className={className}
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit={exit || "exit"}
-      custom={index}
+      initial={initial}
+      animate={animate}
+      exit={exit || exitAnim}
       layoutId={layoutId}
       // Performance optimizations
       style={{
@@ -219,7 +166,6 @@ export const AnimatedGrid: React.FC<{
   return (
     <AnimatedList 
       className={`grid ${gridStyles[columns]} ${gapStyles[gap]} ${className}`}
-      variant={variant}
     >
       {React.Children.map(children, (child, index) => (
         <AnimatedListItem
@@ -236,3 +182,7 @@ export const AnimatedGrid: React.FC<{
 };
 
 export default AnimatedList;
+
+
+
+

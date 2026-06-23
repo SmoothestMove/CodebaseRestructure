@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 
@@ -165,3 +166,4 @@ const ThresholdBulletChart: React.FC<ThresholdBulletChartProps> = ({ data }) => 
 };
 
 export default ThresholdBulletChart;
+

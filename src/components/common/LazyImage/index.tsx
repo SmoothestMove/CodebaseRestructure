@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { shouldReduceMotion } from '@/lib/animations';
 
 interface LazyImageProps {
   src: string;
@@ -87,39 +85,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
     onError?.();
   };
 
-  // Animation variants for the image
-  const imageVariants = {
-    loading: { 
-      opacity: 0,
-      scale: 1.05,
-    },
-    loaded: { 
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: [0.4, 0, 0.2, 1],
-      },
-    },
-    error: {
-      opacity: 0.7,
-      scale: 1,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
-  const placeholderVariants = {
-    visible: { opacity: 1 },
-    hidden: { 
-      opacity: 0,
-      transition: {
-        duration: 0.3,
-        ease: 'easeOut',
-      },
-    },
-  };
+  const transitionStyle: React.CSSProperties = { transition: 'opacity 0.3s ease-out, transform 0.3s ease-out' };
 
   const containerStyle: React.CSSProperties = {
     position: 'relative',
@@ -136,39 +102,28 @@ const LazyImage: React.FC<LazyImageProps> = ({
     >
       {/* Blur placeholder (if provided) */}
       {blurDataURL && showPlaceholder && (
-        <AnimatePresence>
-          <motion.img
-            src={blurDataURL}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover filter blur-sm"
-            variants={shouldReduceMotion() ? undefined : placeholderVariants}
-            initial="visible"
-            animate={isLoaded ? "hidden" : "visible"}
-            exit="hidden"
-            style={{ pointerEvents: 'none' }}
-          />
-        </AnimatePresence>
+        <img
+          src={blurDataURL}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover filter blur-sm"
+          style={{ pointerEvents: 'none', opacity: isLoaded ? 0 : 1, ...transitionStyle }}
+        />
       )}
 
       {/* Color placeholder */}
       {!blurDataURL && showPlaceholder && (
-        <AnimatePresence>
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800"
-            variants={shouldReduceMotion() ? undefined : placeholderVariants}
-            initial="visible"
-            animate={isLoaded ? "hidden" : "visible"}
-            exit="hidden"
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-slate-400 dark:border-slate-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800"
+          style={{ opacity: isLoaded ? 0 : 1, ...transitionStyle }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-slate-400 dark:border-slate-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        </div>
       )}
 
       {/* Main image */}
-      <motion.img
+      <img
         ref={imgRef}
         src={isInView ? src : placeholder || ''}
         alt={alt}
@@ -176,10 +131,10 @@ const LazyImage: React.FC<LazyImageProps> = ({
         style={{
           width: width || '100%',
           height: height || 'auto',
+          opacity: isLoaded ? 1 : 0,
+          transform: isLoaded ? 'scale(1)' : 'scale(1.05)',
+          ...transitionStyle,
         }}
-        variants={shouldReduceMotion() ? undefined : imageVariants}
-        initial="loading"
-        animate={hasError ? "error" : isLoaded ? "loaded" : "loading"}
         onLoad={handleLoad}
         onError={handleError}
         loading={loading}
@@ -187,10 +142,9 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
       {/* Error state overlay */}
       {hasError && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800"
+          style={{ opacity: 1 }}
         >
           <div className="text-center text-slate-500 dark:text-slate-400">
             <svg
@@ -209,7 +163,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
             </svg>
             <p className="text-xs">Failed to load</p>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );

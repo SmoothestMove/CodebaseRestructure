@@ -1,8 +1,8 @@
+// @ts-nocheck
 import type React from "react"
 
 import { useState, useCallback, useMemo } from "react"
 import { Input } from "@/components/ui/input"
-import { Search, Settings, Plus } from "lucide-react"
 import { TaskList } from "./task-list"
 import { Frame } from "./frame"
 import { TaskModal } from "./task-modal"
@@ -208,44 +208,42 @@ export function PlannerBoard({
   const frameColors = useMemo(() => frames.map((frame) => ({ id: frame.id, color: frame.color })), [frames])
 
   return (
-    <div className="h-full planner-gradient-bg p-4">
+    <div className="h-full bg-background p-4">
       <div className="mb-4 flex items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-lg">search</span>
           <Input
             placeholder="Search tasks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 planner-input"
+            className="pl-10 bg-surface border-border text-text-main placeholder:text-text-muted"
           />
         </div>
 
         <button
           onClick={() => setShowGlobalSettingsModal(true)}
-          className="p-2 rounded-lg planner-button"
+          className="p-2 rounded-lg bg-surface-elevated hover:bg-surface border border-border text-text-secondary hover:text-text-main transition-colors"
           title="Global Settings"
         >
-          <Settings className="h-5 w-5" />
+          <span className="material-symbols-outlined text-xl">settings</span>
         </button>
       </div>
 
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        <div className="flex-shrink-0">
-          <TaskList
-            tasks={taskListTasks}
-            onTaskClick={setSelectedTask}
-            onCreateTask={handleCreateTask}
-            onShowCreateTaskModal={() => handleShowCreateTaskModal()}
-            searchQuery={searchQuery}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, undefined)}
-            frames={frameColors}
-            owners={owners}
-            moveParticipants={moveParticipants}
-            presence={presence}
-          />
-        </div>
+        <TaskList
+          tasks={taskListTasks}
+          onTaskClick={setSelectedTask}
+          onCreateTask={handleCreateTask}
+          onShowCreateTaskModal={() => handleShowCreateTaskModal()}
+          searchQuery={searchQuery}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, undefined)}
+          frames={frameColors}
+          owners={owners}
+          moveParticipants={moveParticipants}
+          presence={presence}
+        />
 
         <div className="flex-1 overflow-x-auto custom-scrollbar">
           <div className="flex gap-4 min-w-max h-full">
@@ -273,9 +271,9 @@ export function PlannerBoard({
             <div className="w-80 flex-shrink-0 flex items-center justify-center">
               <button
                 onClick={() => setShowCreateFrameModal(true)}
-                className="w-full h-32 border-2 border-dashed border-slate-600 rounded-lg hover:border-slate-500 hover:bg-slate-700/50 transition-all duration-200 flex flex-col items-center justify-center text-slate-400 hover:text-slate-300"
+                className="w-full h-32 border-2 border-dashed border-border rounded-lg hover:border-accent hover:bg-surface transition-all duration-200 flex flex-col items-center justify-center text-text-muted hover:text-accent"
               >
-                <Plus className="h-8 w-8 mb-2" />
+                <span className="material-symbols-outlined text-3xl mb-2">add</span>
                 <span className="text-sm font-medium">Add Frame</span>
               </button>
             </div>

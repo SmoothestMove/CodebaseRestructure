@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';

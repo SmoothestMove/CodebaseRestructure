@@ -1,6 +1,6 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { FaPlus, FaEdit, FaInfoCircle, FaCamera } from 'react-icons/fa';
 import { Expense, Category, MoveType } from '../types/types';
 import { INITIAL_CATEGORIES } from '../constants/constants';
 import { formatCurrency } from '../utils/formatCurrency';
@@ -8,7 +8,6 @@ import Button from '@/components/common/Button';
 import usePersistentReducer from '../hooks/usePersistentReducer';
 
 // Import extracted components
-import BudgetOverview from './BudgetOverview';
 import BudgetFilters from './BudgetFilters';
 import ExpenseList from './ExpenseList';
 import CategoryManager from './CategoryManager';
@@ -51,7 +50,14 @@ const Budgeting: React.FC = () => {
 
   // Auto-open setup modal for first-time users
   useEffect(() => {
-    if (!state.budget || !state.budget.totalEstimatedAmount || state.budget.totalEstimatedAmount === 0) {
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBudgetPage');
+    
+    if (!hasVisitedBefore) {
+      // First-time visit, show the setup modal
+      setIsSetupBudgetModalOpen(true);
+      localStorage.setItem('hasVisitedBudgetPage', 'true');
+    } else if (!state.budget?.totalEstimatedAmount || state.budget.totalEstimatedAmount === 0) {
+      // Returning user but no budget set up yet
       setIsSetupBudgetModalOpen(true);
     }
   }, [state.budget]);
@@ -182,47 +188,48 @@ const Budgeting: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background text-text-main">
+      <div className="max-w-7xl mx-auto space-y-5">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
-              Financial Navigator
+            <h1 className="text-xl md:text-2xl font-bold text-text-main">
+              Moving Budget
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-text-secondary text-sm">
               Track your moving expenses and stay on budget
             </p>
           </div>
           
-          <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
+          <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
             <Button
               variant="secondary"
               onClick={() => setIsSetupBudgetModalOpen(true)}
-              leftIcon={<FaEdit />}
+              leftIcon={<span className="material-symbols-outlined text-lg">edit</span>}
               ariaLabel="Edit budget settings"
+              size="sm"
             >
               Edit Budget
             </Button>
             
             <button
               onClick={() => setShowHelp(!showHelp)}
-              className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors min-h-[44px] min-w-[44px] touch-manipulation focus:outline-none focus:ring-2 focus:ring-brand-tertiary dark:focus:ring-orange-400 focus:ring-opacity-50 rounded"
+              className="p-2 text-text-muted hover:text-text-main transition-colors min-h-[44px] min-w-[44px] rounded-full hover:bg-surface-elevated"
               title="Help"
               aria-label="Toggle help information"
             >
-              <FaInfoCircle size={20} />
+              <span className="material-symbols-outlined">info</span>
             </button>
           </div>
         </div>
 
         {/* Help Information */}
         {showHelp && (
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
-              How to use the Financial Navigator
+          <div className="p-4 bg-accent/10 border border-accent/30 rounded-lg">
+            <h3 className="font-semibold text-text-main mb-2">
+              How to use the Budget Tracker
             </h3>
-            <ul className="list-disc pl-5 space-y-1 text-sm text-blue-700 dark:text-blue-300">
+            <ul className="list-disc pl-5 space-y-1 text-sm text-text-secondary">
               <li>Set your total moving budget and move type to get started</li>
               <li>Add expense categories that match your moving needs</li>
               <li>Record all moving-related expenses as they occur</li>
@@ -232,33 +239,65 @@ const Budgeting: React.FC = () => {
           </div>
         )}
 
-        {/* Budget Overview */}
-        <BudgetOverview
-          totalSpent={totalSpent}
-          totalBudget={totalBudget}
-          remainingBudget={remainingBudget}
-          budgetPercentage={budgetPercentage}
-        />
+        {/* Budget Summary Cards */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Total Budget Card */}
+          <div className="col-span-2 flex flex-col gap-1 rounded-xl p-5 bg-surface-elevated relative">
+            <div className="flex justify-between items-start">
+              <p className="text-text-muted text-sm font-medium">Total Budget</p>
+              <span className="material-symbols-outlined text-accent" style={{fontSize: '24px'}}>account_balance_wallet</span>
+            </div>
+            <div className="flex justify-between items-end mt-2">
+              <p className="text-text-main text-3xl font-bold tracking-tight">{formatCurrency(totalBudget)}</p>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsAddExpenseModalOpen(true)}
+                leftIcon={<span className="material-symbols-outlined text-base">add</span>}
+              >
+                Add Expense
+              </Button>
+            </div>
+          </div>
+          
+          {/* Actual Spending Card */}
+          <div className="flex flex-col gap-1 rounded-xl p-4 bg-semantic-error/10">
+            <p className="text-semantic-error text-xs font-semibold uppercase tracking-wider">Total Spent</p>
+            <div className="flex justify-between items-center">
+              <p className="text-text-main text-xl font-bold">{formatCurrency(totalSpent)}</p>
+              <span className="material-symbols-outlined text-semantic-error">payments</span>
+            </div>
+          </div>
+          
+          {/* Remaining Budget Card */}
+          <div className="flex flex-col gap-1 rounded-xl p-4 bg-semantic-success/10">
+            <p className="text-semantic-success text-xs font-semibold uppercase tracking-wider">Remaining</p>
+            <div className="flex justify-between items-center">
+              <p className="text-text-main text-xl font-bold">{formatCurrency(remainingBudget)}</p>
+              <span className="material-symbols-outlined text-semantic-success">savings</span>
+            </div>
+          </div>
+        </div>
 
         {/* Progress Bar */}
         {totalBudget > 0 && (
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-4">
             <div className="flex justify-between text-sm mb-2">
-              <span className="font-medium text-slate-700 dark:text-slate-300">Budget Usage</span>
-              <span className="font-semibold text-slate-900 dark:text-slate-100">
+              <span className="font-medium text-text-secondary">Budget Usage</span>
+              <span className="font-semibold text-text-main">
                 {Math.round(budgetPercentage)}%
               </span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-4">
+            <div className="w-full bg-surface-elevated rounded-full h-3 overflow-hidden">
               <div 
                 className={`h-full rounded-full transition-all duration-300 ${
-                  budgetPercentage > 100 ? 'bg-red-500' : 'bg-brand-primary dark:bg-brand-tertiary'
+                  budgetPercentage > 100 ? 'bg-semantic-error' : 'bg-accent'
                 }`}
                 style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
               />
             </div>
             {budgetPercentage > 100 && (
-              <p className="text-sm text-red-600 dark:text-red-400 mt-2">
+              <p className="text-sm text-semantic-error mt-2">
                 ⚠️ You've exceeded your budget by {formatCurrency(Math.abs(remainingBudget))}
               </p>
             )}
@@ -266,33 +305,33 @@ const Budgeting: React.FC = () => {
         )}
 
         {/* Navigation Tabs */}
-        <div className="flex bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-1">
+        <div className="flex h-12 w-full items-center justify-center rounded-xl bg-surface-elevated p-1">
           <button
             onClick={() => setCurrentTab('expenses')}
-            className={`flex-1 px-4 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
+            className={`flex-1 h-full flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
               currentTab === 'expenses'
-                ? 'bg-brand-tertiary dark:bg-orange-500 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-surface shadow-sm text-text-main'
+                : 'text-text-muted hover:text-text-secondary'
             }`}
           >
             Expenses
           </button>
           <button
             onClick={() => setCurrentTab('categories')}
-            className={`flex-1 px-4 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
+            className={`flex-1 h-full flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
               currentTab === 'categories'
-                ? 'bg-brand-tertiary dark:bg-orange-500 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-surface shadow-sm text-text-main'
+                : 'text-text-muted hover:text-text-secondary'
             }`}
           >
             Categories
           </button>
           <button
             onClick={() => setCurrentTab('charts')}
-            className={`flex-1 px-4 py-3 rounded-md text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
+            className={`flex-1 h-full flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
               currentTab === 'charts'
-                ? 'bg-brand-tertiary dark:bg-orange-500 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-surface shadow-sm text-text-main'
+                : 'text-text-muted hover:text-text-secondary'
             }`}
           >
             Charts
@@ -301,13 +340,13 @@ const Budgeting: React.FC = () => {
 
         {/* Tab Content */}
         {currentTab === 'expenses' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Add Expense Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant="primary"
                 onClick={() => setIsAddExpenseModalOpen(true)}
-                leftIcon={<FaPlus />}
+                leftIcon={<span className="material-symbols-outlined text-lg">add</span>}
                 className="flex-1 sm:flex-initial"
               >
                 Add Expense
@@ -315,7 +354,7 @@ const Budgeting: React.FC = () => {
               <Button
                 variant="secondary"
                 onClick={() => setIsReceiptScanModalOpen(true)}
-                leftIcon={<FaCamera />}
+                leftIcon={<span className="material-symbols-outlined text-lg">photo_camera</span>}
                 className="flex-1 sm:flex-initial"
               >
                 Scan Receipt

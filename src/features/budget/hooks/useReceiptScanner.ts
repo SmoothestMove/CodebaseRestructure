@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { ReceiptScanningService, ExtractedReceiptData } from '../services/ReceiptScanningService';

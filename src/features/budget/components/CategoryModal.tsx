@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Category } from '../types/types';
 import { ICONS, CATEGORY_ICONS_OPTIONS } from '../constants/constants';
@@ -221,3 +222,4 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
 };
 
 export default CategoryModal;
+

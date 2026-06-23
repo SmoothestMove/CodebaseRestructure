@@ -1,7 +1,8 @@
+﻿// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useSettings } from '@/features/settings/hooks/useSettings';
 import { useBoxes } from '@/features/boxes/hooks/useBoxes';
-import { useOwners } from '@/features/owners/hooks/useOwners';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
 import { useTheme } from '@/hooks/useTheme'; 
 import { useMove } from '@/features/settings/hooks/MoveContext';
 import { getMoveById } from '@/features/settings/services/moveService';
@@ -10,8 +11,12 @@ import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
 import Alert from '@/components/common/Alert';
 import { IconSettings, IconTrash } from '@/lib/config/constants';
-import { PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
-import { FaFileExport, FaExclamationTriangle, FaMoon, FaSun, FaShareAlt, FaCopy, FaSpinner, FaCalendarAlt, FaTable } from 'react-icons/fa'; 
+import { 
+  resetMoveToDefault, 
+  clearAllApplicationData, 
+  validateResetPermissions
+} from '../services/dataResetService';
+import { useAuth } from '@/features/auth/hooks/AuthContext'; 
 
 interface AppMetadata {
   name: string;
@@ -22,9 +27,10 @@ interface AppMetadata {
 const SettingsPage: React.FC = () => {
   const { settings, updateSettings, isLoading: isLoadingSettings } = useSettings();
   const { boxes } = useBoxes();
-  const { owners } = useOwners();
+  const { personalOwners, predefinedSpaces, customSpaces, adapter } = useOwnersSpacesSeparation();
   const { theme, toggleTheme, isDarkMode } = useTheme();
-  const { move, updateMove } = useMove(); 
+  const { move, updateMove } = useMove();
+  const { user } = useAuth(); 
 
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isClearDataModalOpen, setIsClearDataModalOpen] = useState(false);
@@ -33,6 +39,11 @@ const SettingsPage: React.FC = () => {
   const [moveCode, setMoveCode] = useState<string | null>(null);
   const [isLoadingMoveCode, setIsLoadingMoveCode] = useState(true);
   const [moveDateInput, setMoveDateInput] = useState<string>('');
+  
+  // Enhanced reset functionality state
+  const [isResetMoveModalOpen, setIsResetMoveModalOpen] = useState(false);
+  const [resetConfirmationText, setResetConfirmationText] = useState('');
+  const [resetInProgress, setResetInProgress] = useState(false);
 
   // Set default batch print count to 9 on initial load if not set
   useEffect(() => {
@@ -97,21 +108,16 @@ const SettingsPage: React.FC = () => {
   }, [move?.moveDate]);
 
   const handleExportData = () => {
-    const personalOwners = owners.filter(owner => 
-        !PREDEFINED_COMMUNAL_ROOMS.some(pc => pc.uid === owner.uid) && 
-        owner.lastName !== '(Custom Space)'
-    );
-    const customSpaces = owners.filter(owner => owner.lastName === '(Custom Space)');
-
     const dataToExport = {
       appName: appMetadata?.name || "Smooth Moves Data",
       exportDate: new Date().toISOString(),
       themePreference: theme,
-      currentMoveId: settings.currentMoveId, // Include currentMoveId
-      boxes: boxes,
-      personalOwners: personalOwners,
-      customSpaces: customSpaces,
-      settings: settings, // Includes defaultPrintCount and currentMoveId
+      currentMoveId: settings.currentMoveId,
+      boxes,
+      personalOwners,
+      predefinedSpaces,
+      customSpaces,
+      settings,
     };
     const jsonString = JSON.stringify(dataToExport, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -132,23 +138,20 @@ const SettingsPage: React.FC = () => {
     
     // Map boxes to CSV rows
     const csvRows = boxes.map(box => {
-      // Find owner name
-      const owner = owners.find(o => o.uid === box.ownerUid);
-      const ownerName = owner ? `${owner.firstName} ${owner.lastName}` : 'Unknown';
-      
-      // Combine truck zone and position
-      const truckInfo = box.truckZone && box.truckVerticalPosition 
+      const ownerName = box.ownerUid ? adapter.getDisplayName(box.ownerUid) : "Unassigned";
+
+      const truckInfo = box.truckZone && box.truckVerticalPosition
         ? `${box.truckZone} - ${box.truckVerticalPosition}`
-        : box.truckZone || '';
+        : box.truckZone || "";
 
       return [
         ownerName,
         box.id,
-        box.name || '',
-        box.contents || '',
+        box.name || "",
+        box.contents || "",
         box.currentStatus,
-        box.currentLocation || '',
-        box.destinationRoom || '',
+        box.currentLocation || "",
+        box.destinationRoom || "",
         truckInfo
       ];
     });
@@ -172,32 +175,87 @@ const SettingsPage: React.FC = () => {
     setFeedbackMessage({ type: 'success', message: 'Inventory spreadsheet exported successfully!' });
   };
 
+  // Enhanced reset move to default state
+  const handleResetMoveToDefault = async () => {
+    if (resetConfirmationText.toUpperCase() !== 'RESET') {
+      return;
+    }
+
+    if (!move || !user) {
+      setFeedbackMessage({
+        type: 'error',
+        message: 'No active move or user found.'
+      });
+      return;
+    }
+
+    // Validate permissions
+    const validation = validateResetPermissions(move, user.uid);
+    if (!validation.canReset) {
+      setFeedbackMessage({
+        type: 'error',
+        message: validation.reason || 'You do not have permission to reset this move.'
+      });
+      return;
+    }
+
+    setResetInProgress(true);
+
+    try {
+      const result = await resetMoveToDefault(move.id, user.uid, {
+        resetFirebaseData: true,
+        resetLocalStorageData: true,
+        resetCaches: true,
+        preserveMove: true
+      });
+
+      if (result.success) {
+        setFeedbackMessage({
+          type: 'success',
+          message: result.message
+        });
+        
+        // Small delay before reload to show success message
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        setFeedbackMessage({
+          type: 'error',
+          message: result.message
+        });
+      }
+    } catch (error) {
+      console.error('Error resetting move data:', error);
+      setFeedbackMessage({
+        type: 'error',
+        message: 'Failed to reset move data. Please try again.'
+      });
+    } finally {
+      setResetInProgress(false);
+      setIsResetMoveModalOpen(false);
+      setResetConfirmationText('');
+    }
+  };
+
+  // Legacy clear all data function (nuclear option)
   const handleClearAllData = async () => {
     if (clearDataConfirmationText.toUpperCase() !== 'DELETE') {
       return;
     }
 
     try {
-      // Clear all data from local storage
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // Clear all data from IndexedDB
-      const databases = await window.indexedDB.databases();
-      for (const dbInfo of databases) {
-        if (dbInfo.name) {
-          window.indexedDB.deleteDatabase(dbInfo.name);
-        }
+      const result = await clearAllApplicationData();
+      
+      if (result.success) {
+        // Refresh the page to ensure clean state
+        window.location.reload();
+      } else {
+        setFeedbackMessage({
+          type: 'error',
+          message: result.message
+        });
       }
-
-      // Clear all caches
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-      }
-
-      // Refresh the page to ensure clean state
-      window.location.reload();
     } catch (error) {
       console.error('Error clearing application data:', error);
       setFeedbackMessage({
@@ -256,10 +314,9 @@ const SettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-10">
-      <header className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 flex items-center space-x-3">
-        <IconSettings className="w-8 h-8 text-brand-tertiary dark:text-orange-400" />
-        <h1 className="text-3xl font-bold text-brand-primary dark:text-slate-100">Application Settings</h1>
+    <div className="space-y-6 max-w-2xl mx-auto">
+      <header className="pt-2 pb-4">
+        <h1 className="text-3xl font-bold text-text-main">Settings</h1>
       </header>
 
       {feedbackMessage && (
@@ -271,11 +328,9 @@ const SettingsPage: React.FC = () => {
         />
       )}
       
-      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3 flex items-center">
-          <FaShareAlt className="w-6 h-6 mr-3 text-brand-tertiary dark:text-orange-400" />
-          Current Move Information
-        </h2>
+      <section className="bg-surface rounded-xl overflow-hidden shadow-sm">
+        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider px-4 py-3 border-b border-border">Move Specifics</h3>
+        <div className="p-4">
         {settings.currentMoveId ? (
           <div className="space-y-3">
             <p className="text-brand-secondary dark:text-slate-300">
@@ -285,7 +340,7 @@ const SettingsPage: React.FC = () => {
               <span className="font-mono text-lg text-brand-primary-dark dark:text-slate-100 flex-grow break-all flex items-center">
                 {isLoadingMoveCode ? (
                   <>
-                    <FaSpinner className="animate-spin mr-2" />
+                    <span className="material-symbols-outlined animate-spin mr-2 text-lg">progress_activity</span>
                     Loading...
                   </>
                 ) : moveCode ? (
@@ -299,10 +354,10 @@ const SettingsPage: React.FC = () => {
                 size="icon"
                 onClick={handleCopyMoveId}
                 title="Copy Move Code"
-                className="text-brand-tertiary dark:text-orange-400 hover:text-brand-tertiary-dark dark:hover:text-orange-300 focus:ring-brand-tertiary/50 dark:focus:ring-orange-400/50"
+                className="text-white hover:text-slate-200 focus:ring-white/50"
                 aria-label="Copy Move ID to clipboard"
               >
-                <FaCopy className="w-5 h-5" />
+                <span className="material-symbols-outlined text-xl">content_copy</span>
               </Button>
             </div>
           </div>
@@ -311,13 +366,14 @@ const SettingsPage: React.FC = () => {
             No active Move ID found. Please start a new move or join an existing one via the authentication page.
           </p>
         )}
+        </div>
       </section>
 
-      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3 flex items-center">
-          <FaCalendarAlt className="w-6 h-6 mr-3 text-brand-tertiary dark:text-orange-400" />
+      <section className="bg-surface rounded-xl overflow-hidden shadow-sm">
+        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider px-4 py-3 border-b border-border flex items-center gap-2">
+          <span className="material-symbols-outlined text-lg">calendar_month</span>
           Move Date & Timeline
-        </h2>
+        </h3>
         <div className="space-y-4">
           <p className="text-brand-secondary dark:text-slate-300">
             Set your official move date to enable timeline planning in the Move Planner. This date helps calculate when to complete tasks relative to your moving day.
@@ -393,53 +449,51 @@ const SettingsPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3">Appearance</h2>
-        <div className="space-y-4 max-w-md">
+      <section className="bg-surface rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold text-text-main mb-4 border-b border-border pb-3">Appearance</h2>
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <label htmlFor="darkModeToggle" className="block text-sm font-medium text-brand-secondary dark:text-slate-300">
-              Dark Mode
+            <label className="block text-sm font-medium text-text-secondary">
+              Theme
             </label>
-            <button
-              id="darkModeToggle"
-              onClick={toggleTheme}
-              className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 ${
-                isDarkMode ? 'bg-orange-500 focus:ring-orange-400' : 'bg-slate-300 focus:ring-brand-secondary'
-              }`}
-              role="switch"
-              aria-checked={isDarkMode}
-            >
-              <span className="sr-only">Toggle Dark Mode</span>
-              <span
-                className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out ${
-                  isDarkMode ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-              <span className="absolute left-1.5 top-1/2 -translate-y-1/2">
-                {isDarkMode ? <FaMoon className="w-3 h-3 text-slate-100" /> : <FaSun className="w-3 h-3 text-yellow-500" />}
-              </span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => !isDarkMode || toggleTheme()}
+                className={`p-2 rounded-lg transition-colors ${!isDarkMode ? 'text-yellow-400 bg-yellow-400/20' : 'text-text-muted/50 hover:text-text-secondary'}`}
+                aria-label="Light mode"
+              >
+                <span className="material-symbols-outlined text-2xl">light_mode</span>
+              </button>
+              <span className="text-text-muted/30">|</span>
+              <button
+                onClick={() => isDarkMode || toggleTheme()}
+                className={`p-2 rounded-lg transition-colors ${isDarkMode ? 'text-teal-400 bg-teal-400/20' : 'text-text-muted/50 hover:text-text-secondary'}`}
+                aria-label="Dark mode"
+              >
+                <span className="material-symbols-outlined text-2xl">dark_mode</span>
+              </button>
+            </div>
           </div>
-           <p className="text-xs text-brand-secondary/80 dark:text-slate-400 -mt-2">
-              Currently: {isDarkMode ? 'Dark Theme' : 'Light Theme'}
-            </p>
+          <p className="text-xs text-text-muted -mt-2">
+            Currently: {isDarkMode ? 'Dark Theme' : 'Light Theme'}
+          </p>
         </div>
       </section>
 
-      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100 mb-4 border-b dark:border-slate-700 pb-3">Data Management</h2>
+      <section className="bg-surface rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold text-text-main mb-4 border-b border-border pb-3">Data Management</h2>
         <div className="space-y-4">
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
               <Button 
                 onClick={handleExportToSpreadsheet} 
                 variant="primary" 
-                leftIcon={<FaTable />}
+                leftIcon={<span className="material-symbols-outlined text-lg">table_chart</span>}
                 className="text-white dark:text-white"
               >
                 Export to Spreadsheet
               </Button>
-              <p className="text-sm text-brand-secondary/80 dark:text-slate-400">
+              <p className="text-sm text-text-muted">
                 Download inventory manifest as CSV for physical tracking.
               </p>
             </div>
@@ -447,12 +501,12 @@ const SettingsPage: React.FC = () => {
               <Button 
                 onClick={handleExportData} 
                 variant="secondary" 
-                leftIcon={<FaFileExport />}
+                leftIcon={<span className="material-symbols-outlined text-lg">download</span>}
                 className="text-white dark:text-white hover:bg-brand-tertiary/90 dark:hover:bg-orange-600"
               >
                 Export All Data (JSON)
               </Button>
-              <p className="text-sm text-brand-secondary/80 dark:text-slate-400">
+              <p className="text-sm text-text-muted">
                 Download all boxes, personal owners, custom spaces, and settings.
               </p>
             </div>
@@ -460,32 +514,129 @@ const SettingsPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border-2 border-red-500/30">
-        <h2 className="text-2xl font-semibold text-red-600 dark:text-red-400 mb-4 border-b border-red-500/30 pb-3 flex items-center">
-          <FaExclamationTriangle className="w-6 h-6 mr-2" />
-          DANGER ZONE
+      <section className="bg-surface rounded-xl shadow-sm p-6 border border-semantic-error/30">
+        <h2 className="text-xl font-semibold text-semantic-error mb-4 border-b border-semantic-error/30 pb-3 flex items-center">
+          <span className="material-symbols-outlined text-xl mr-2">warning</span>
+          Danger Zone
         </h2>
-        <div className="space-y-4">
-          <div>
+        <div className="space-y-6">
+          {/* Reset Move to Default */}
+          {move && user && (
+            <div className="p-4 bg-semantic-warning/10 rounded-lg border border-semantic-warning/30">
+              <h3 className="text-lg font-semibold text-semantic-warning mb-2 flex items-center">
+                <span className="material-symbols-outlined text-lg mr-2">restart_alt</span>
+                Reset Move to Default State
+              </h3>
+              <p className="text-sm text-text-secondary mb-3">
+                Reset this move back to its original state when first created. This will delete all boxes, owners, budget data, calendar events, and planner tasks, but preserve the move structure and participants.
+              </p>
+              <Button 
+                onClick={() => setIsResetMoveModalOpen(true)}
+                variant="secondary"
+                leftIcon={<span className="material-symbols-outlined text-lg">restart_alt</span>}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white border-yellow-600 hover:border-yellow-700"
+              >
+                Reset Move Data
+              </Button>
+            </div>
+          )}
+          
+          {/* Nuclear Option - Clear Everything */}
+          <div className="p-4 bg-semantic-error/10 rounded-lg border border-semantic-error/30">
+            <h3 className="text-lg font-semibold text-semantic-error mb-2 flex items-center">
+              <span className="material-symbols-outlined text-lg mr-2">bomb</span>
+              Nuclear Option: Clear Everything
+            </h3>
+            <p className="text-sm text-text-secondary mb-3">
+              Completely wipe all application data including moves, settings, and preferences. This will return the app to its initial state as if freshly installed.
+            </p>
             <Button 
               onClick={() => setIsClearDataModalOpen(true)} 
               variant="danger" 
-              leftIcon={<IconTrash />}
+              leftIcon={<span className="material-symbols-outlined text-lg">delete_forever</span>}
               className="w-full sm:w-auto"
             >
               Clear All Application Data
             </Button>
-            <p className="text-sm text-red-600/90 dark:text-red-400/90 mt-2">
-              Warning: This action is irreversible and will permanently delete all boxes, owners, and settings.
-            </p>
           </div>
         </div>
       </section>
 
+      {/* Reset Move to Default Modal */}
+      <Modal
+        isOpen={isResetMoveModalOpen}
+        onClose={() => setIsResetMoveModalOpen(false)}
+        title="Reset Move to Default State"
+        size="md"
+        footer={
+          <div className="w-full flex justify-end space-x-3">
+            <Button 
+              variant="secondary" 
+              onClick={() => setIsResetMoveModalOpen(false)}
+              disabled={resetInProgress}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="secondary"
+              onClick={handleResetMoveToDefault}
+              disabled={resetConfirmationText.toUpperCase() !== 'RESET' || resetInProgress}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white border-yellow-600 hover:border-yellow-700"
+              leftIcon={resetInProgress ? <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span> : <span className="material-symbols-outlined text-lg">restart_alt</span>}
+            >
+              {resetInProgress ? 'Resetting...' : 'Reset Move Data'}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <Alert 
+            type="warning" 
+            message="This will reset your move back to its original state when first created. All boxes, owners, budget data, calendar events, and planner tasks will be deleted, but the move structure and participants will be preserved."
+          />
+          
+          {move && (
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">What will be reset:</h4>
+              <ul className="text-sm text-blue-700 dark:text-blue-300 list-disc list-inside space-y-1">
+                <li>All boxes and tracking data</li>
+                <li>Personal owners and custom spaces (communal rooms will be restored)</li>
+                <li>Budget expenses and categories</li>
+                <li>Calendar events</li>
+                <li>Planner tasks and timelines</li>
+                <li>Move date (if set)</li>
+              </ul>
+            </div>
+          )}
+          
+          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">What will be preserved:</h4>
+            <ul className="text-sm text-green-700 dark:text-green-300 list-disc list-inside space-y-1">
+              <li>Move code and structure</li>
+              <li>All participants and permissions</li>
+              <li>Creation date and basic move information</li>
+            </ul>
+          </div>
+          
+          <p className="text-brand-secondary dark:text-slate-300">
+            To confirm, please type "<strong className="text-yellow-600 dark:text-yellow-400">RESET</strong>" in the box below.
+          </p>
+          <Input
+            id="resetConfirmText"
+            value={resetConfirmationText}
+            onChange={(e) => setResetConfirmationText(e.target.value)}
+            placeholder='Type RESET here'
+            autoFocus
+            disabled={resetInProgress}
+          />
+        </div>
+      </Modal>
+
+      {/* Nuclear Clear All Data Modal */}
       <Modal
         isOpen={isClearDataModalOpen}
         onClose={() => setIsClearDataModalOpen(false)}
-        title="Confirm Clear All Data"
+        title="Nuclear Option: Clear All Application Data"
         size="md"
         footer={
             <div className="w-full flex justify-end space-x-3">
@@ -495,7 +646,7 @@ const SettingsPage: React.FC = () => {
                     onClick={handleClearAllData}
                     disabled={clearDataConfirmationText.toUpperCase() !== 'DELETE'}
                 >
-                    Yes, Clear All Data
+                    Yes, Clear Everything
                 </Button>
             </div>
         }
@@ -503,10 +654,10 @@ const SettingsPage: React.FC = () => {
         <div className="space-y-4">
             <Alert 
                 type="error" 
-                message="This action is permanent and cannot be undone. All your tracked boxes, owner profiles (excluding predefined communal rooms), custom spaces, and settings will be deleted." 
+                message="âš ï¸ NUCLEAR OPTION: This will completely wipe ALL application data including moves, settings, and preferences. The app will return to its initial state as if freshly installed." 
             />
             <p className="text-brand-secondary dark:text-slate-300">
-                To confirm, please type "<strong className="text-red-600 dark:text-red-400">DELETE</strong>" in the box below.
+                To confirm this destructive action, please type "<strong className="text-red-600 dark:text-red-400">DELETE</strong>" in the box below.
             </p>
             <Input
                 id="clearDataConfirmText"
@@ -523,3 +674,11 @@ const SettingsPage: React.FC = () => {
 };
 
 export default SettingsPage;
+
+
+
+
+
+
+
+

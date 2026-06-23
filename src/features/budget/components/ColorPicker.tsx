@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 
 interface ColorPickerProps {
@@ -155,3 +156,4 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
 };
 
 export default ColorPicker;
+

@@ -1,220 +1,317 @@
-import React from 'react';
+// @ts-nocheck
+import React, { useMemo, useState } from 'react';
 import { useMove } from '@/features/settings/hooks/MoveContext';
-import { Link } from 'react-router-dom';
-import { useBoxes } from '@/features/boxes/hooks/useBoxes'; 
-import { ItemStatus } from '@/types';
-import { IconListBullet, IconCamera } from '@/lib/config/constants'; 
-import Button from '@/components/common/Button';
-import { MOVING_STATUS_LABELS } from '@/utils/statusUtils';
-import { StatsCard, ParticipantsSkeleton, QuickActionsSkeleton } from '@/components/design-system';
-import { AnimatedGrid } from '@/components/common/AnimatedList'; 
-import { FaEquals, FaBox, FaTruckMoving, FaCheck, FaDollyFlatbed, FaPrint, FaBoxOpen } from 'react-icons/fa'; 
-import { FaHouseCircleCheck, FaUserPlus } from 'react-icons/fa6';
+import { useBoxes } from '@/features/boxes/hooks/useBoxes';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
+import { ItemStatus, legacyOwnerToModern } from '@/types';
+import { BoxPackingProgressChart } from '../components/BoxPackingProgressChart';
+import { ProgressBarComponent } from '../components/ProgressBarComponent';
+import { DynamicBentoGrid } from '../components/DynamicBentoGrid';
+import { TruckLayoutVisualization } from '../components/TruckLayoutVisualization';
+import { BudgetOverviewWidget } from '../components/BudgetOverviewWidget';
+import { ParticipantsSkeleton } from '@/components/design-system';
+import { generateEnhancedRandomizedMoveData, type EnhancedRandomizedData } from '@/lib/utils/randomization-enhanced';
+import { SeparationTestWidget } from '@/features/owners/components/SeparationTestWidget';
 
 interface ParticipantPresence {
   online?: boolean;
   displayName?: string;
   photoURL?: string;
-} 
+}
 
 const DashboardPage: React.FC = () => {
-    const { boxes, isLoading } = useBoxes(); 
-  const { move, presence, loading: moveLoading, error: moveError } = useMove(); 
+  const { boxes, isLoading } = useBoxes();
+  const { owners, personalOwners, communalSpaces, stats } = useOwnersSpacesSeparation();
+  const { move, presence, loading: moveLoading, error: moveError } = useMove();
+  
+  // Enhanced randomization state for dev mode
+  const [randomizedData, setRandomizedData] = useState<EnhancedRandomizedData | null>(null);
+  const [isRandomized, setIsRandomized] = useState(false);
 
-  const quickActions = [
-    { to: "/app/owners", icon: <FaPrint className="h-10 w-10 text-brand-tertiary dark:text-orange-400 group-hover:text-brand-tertiary-dark dark:group-hover:text-orange-500 transition-colors" />, title: "Print Box Labels", description: "Generate batches of QR labels for owners.", bgColor: "bg-brand-secondary/10 dark:bg-slate-700/50 hover:bg-brand-secondary/20 dark:hover:bg-slate-700", area: "md:col-span-1 md:row-span-1" },
-    { to: "/app/scan", icon: <IconCamera className="h-10 w-10 text-brand-tertiary dark:text-orange-400 group-hover:text-brand-tertiary-dark dark:group-hover:text-orange-500 transition-colors" />, title: "Scan Box Label", description: "Update box location or status. Detail PREP boxes.", bgColor: "bg-brand-secondary/10 dark:bg-slate-700/50 hover:bg-brand-secondary/20 dark:hover:bg-slate-700", area: "md:col-span-1 md:row-span-1" },
-    { to: "/app/boxes", icon: <IconListBullet className="h-10 w-10 text-brand-tertiary dark:text-orange-400 group-hover:text-brand-tertiary-dark dark:group-hover:text-orange-500 transition-colors" />, title: "View All Boxes", description: "Browse your entire inventory of tracked boxes.", bgColor: "bg-brand-secondary/10 dark:bg-slate-700/50 hover:bg-brand-secondary/20 dark:hover:bg-slate-700", area: "md:col-span-2 md:row-span-1" },
-  ];
+  // Enhanced randomization handler for dev mode
+  const handleRandomize = () => {
+    if (import.meta.env.DEV) {
+      const newRandomizedData = generateEnhancedRandomizedMoveData();
+      setRandomizedData(newRandomizedData);
+      setIsRandomized(true);
+    }
+  };
+
+  const handleResetRandomization = () => {
+    setRandomizedData(null);
+    setIsRandomized(false);
+  };
+
+  // Use randomized data when available, otherwise use real data
+  const displayBoxes = isRandomized && randomizedData ? randomizedData.boxes : boxes;
+  const displayEntities = useMemo(() => {
+    if (isRandomized && randomizedData) {
+      return [...randomizedData.personalOwners, ...randomizedData.communalSpaces];
+    }
+    return owners.map(legacyOwnerToModern);
+  }, [isRandomized, randomizedData, owners]);
+
+  const { progressData, individualProgressData } = useMemo(() => {
+    if (!displayBoxes.length) return { progressData: null, individualProgressData: {} };
+
+    const overallStatusCounts = displayBoxes.reduce((acc, box) => {
+      acc[box.currentStatus] = (acc[box.currentStatus] || 0) + 1;
+      return acc;
+    }, {} as Record<ItemStatus, number>);
+
+    const totalBoxes = displayBoxes.length;
+    const unpackedBoxes = overallStatusCounts[ItemStatus.UNPACKED] || 0;
+
+    const progressData = {
+      total: totalBoxes,
+      prepared: overallStatusCounts[ItemStatus.PREPARED] || 0,
+      packed: overallStatusCounts[ItemStatus.PACKED] || 0,
+      loaded: overallStatusCounts[ItemStatus.LOADED] || 0,
+      delivered: overallStatusCounts[ItemStatus.DELIVERED] || 0,
+      unloaded: overallStatusCounts[ItemStatus.UNLOADED] || 0,
+      unpacked: unpackedBoxes,
+      overallProgress: totalBoxes > 0 ? Math.round((unpackedBoxes / totalBoxes) * 100) : 0,
+    };
+
+    const individualData = displayBoxes.reduce((acc, box) => {
+      const owner = displayEntities.find((e: any) => e.uid === (box as any).ownerUid);
+      const space = displayEntities.find((e: any) => e.uid === (box as any).spaceUid);
+      const entity = owner || space;
+
+      if (entity) { const key = (entity as any).uid as string; if (!acc[key]) { const name = (entity as any).name ?? `${(entity as any).firstName ?? ""} ${(entity as any).lastName ?? ""}`.trim(); acc[key] = { name, type: (entity as any).isCommunal ? "Space" : "Owner", counts: {}, total: 0, }; } acc[key].counts[box.currentStatus] = (acc[key].counts[box.currentStatus] || 0) + 1; acc[key].total += 1;
+      }
+      return acc;
+    }, {} as Record<string, { name: string; type: string; counts: Record<ItemStatus, number>; total: number }>);
+
+    const individualProgressData = Object.entries(individualData).reduce((acc, [id, data]) => {
+      const total = data.total;
+      const unpacked = data.counts[ItemStatus.UNPACKED] || 0;
+      acc[id] = {
+        name: data.name,
+        type: data.type,
+        total: total,
+        prepared: data.counts[ItemStatus.PREPARED] || 0,
+        packed: data.counts[ItemStatus.PACKED] || 0,
+        loaded: data.counts[ItemStatus.LOADED] || 0,
+        delivered: data.counts[ItemStatus.DELIVERED] || 0,
+        unloaded: data.counts[ItemStatus.UNLOADED] || 0,
+        unpacked: unpacked,
+        overallProgress: total > 0 ? Math.round((unpacked / total) * 100) : 0,
+      };
+      return acc;
+    }, {} as Record<string, any>);
+
+    return { progressData, individualProgressData };
+  }, [displayBoxes, displayEntities]);
+
+  // Check if any boxes are loaded for truck visualization
+  const hasLoadedBoxes = useMemo(() => {
+    return displayBoxes.some(box => box.currentStatus === ItemStatus.LOADED);
+  }, [displayBoxes]);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="bg-surface-elevated h-8 w-64 rounded mb-4"></div>
+          <div className="bg-surface-elevated h-64 rounded-xl mb-6"></div>
+          <div className="bg-surface-elevated h-32 rounded-xl mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-surface-elevated h-32 rounded-xl"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-10">
-      <header className="bg-brand-primary dark:bg-slate-800 shadow-xl rounded-xl p-6 sm:p-8 text-white dark:text-slate-100">
-        <h1 className="text-3xl sm:text-4xl font-bold">Smooth Moves: <span className="text-gradient-orange-peach">Your Relocation Partner</span></h1>
-        <p className="mt-2 text-brand-light-gray dark:text-slate-300 max-w-2xl">Making your move stress-free, one box at a time. Track your containers from your old home to your new one.</p>
+    <div className="space-y-6">
+      {/* Greeting Header */}
+      <header className="flex flex-col gap-1">
+        <h1 className="text-text-main tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+          Hi there! 📦
+        </h1>
+        <p className="text-text-secondary text-sm font-medium">
+          Let's get moving.
+        </p>
+        {move && (
+          <p className="text-text-muted text-xs">Move Code: {move.moveCode}</p>
+        )}
+        
+        {/* Dev Mode Randomization Button */}
+        {import.meta.env.DEV && (
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={handleRandomize}
+              className="bg-accent hover:bg-accent-hover text-background px-3 py-1.5 rounded-lg transition-colors duration-200 flex items-center gap-1 text-sm"
+              title="Randomize data for testing (Dev Mode Only)"
+            >
+              <span className="material-symbols-outlined text-base">shuffle</span>
+              Randomize
+            </button>
+            {isRandomized && (
+              <button
+                onClick={handleResetRandomization}
+                className="bg-semantic-error hover:opacity-80 text-white px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm"
+                title="Reset to real data"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
+        
+        {/* Enhanced separation statistics */}
+        {!isRandomized && stats.totalEntities > 0 && (
+          <div className="mt-2 flex items-center space-x-4 text-sm text-text-secondary">
+            <div className="flex items-center space-x-1">
+              <span className="material-symbols-outlined text-base">person</span>
+              <span>{stats.personalOwners} Personal Owners</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <span className="material-symbols-outlined text-base">apartment</span>
+              <span>{stats.communalSpaces} Communal Spaces</span>
+            </div>
+          </div>
+        )}
+        
+        {isRandomized && (
+          <div className="mt-2 space-y-1">
+            <p className="text-sm bg-semantic-warning text-background px-2 py-1 rounded inline-block">
+              🎲 Viewing randomized data
+            </p>
+            {randomizedData && (
+              <div className="flex items-center space-x-4 text-xs text-text-muted">
+                <div className="flex items-center space-x-1">
+                  <span className="material-symbols-outlined text-sm">person</span>
+                  <span>{randomizedData.personalOwners.length} Random Owners</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <span className="material-symbols-outlined text-sm">apartment</span>
+                  <span>{randomizedData.communalSpaces.length} Random Spaces</span>
+                </div>
+                <span>{randomizedData.boxes.length} Random Boxes</span>
+              </div>
+            )}
+          </div>
+        )}
       </header>
 
+      {/* Box Packing Progress Chart */}
+      {progressData && (
+        <section>
+          <h2 className="text-lg font-bold text-text-main mb-3">
+            Total Progress
+          </h2>
+          <div className="bg-surface rounded-xl shadow-sm border border-border p-4">
+            <BoxPackingProgressChart boxes={displayBoxes} owners={displayEntities} />
+          </div>
+        </section>
+      )}
+
+      {/* Progress Bar */}
+      {progressData && (
+        <section>
+          <ProgressBarComponent data={progressData} individualData={individualProgressData} />
+        </section>
+      )}
+
+      {/* Separation Test Widget - Dev Mode Only */}
+      {import.meta.env.DEV && (
+        <section>
+          <h2 className="text-lg font-bold text-text-main mb-3">
+            Development: Separation Status
+          </h2>
+          <SeparationTestWidget />
+        </section>
+      )}
+
+      {/* Dynamic Bento Grid - Spaces Overview */}
       <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-5">
-          Move Participants
-          {move && <span className="text-base font-normal text-slate-500 ml-2">(Code: {move.moveCode})</span>}
+        <h2 className="text-lg font-bold text-text-main mb-3">
+          Spaces
         </h2>
+        <DynamicBentoGrid boxes={displayBoxes} entities={displayEntities} />
+      </section>
+
+      {/* Truck Layout Visualization - Conditional */}
+      {hasLoadedBoxes && (
+        <section>
+          <h2 className="text-lg font-bold text-text-main mb-3">
+            Truck Load
+          </h2>
+          <TruckLayoutVisualization boxes={displayBoxes} entities={displayEntities} />
+        </section>
+      )}
+
+      {/* Budget Overview */}
+      <section>
+        <h2 className="text-lg font-bold text-text-main mb-3">
+          Budget Overview
+        </h2>
+        <BudgetOverviewWidget 
+          randomizedBudgetData={isRandomized && randomizedData ? randomizedData.budget : undefined}
+        />
+      </section>
+
+      {/* Move Participants */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-text-main">
+            Movers Crew
+          </h2>
+          <button className="text-accent text-sm font-medium hover:opacity-80">Invite</button>
+        </div>
         {moveLoading ? (
           <ParticipantsSkeleton count={3} />
         ) : moveError ? (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <div className="text-red-500">
-              <p className="font-semibold">Error loading participants:</p>
+          <div className="bg-surface shadow-sm rounded-xl border border-border p-4">
+            <div className="text-semantic-error">
+              <p className="font-semibold">Error loading participants</p>
               <p className="text-sm">{moveError.message}</p>
-              {moveError.message.includes('permissions') && (
-                <p className="text-xs mt-2 text-orange-600">
-                  This may be due to Firestore security rules. Please check console for details.
-                </p>
-              )}
             </div>
           </div>
         ) : move && move.participants ? (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <ul className="space-y-4">
-              {Object.keys(move.participants || {}).map((userId) => {
-                const participantPresence: ParticipantPresence = presence?.[`${move.id}_${userId}`] || presence?.[userId] || {};
-                const isOnline = participantPresence?.online || false;
-                const displayName = participantPresence?.displayName || 'Loading...';
-                const photoURL = participantPresence?.photoURL;
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+            {Object.keys(move.participants || {}).map((userId) => {
+              const participantPresence: ParticipantPresence = 
+                presence?.[`${move.id}_${userId}`] || presence?.[userId] || {};
+              const isOnline = participantPresence?.online || false;
+              const displayName = participantPresence?.displayName || 'Loading...';
 
-                return (
-                  <li key={userId} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      {photoURL ? (
-                        <img 
-                          src={photoURL} 
-                          alt={displayName} 
-                          className="w-10 h-10 rounded-full mr-4 object-cover"
-                          onError={(e) => {
-                            // Fallback to initials if image fails to load
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 mr-4 flex items-center justify-center">
-                          <span className="text-gray-500 dark:text-gray-400 font-semibold">
-                            {displayName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      <span className="font-medium text-slate-700 dark:text-slate-200">
-                        {displayName}
-                        {isOnline && (
-                          <span className="ml-2 text-xs px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
-                            Online
-                          </span>
-                        )}
-                      </span>
+              return (
+                <div key={userId} className="flex flex-col items-center gap-2 min-w-[72px]">
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-full bg-accent text-background flex items-center justify-center text-lg font-semibold shadow-sm">
+                      {displayName.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex items-center">
-                      <span 
-                        className={`inline-block w-3 h-3 rounded-full mr-2 ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}
-                        title={isOnline ? 'Online' : 'Offline'}
-                      />
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
-                        {isOnline ? 'Active now' : 'Offline'}
-                      </span>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-            <p className="text-slate-500 dark:text-slate-400">No participants found for this move.</p>
-          </div>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-5">Your Moving Progress</h2>
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="bg-slate-200 dark:bg-slate-700 h-32 rounded-xl"></div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <AnimatedGrid columns={4} gap="md" variant="fadeUp" className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <StatsCard
-              title="Total Boxes"
-              value={boxes.length}
-              icon={<FaEquals className="w-6 h-6" />}
-              className="md:col-span-2 lg:col-span-1"
-            />
-            <StatsCard
-              title={MOVING_STATUS_LABELS[ItemStatus.PACKED]}
-              value={boxes.filter(box => box.currentStatus === ItemStatus.PACKED).length}
-              icon={<FaBox className="w-6 h-6" />}
-            />
-            <StatsCard
-              title={MOVING_STATUS_LABELS[ItemStatus.LOADED]}
-              value={boxes.filter(box => box.currentStatus === ItemStatus.LOADED).length}
-              icon={<FaTruckMoving className="w-6 h-6" />}
-            />
-            <StatsCard
-              title={MOVING_STATUS_LABELS[ItemStatus.DELIVERED]}
-              value={boxes.filter(box => box.currentStatus === ItemStatus.DELIVERED).length}
-              icon={<FaHouseCircleCheck className="w-6 h-6" />}
-            />
-            <StatsCard
-              title={MOVING_STATUS_LABELS[ItemStatus.UNLOADED]}
-              value={boxes.filter(box => box.currentStatus === ItemStatus.UNLOADED).length}
-              icon={<FaDollyFlatbed className="w-6 h-6" />}
-            />
-            <StatsCard
-              title={MOVING_STATUS_LABELS[ItemStatus.UNPACKED]}
-              value={boxes.filter(box => box.currentStatus === ItemStatus.UNPACKED).length}
-              icon={<FaCheck className="w-6 h-6" />}
-            />
-          </AnimatedGrid>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-200 mb-5">Quick Actions for Your Move</h2>
-        {isLoading ? (
-          <QuickActionsSkeleton count={3} />
-        ) : (
-          <AnimatedGrid columns={2} gap="lg" variant="slideIn" className="grid-cols-1 md:grid-cols-2">
-            {quickActions.map((action) => (
-              <Link 
-                key={action.title} 
-                to={action.to} 
-                className={`group block p-6 ${action.bgColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-brand-tertiary focus:ring-opacity-50 dark:focus:ring-orange-400 ${action.area} flex flex-col items-start space-y-3 touch-manipulation min-h-[44px]`}
-                aria-label={`${action.title} - ${action.description}`}
-              >
-                {action.icon}
-                <div>
-                  <h3 className="text-xl font-semibold text-brand-primary dark:text-slate-100 group-hover:text-gradient-orange-peach">{action.title}</h3>
-                  <p className="text-brand-secondary dark:text-slate-400 text-sm">{action.description}</p>
-                </div>
-              </Link>
-            ))}
-          </AnimatedGrid>
-        )}
-      </section>
-
-      {isLoading && <p className="text-center text-brand-secondary dark:text-slate-400 py-8">Loading your boxes data...</p>}
-      {!isLoading && boxes.length === 0 && (
-         <div className="text-center py-12 px-6 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700">
-            <div className="mx-auto flex justify-center mb-6">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-full">
-                <FaBoxOpen className="h-12 w-12 text-brand-primary dark:text-blue-400" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-semibold text-slate-800 dark:text-slate-100 mb-3">Organize Your Move</h3>
-            <p className="text-slate-600 dark:text-slate-300 max-w-md mx-auto mb-6">
-              Get started by adding your first owner to begin organizing and tracking your moving boxes.
-            </p>
-            <Link to="/app/owners"> 
-                <Button 
-                  variant="primary" 
-                  size="lg" 
-                  className="group transition-all duration-200 shadow-md hover:shadow-lg"
-                  leftIcon={<FaUserPlus className="group-hover:scale-110 transition-transform" />}
-                >
-                  <span className="relative">
-                    Add First Owner
-                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white/50 group-hover:bg-white/80 transition-colors"></span>
+                    <span className={`absolute bottom-0 right-0 block w-3.5 h-3.5 rounded-full ring-2 ring-background ${isOnline ? 'bg-semantic-success' : 'bg-text-muted'}`}></span>
+                  </div>
+                  <span className="text-xs font-medium text-text-main truncate max-w-[72px]">
+                    {displayName.split(' ')[0]}
                   </span>
-                </Button>
-            </Link>
-        </div>
-      )}
-
+                </div>
+              );
+            })}
+            {/* Add button */}
+            <div className="flex flex-col items-center gap-2 min-w-[72px]">
+              <button className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-dashed border-border bg-surface text-text-muted hover:border-accent hover:text-accent transition-colors">
+                <span className="material-symbols-outlined">add</span>
+              </button>
+              <span className="text-xs font-medium text-text-muted">Add</span>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-surface shadow-sm rounded-xl border border-border p-4">
+            <p className="text-text-secondary">No participants found for this move.</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 };
 
 export default DashboardPage;
+

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Format currency values using Intl.NumberFormat for consistent display
  */

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, ItemStatus } from '@/types'; 
 import QRCodeDisplay from '@/components/common/QRCodeDisplay';
@@ -13,9 +13,18 @@ interface BoxCardProps {
   box: Box; 
 }
 
+/** Check if a URL is a valid web image URL (not file:/// or placeholder) */
+const isValidWebImageUrl = (url?: string): boolean => {
+  if (!url) return false;
+  if (url.startsWith('file:///')) return false;
+  if (url.includes('picsum.photos')) return false;
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image');
+};
+
 const BoxCard: React.FC<BoxCardProps> = ({ box }) => { 
   const { deleteBoxById } = useBoxes(); 
   const { getOwnerByUid } = useOwners(); 
+  const [imageError, setImageError] = useState(false);
 
   const owner = box.ownerUid ? getOwnerByUid(box.ownerUid) : null;
 
@@ -40,7 +49,7 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
     }
   };
 
-  const displayImage = box.imageUrl && !box.imageUrl.includes('picsum.photos');
+  const displayImage = isValidWebImageUrl(box.imageUrl) && !imageError;
 
   return (
     <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl transform hover:-translate-y-1 group">
@@ -51,7 +60,8 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
                 <img 
                     className="h-36 w-36 object-cover rounded-lg shadow-md mx-auto transition-transform duration-300 group-hover:scale-105" 
                     src={box.imageUrl} 
-                    alt={box.name} 
+                    alt={box.name}
+                    onError={() => setImageError(true)}
                 />
             ) : (
                 <div className="h-36 w-36 flex items-center justify-center">
@@ -115,7 +125,7 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
                 </Button>
               </Link>
               <Link to={`/app/box/${box.id}?edit=true`} onClick={(e) => e.stopPropagation()}> 
-                  <Button variant="ghost" size="icon" title="Edit Box Details">
+                  <Button variant="ghost" size="icon" title="Edit Box Details" ariaLabel="Edit Box Details">
                       <IconEdit className="w-4 h-4 text-brand-primary dark:text-slate-300" />
                   </Button>
               </Link>
@@ -124,6 +134,7 @@ const BoxCard: React.FC<BoxCardProps> = ({ box }) => {
                   size="icon" 
                   onClick={handleDelete}
                   title="Delete Box"
+                  ariaLabel="Delete Box"
               >
                   <IconTrash className="w-4 h-4 text-red-500 dark:text-red-400" />
               </Button>

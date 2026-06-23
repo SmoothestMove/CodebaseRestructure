@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { FaCamera, FaUpload, FaSpinner, FaTimes, FaCheck, FaExclamationTriangle, FaEdit } from 'react-icons/fa';

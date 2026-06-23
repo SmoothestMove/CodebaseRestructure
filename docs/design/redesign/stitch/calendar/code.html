@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smooth Moves - Calendar</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2f4a81", "background-light": "#f6f7f8", "background-dark": "#14171e", "card-light": "#ffffff", "card-dark": "#1a2230", "text-main-light": "#111318", "text-main-dark": "#ffffff", "text-secondary-light": "#616f89", "text-secondary-dark": "#9ca3af"}, fontFamily: {display: "Nunito Sans"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
+<style>.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main-light dark:text-text-main-dark antialiased transition-colors duration-200">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24 max-w-md mx-auto bg-white dark:bg-background-dark shadow-2xl">
+<header class="sticky top-0 z-20 flex items-center justify-between bg-card-light/90 dark:bg-card-dark/90 backdrop-blur-md px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-start w-12">
+<button class="relative group">
+<div class="size-9 rounded-full overflow-hidden border-2 border-transparent hover:border-primary transition-colors">
+<img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQnrdbN9uqhyb0O6J0THWtToQZtZSL1OHgiehoxJhot9W_eZoyy8kVtvH3PjJ3HFGGxo0VGQWMWlSxPMjx4iGHXfApDhXNWApU0vOJERYO_HSkOJmRxjKlNzb3KzOPIbTpYef0eG-c8fRqxTFrxCLUocgofiuQDdgcrnfHU-J36CDw01WGQsRDv1dHlAGonqXk4y81jgFvA2SaqvdCl9GZHEBfzbHc7iP6I41_iTDjBVMkB9_AAU6wi-gg8QQt4VrgQRKjVP2K3Xg"/>
+</div>
+</button>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center text-text-main-light dark:text-text-main-dark">Calendar</h2>
+<div class="flex items-center justify-end w-12">
+<button class="relative p-2 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute top-2 right-2 size-2.5 bg-red-500 border-2 border-white dark:border-card-dark rounded-full"></span>
+</button>
+</div>
+</header>
+<div class="bg-card-light dark:bg-card-dark shadow-sm pb-4 rounded-b-xl mb-4">
+<div class="flex flex-col gap-2 p-4 pb-0">
+<div class="flex items-center justify-between px-2 mb-2">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<p class="text-base font-bold leading-tight">September 2023</p>
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-7 text-center">
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">S</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">M</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">T</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">W</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">T</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">F</p>
+<p class="text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wide py-2">S</p>
+<button class="aspect-square flex items-center justify-center text-sm text-text-secondary-light dark:text-text-secondary-dark opacity-30">27</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-secondary-light dark:text-text-secondary-dark opacity-30">28</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-secondary-light dark:text-text-secondary-dark opacity-30">29</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-secondary-light dark:text-text-secondary-dark opacity-30">30</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">31</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">1</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">2</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">3</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">4</button>
+<button class="aspect-square flex items-center justify-center">
+<div class="size-8 md:size-10 flex items-center justify-center rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/30">5</div>
+</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark relative">
+                    6
+                    <span class="absolute bottom-1.5 size-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">7</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark relative">
+                    8
+                    <span class="absolute bottom-1.5 size-1 rounded-full bg-primary"></span>
+</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">9</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">10</button>
+<button class="aspect-square flex items-center justify-center text-sm text-text-main-light dark:text-text-main-dark">11</button>
+</div>
+<div class="w-full flex justify-center mt-1">
+<div class="h-1 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex gap-3 px-4 pb-2 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary px-5 shadow-sm shadow-primary/20">
+<p class="text-white text-sm font-medium">All</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-5">
+<p class="text-text-main-light dark:text-text-main-dark text-sm font-medium">Deadlines</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-5">
+<p class="text-text-main-light dark:text-text-main-dark text-sm font-medium">Packing</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-5">
+<p class="text-text-main-light dark:text-text-main-dark text-sm font-medium">Movers</p>
+</button>
+</div>
+<div class="flex items-end justify-between px-5 pt-6 pb-4">
+<div>
+<h3 class="text-text-main-light dark:text-text-main-dark text-2xl font-bold leading-tight">September 5</h3>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">Today</p>
+</div>
+<p class="text-primary text-sm font-semibold mb-1">3 events</p>
+</div>
+<div class="flex flex-col px-4 relative">
+<div class="grid grid-cols-[48px_1fr] gap-x-4 mb-2 group">
+<div class="flex flex-col items-center gap-1 pt-1">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-semibold">09:00</p>
+<div class="w-[2px] bg-gray-200 dark:bg-gray-700 h-full mt-1 rounded-full group-last:hidden"></div>
+</div>
+<div class="pb-6">
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md uppercase tracking-wide">Logistics</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500 text-[20px]">more_horiz</span>
+</div>
+<h4 class="text-text-main-light dark:text-text-main-dark text-base font-bold leading-tight mb-1 pl-2">Pick up truck rental</h4>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-3 pl-2">U-Haul Center, Downtown</p>
+<div class="flex items-center gap-2 pl-2 mt-auto">
+<div class="flex -space-x-2">
+<img alt="Collaborator" class="inline-block size-6 rounded-full ring-2 ring-white dark:ring-card-dark object-cover" data-alt="User Avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQnrdbN9uqhyb0O6J0THWtToQZtZSL1OHgiehoxJhot9W_eZoyy8kVtvH3PjJ3HFGGxo0VGQWMWlSxPMjx4iGHXfApDhXNWApU0vOJERYO_HSkOJmRxjKlNzb3KzOPIbTpYef0eG-c8fRqxTFrxCLUocgofiuQDdgcrnfHU-J36CDw01WGQsRDv1dHlAGonqXk4y81jgFvA2SaqvdCl9GZHEBfzbHc7iP6I41_iTDjBVMkB9_AAU6wi-gg8QQt4VrgQRKjVP2K3Xg"/>
+<img alt="Collaborator" class="inline-block size-6 rounded-full ring-2 ring-white dark:ring-card-dark object-cover" data-alt="User Avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkWndH8WiWxjOwp6dVbpAd50z-SlbVGIHxHtKy8TgQ7wYsI_NczjIjuJxbnepkr3EMgIKhBO5hjYO2bbsj3N2rAyeq1omRUAy2794qFwVYRQocS0_8QhkUh8bCdIg0Ju7EV8fJVmkGr3UqBA5iiuH7c1qjqa5wFXhW9LS6pfyAKlzlJwGzJNtKCV-XsehFGeyoK2C8cjveXPPKnOVkpB4xAknW8V6iVOXB1swnVn7l1my6szI8_8Qy3ToY68ETBkYHxDDA8eX7AHo"/>
+</div>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-medium">+ You</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-[48px_1fr] gap-x-4 mb-2 group">
+<div class="flex flex-col items-center gap-1 pt-1">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-semibold">13:00</p>
+<div class="w-[2px] bg-gray-200 dark:bg-gray-700 h-full mt-1 rounded-full group-last:hidden"></div>
+</div>
+<div class="pb-6">
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-300 dark:bg-blue-800"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-400 dark:text-blue-300 text-[20px]">router</span>
+<span class="text-xs font-bold text-blue-600 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded-md uppercase tracking-wide">Utilities</span>
+</div>
+</div>
+<h4 class="text-text-main-light dark:text-text-main-dark text-base font-bold leading-tight mb-1 pl-2">Internet Installation</h4>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-3 pl-2">Technician Arrival Window</p>
+<div class="flex items-center gap-2 pl-2 mt-auto">
+<div class="flex -space-x-2">
+<img alt="Collaborator" class="inline-block size-6 rounded-full ring-2 ring-white dark:ring-card-dark object-cover" data-alt="User Avatar 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL31lZ_b8G0a_xdCnyaBB9lFfpUQBqhUmRSepmgpiNCCGIJoBKxv8Vtw8q5QLmPJiuK80f5R5BUDj8DR2sBgg98Rlmq14U4NqWTvhS6jNgxQMWryQFsdq4POZwGxNgcb_Xq7dmkhmCOVqk4D0-l4speCoITVv_dRmo8E6kPxCMH5q_T2xnnm2ex3FvC8YBsqJvZNGWSJGUYaPzSDqZzmN3fEeHWY1qaYZI8gxOBW0_W4SyroWkd7NVMZAZGDTc7PYg3jMjXqSrWV8"/>
+</div>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-medium">Sarah assigned</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-[48px_1fr] gap-x-4 mb-2 group">
+<div class="flex flex-col items-center gap-1 pt-1">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-semibold">17:00</p>
+</div>
+<div class="pb-6">
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500 text-[20px]">contract_edit</span>
+<span class="text-xs font-bold text-red-600 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-md uppercase tracking-wide">Deadline</span>
+</div>
+</div>
+<h4 class="text-text-main-light dark:text-text-main-dark text-base font-bold leading-tight mb-1 pl-2">Lease Signing</h4>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-2 pl-2">Must be signed by 5 PM</p>
+</div>
+</div>
+</div>
+</div>
+<button class="fixed bottom-20 right-4 z-40 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-xl shadow-primary/40 hover:bg-primary/90 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 pb-safe z-30 max-w-md mx-auto">
+<div class="grid grid-cols-5 h-16 px-1">
+<a class="flex flex-col items-center justify-center gap-1 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+<span class="text-[10px] font-medium">Budget</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] fill-current">calendar_month</span>
+<span class="text-[10px] font-medium">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">assignment</span>
+<span class="text-[10px] font-medium">Planner</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+<div class="h-16"></div>
+</div>
+</body></html>

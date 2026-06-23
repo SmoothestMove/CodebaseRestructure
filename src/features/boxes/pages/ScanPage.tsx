@@ -16,6 +16,8 @@ import { useTheme } from '@/hooks/useTheme'; // Import useTheme
 import { IconCamera, IconQrCode, IconCheck, IconChevronLeft, IconLightningBolt, IconXMark } from '@/lib/config/constants';
 import { getItemStatusDisplayLabel } from '@/utils/statusUtils';
 import { FaUpload } from 'react-icons/fa';
+import { uploadBoxImageFromDataUrl } from '@/features/boxes/services/imageService';
+import { useAuth } from '@/features/auth/hooks/AuthContext';
 
 const BRAND_TERTIARY_COLOR = '#ff7e00';
 const WHITE_COLOR = '#ffffff';
@@ -36,6 +38,9 @@ const ScanPage: React.FC = () => {
   const { getBox, updateBox, addScanEntryToBox } = useBoxes();
   const { getOwnerByUid } = useOwners();
   const { isDarkMode } = useTheme(); // Get theme status
+  const { moveId } = useAuth();
+
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const isQuickScanMode = useMemo(() => locationHook.state?.isQuickScanMode === true, [locationHook.state]);
 
@@ -334,6 +339,26 @@ const ScanPage: React.FC = () => {
     });
 
     try {
+      // Upload image to Firebase Storage if we have a new data URL image
+      let finalImageUrl: string | undefined;
+      if (imagePreviewUrl && imagePreviewUrl.startsWith('data:image') && moveId) {
+        try {
+          setIsUploadingImage(true);
+          setUserFeedback({ message: 'Uploading image...', type: 'info' });
+          finalImageUrl = await uploadBoxImageFromDataUrl(moveId, targetBoxForDetails.id, imagePreviewUrl);
+          console.log('Image uploaded to Storage:', finalImageUrl);
+        } catch (uploadError) {
+          console.warn('Image upload failed, saving box without image:', uploadError);
+          setUserFeedback({ message: 'Image upload failed — saving box without image.', type: 'error', duration: 3000 });
+          // Continue saving without an image rather than failing entirely
+        } finally {
+          setIsUploadingImage(false);
+        }
+      } else if (imagePreviewUrl) {
+        // If it's already a web URL (e.g. from a previous Storage upload), keep it
+        finalImageUrl = imagePreviewUrl;
+      }
+
       const updatedBoxData: Partial<Omit<Box, 'id'>> = {
         name: newBoxDetailsFormData.name,
         contents: newBoxDetailsFormData.contents,
@@ -341,9 +366,8 @@ const ScanPage: React.FC = () => {
         destinationRoom: newBoxDetailsFormData.destinationRoom,
         ownerUid: targetBoxForDetails.ownerUid,
         currentStatus: ItemStatus.PACKED,
-        // Only include imageUrl if we have a new image to set
-        // This preserves the existing image if no new one is provided
-        ...(imagePreviewUrl && { imageUrl: imagePreviewUrl })
+        // Store the Firebase Storage download URL instead of raw base64
+        ...(finalImageUrl && { imageUrl: finalImageUrl })
       };
       
       console.log('Updating box with data:', updatedBoxData);
@@ -514,8 +538,8 @@ const ScanPage: React.FC = () => {
       <Button type="button" variant="secondary" onClick={() => { setIsNewBoxDetailsModalOpen(false); handleCancelAndRescan(); if (isCameraForPhotoActive) stopCameraStream(); }} disabled={isSubmittingNewBoxDetails} className="text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white">
         Cancel & Rescan
       </Button>
-      <Button type="submit" variant="primary" isLoading={isSubmittingNewBoxDetails} leftIcon={<IconCheck />} form="packBoxForm">
-          {isSubmittingNewBoxDetails ? 'Saving...' : newBoxDetailsModalSubmitText}
+      <Button type="submit" variant="primary" isLoading={isSubmittingNewBoxDetails || isUploadingImage} leftIcon={<IconCheck />} form="packBoxForm">
+          {isUploadingImage ? 'Uploading image...' : isSubmittingNewBoxDetails ? 'Saving...' : newBoxDetailsModalSubmitText}
       </Button>
     </div>
   );

@@ -1,17 +1,17 @@
-
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Modal from '@/components/common/Modal';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import { useOwners } from '@/features/owners/hooks/useOwners';
-import { Owner } from '@/types'; 
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
+import type { CommunalSpace, LegacyOwner } from '@/types'; 
+import { legacyOwnerToModern } from '@/types';
 import { IconPlus } from '@/lib/config/constants';
 import Alert from '@/components/common/Alert';
 
 interface AddSpaceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSpaceAdded: (newSpace: Owner) => void;
+  onSpaceAdded: (newSpace: CommunalSpace) => void;
   onAddError: (errorMessage: string) => void;
 }
 
@@ -22,7 +22,7 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { addOwner } = useOwners();
+  const { addOwner } = useOwnersSpacesSeparation();
 
   const resetForm = () => {
     setSpaceName('');
@@ -49,22 +49,23 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
     setShowSuccess(false);
 
     try {
-      // Simulate API call
       const newSpacePayload = { 
         firstName: spaceName.trim(), 
-        lastName: "(Custom Space)", // Fixed lastName for custom spaces
+        lastName: CUSTOM_SPACE_LAST_NAME_FLAG, 
         color 
       };
-      const newSpace = await addOwner(newSpacePayload);
+      const newSpaceLegacy = await addOwner(newSpacePayload);
+      const newSpace = legacyOwnerToModern(newSpaceLegacy as LegacyOwner) as CommunalSpace;
+
       setIsLoading(false);
       setShowSuccess(true);
       onSpaceAdded(newSpace); 
       setTimeout(() => {
         handleClose();
       }, 1500); 
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false);
-      const errorMessage = err.message || 'Failed to add space. Please try again.';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add space. Please try again.';
       setError(errorMessage);
       onAddError(errorMessage);
     }
@@ -133,5 +134,7 @@ const AddSpaceModal: React.FC<AddSpaceModalProps> = ({ isOpen, onClose, onSpaceA
     </Modal>
   );
 };
+
+const CUSTOM_SPACE_LAST_NAME_FLAG = '(Custom Space)';
 
 export default AddSpaceModal;

@@ -1,7 +1,9 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
-import Navbar from '@/components/layout/Header';
+import MobileAppShell from '@/components/layout/MobileAppShell';
+import BottomNavigation from '@/components/navigation/BottomNavigation';
+import SidebarNavigation from '@/components/navigation/SidebarNavigation';
 import DashboardPage from '@/features/settings/pages/DashboardPage';
 import ScanPage from '@/features/boxes/pages/ScanPage';
 import BoxDetailsPage from '@/features/boxes/pages/BoxDetailsPage';
@@ -65,14 +67,14 @@ const MainAppLayout: React.FC = () => {
   // Show loading state while initializing
   if (authLoading || !isInitialized) {
     return (
-      <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-        {/* --- Mobile Bottom Navigation Bar (Fixed) --- */}
-        <div className="md:hidden h-16"></div> {/* Spacer for fixed bottom nav */}
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary dark:border-brand-accent mx-auto mb-4"></div>
-          <p className="text-slate-700 dark:text-slate-300">Loading your move...</p>
+      <MobileAppShell>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4" />
+            <p className="text-text-secondary">Loading your move...</p>
+          </div>
         </div>
-      </div>
+      </MobileAppShell>
     );
   }
 
@@ -81,13 +83,25 @@ const MainAppLayout: React.FC = () => {
       <BoxesProvider>
         <OwnersProvider>
           <CalendarProvider>
-          <div className="min-h-screen bg-slate-100 dark:bg-slate-900">
-            <Navbar />
-            <div className="md:pl-64 flex flex-col min-h-screen">
-              <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-8 pb-24 md:pb-8">
-                <Outlet />
-              </main>
+            {/* Sidebar - visible on md+ screens */}
+            <SidebarNavigation />
+            
+            {/* Main content area - offset for sidebar on md+ */}
+            <div className="md:ml-64">
+              <MobileAppShell>
+                {/* 
+                  Mobile-first responsive padding:
+                  - Base: px-4, pb-20 (mobile with bottom nav)
+                  - md+: px-6, pb-6 (tablet/desktop with sidebar)
+                */}
+                <main className="min-h-screen px-4 md:px-6 lg:px-8 pt-4 md:pt-6 pb-20 md:pb-6">
+                  <Outlet />
+                </main>
+              </MobileAppShell>
             </div>
+            
+            {/* Bottom Navigation - visible on mobile only */}
+            <BottomNavigation />
             
             {/* Add Owner Modal for New Users */}
             <AddOwnerModal
@@ -97,13 +111,13 @@ const MainAppLayout: React.FC = () => {
               initialFirstName={newUserFullName.split(' ')[0]}
               initialLastName={newUserFullName.split(' ').slice(1).join(' ')}
             />
-          </div>
           </CalendarProvider>
         </OwnersProvider>
       </BoxesProvider>
     </MoveProvider>
   );
 };
+
 
 const App: React.FC = () => {
   return (

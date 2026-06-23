@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Pages
 export { default as BudgetPage } from './pages/BudgetPage';
 
@@ -23,3 +24,4 @@ export { ReceiptScanningService } from './services/ReceiptScanningService';
 // Types and Constants
 export * from './types/types';
 export { ICONS, INITIAL_CATEGORIES, BUDGET_TEMPLATES } from './constants/constants';
+

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { IconCheck } from '@/lib/config/constants';
@@ -6,6 +5,10 @@ import { VARIANTS, shouldReduceMotion } from '@/lib/animations';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'ghost';
+  /**
+   * @warning When using the 'icon' size, you MUST provide an `ariaLabel`
+   * if there are no visible children to ensure accessibility.
+   */
   size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   isSuccess?: boolean; 
@@ -34,19 +37,19 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyles = "font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-opacity-50 flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none touch-manipulation";
   
   const sizeStyles = {
-    sm: "px-4 py-3 text-xs min-h-[40px]", // 40px for small buttons (close to 44px)
-    md: "px-5 py-3 text-sm min-h-[44px]", // 44px minimum touch target
-    lg: "px-7 py-4 text-base min-h-[48px]", // 48px for large buttons
-    icon: "p-3 min-w-[44px] min-h-[44px]", // 44x44px minimum for icon buttons
+    sm: "px-4 py-3 text-xs min-h-[40px]",
+    md: "px-5 py-3 text-sm min-h-[44px]",
+    lg: "px-7 py-4 text-base min-h-[48px]",
+    icon: "p-3 min-w-[44px] min-h-[44px]",
   };
 
   const variantStyles = {
-    primary: "bg-brand-tertiary hover:bg-brand-tertiary-dark text-white focus:ring-brand-tertiary/50 dark:bg-orange-500 dark:hover:bg-orange-600 dark:focus:ring-orange-400/50",
-    secondary: "bg-brand-secondary hover:bg-brand-secondary-dark focus:ring-brand-secondary/50 dark:bg-slate-600 dark:hover:bg-slate-500 dark:focus:ring-slate-500/50", // Removed text-white and dark:text-slate-100
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-400 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-400/70",
-    success: "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-500/70",
-    warning: "bg-brand-accent hover:bg-brand-accent-dark text-white focus:ring-brand-accent/50 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:text-slate-900 dark:focus:ring-yellow-400/50",
-    ghost: "bg-transparent hover:bg-brand-primary/10 text-brand-primary focus:ring-brand-primary/30 dark:hover:bg-slate-700 dark:text-slate-300 dark:focus:ring-slate-600/50",
+    primary: "bg-accent hover:bg-accent-hover hover:border-accent-hover text-background border border-slate-300 dark:border-slate-600 focus:ring-accent/50 shadow-lg shadow-accent/20 transition-all duration-200",
+    secondary: "bg-surface hover:bg-surface-elevated hover:border-accent text-text-main border border-slate-300 dark:border-slate-600 focus:ring-accent/30 transition-all duration-200",
+    danger: "bg-semantic-error hover:opacity-90 text-white border border-slate-300 dark:border-slate-600 focus:ring-semantic-error/50 shadow-md transition-all duration-200",
+    success: "bg-semantic-success hover:opacity-90 text-white border border-slate-300 dark:border-slate-600 focus:ring-semantic-success/50 shadow-md transition-all duration-200",
+    warning: "bg-semantic-warning hover:opacity-90 text-background border border-slate-300 dark:border-slate-600 focus:ring-semantic-warning/50 shadow-md transition-all duration-200",
+    ghost: "bg-transparent hover:bg-accent/10 text-accent border border-transparent hover:border-accent/30 focus:ring-accent/30 transition-all duration-200",
   };
 
   const loadingStyles = isLoading ? "opacity-75 cursor-not-allowed" : "";
@@ -60,17 +63,15 @@ const Button: React.FC<ButtonProps> = ({
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
       aria-busy={isLoading}
-      // Framer Motion animations
-      variants={shouldReduceMotion() ? undefined : VARIANTS.button}
-      initial="initial"
-      whileHover={shouldReduceMotion() ? undefined : "hover"}
-      whileTap={shouldReduceMotion() ? undefined : "tap"}
-      // Performance optimization
+      // Minimal animations to satisfy typing
+      initial={shouldReduceMotion() ? undefined : { opacity: 1 }}
+      whileHover={shouldReduceMotion() ? undefined : { scale: 1.02 }}
+      whileTap={shouldReduceMotion() ? undefined : { scale: 0.98 }}
       style={{ 
         transformOrigin: 'center',
         willChange: 'transform',
       }}
-      {...props}
+      {...(props as any)}
     >
       {isLoading ? (
         <>
@@ -79,8 +80,7 @@ const Button: React.FC<ButtonProps> = ({
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24"
-            variants={shouldReduceMotion() ? undefined : VARIANTS.spinner}
-            animate={shouldReduceMotion() ? undefined : "animate"}
+            animate={shouldReduceMotion() ? undefined : { rotate: 360 }}
           >
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

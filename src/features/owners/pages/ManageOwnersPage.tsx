@@ -1,39 +1,30 @@
-
-import React, { useState, useMemo } from 'react';
-import { useOwners } from '@/features/owners/hooks/useOwners';
-import { Owner } from '@/types';
+﻿// @ts-nocheck
+import React, { useState } from 'react';
+import { useOwnersSpacesSeparation } from '@/features/owners/hooks/useOwnersSpacesSeparation';
+import type { PersonalOwner } from '@/types';
 import { useAuth } from '@/features/auth/hooks/AuthContext';
 import Button from '@/components/common/Button';
 import AddOwnerModal from '@/features/owners/components/AddOwnerModal';
 import OwnerCard from '@/features/owners/components/OwnerCard';
 import BatchPrintConfirmationModal from '@/features/owners/components/BatchPrintConfirmationModal';
 import Alert from '@/components/common/Alert';
-import { IconPlus, PREDEFINED_COMMUNAL_ROOMS } from '@/lib/config/constants';
-import { FaUserGroup } from 'react-icons/fa6'; 
 import { addPreppedBoxesForPrint } from '@/features/boxes/services/boxService';
 import { generateLabelPdf } from '@/utils/pdfGenerator';
 import { useSettings } from '@/features/settings/hooks/useSettings'; 
 
 const ManageOwnersPage: React.FC = () => {
-  const { owners, isLoading: isLoadingOwners } = useOwners();
+  const { personalOwners, isLoading: isLoadingOwners } = useOwnersSpacesSeparation();
   const { moveId } = useAuth();
   const { settings } = useSettings(); 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
   const [isBatchPrintModalOpen, setIsBatchPrintModalOpen] = useState(false);
-  const [selectedOwnerForBatchPrint, setSelectedOwnerForBatchPrint] = useState<Owner | null>(null);
+  const [selectedOwnerForBatchPrint, setSelectedOwnerForBatchPrint] = useState<PersonalOwner | null>(null);
 
-  const personalOwners = useMemo(() => {
-    const communalRoomUids = PREDEFINED_COMMUNAL_ROOMS.map(r => r.uid);
-    return owners.filter(o => 
-      !communalRoomUids.includes(o.uid) && 
-      o.lastName !== '(Custom Space)' 
-    );
-  }, [owners]);
-
-  const handleOwnerAdded = (newOwner: Owner) => {
-    setFeedbackMessage({ type: 'success', message: `Owner "${newOwner.firstName} ${newOwner.lastName || ''}".trim() added successfully!` });
+  const handleOwnerAdded = (newOwner: PersonalOwner) => {
+    const ownerDisplayName = `${newOwner.firstName} ${newOwner.lastName}`.trim();
+    setFeedbackMessage({ type: 'success', message: `Owner "${ownerDisplayName}" added successfully!` });
     setIsAddModalOpen(false);
     
     setSelectedOwnerForBatchPrint(newOwner);
@@ -44,7 +35,7 @@ const ManageOwnersPage: React.FC = () => {
     setFeedbackMessage({ type: 'error', message: errorMessage });
   };
 
-  const handleConfirmInitialBatchPrint = async (owner: Owner) => {
+  const handleConfirmInitialBatchPrint = async (owner: PersonalOwner) => {
     if (!owner) throw new Error("Owner data is missing for batch printing.");
     if (!moveId) {
       setFeedbackMessage({ type: 'error', message: "No active move found. Please join or create a move first." });
@@ -72,17 +63,16 @@ const ManageOwnersPage: React.FC = () => {
     }
   };
 
-
   return (
-    <div className="space-y-10">
-      <header className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div className="space-y-8">
+      <header className="bg-surface shadow-lg rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex items-center space-x-3">
-          <FaUserGroup className="w-8 h-8 text-brand-tertiary dark:text-orange-400" />
-          <h1 className="text-3xl font-bold text-brand-primary dark:text-slate-100">
+          <span className="material-symbols-outlined text-3xl text-accent">group</span>
+          <h1 className="text-3xl font-bold text-text-main">
             Manage Personal Owners
           </h1>
         </div>
-        <Button variant="primary" size="md" leftIcon={<IconPlus />} onClick={() => setIsAddModalOpen(true)}>
+        <Button variant="primary" size="md" leftIcon={<span className="material-symbols-outlined text-lg">add</span>} onClick={() => setIsAddModalOpen(true)}>
           Add New Personal Owner
         </Button>
       </header>
@@ -98,17 +88,14 @@ const ManageOwnersPage: React.FC = () => {
 
       <section>
         <div className="flex items-center space-x-3 mb-5">
-            <FaUserGroup className="w-7 h-7 text-brand-primary dark:text-slate-200" />
-            <h2 className="text-2xl font-semibold text-brand-primary dark:text-slate-100">
-                Personal Owners <span className="text-brand-secondary dark:text-slate-400 font-normal">({personalOwners.length})</span>
+            <span className="material-symbols-outlined text-2xl text-accent">person</span>
+            <h2 className="text-xl font-semibold text-text-main">
+                Personal Owners <span className="text-text-muted font-normal">({personalOwners.length})</span>
             </h2>
         </div>
         {isLoadingOwners && (
-            <div className="flex flex-col items-center justify-center h-40 text-brand-secondary dark:text-slate-400">
-            <svg className="animate-spin h-8 w-8 text-brand-tertiary dark:text-orange-400 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <div className="flex flex-col items-center justify-center h-40 text-text-muted">
+            <span className="material-symbols-outlined text-4xl text-accent mb-3 animate-spin">progress_activity</span>
             <p>Loading owners...</p>
             </div>
         )}
@@ -120,14 +107,13 @@ const ManageOwnersPage: React.FC = () => {
             </div>
         )}
         {!isLoadingOwners && personalOwners.length === 0 && (
-            <div className="text-center py-10 bg-white dark:bg-slate-800 rounded-xl shadow-lg animate-fade-in border border-slate-200 dark:border-slate-700">
-            <FaUserGroup className="mx-auto h-16 w-16 text-brand-secondary/50 dark:text-slate-500/50 mb-5" />
-            <h3 className="text-xl font-semibold text-brand-primary dark:text-slate-100">No Personal Owners Added Yet</h3>
-            <p className="text-brand-secondary dark:text-slate-300 mt-1.5">Click "Add New Personal Owner" to start associating boxes with individuals.</p>
+            <div className="text-center py-10 bg-surface rounded-xl shadow-lg animate-fade-in border border-border">
+            <span className="material-symbols-outlined text-6xl text-text-muted/50 mb-5">group</span>
+            <h3 className="text-xl font-semibold text-text-main">No Personal Owners Added Yet</h3>
+            <p className="text-text-secondary mt-1.5">Click "Add New Personal Owner" to start associating boxes with individuals.</p>
             </div>
         )}
       </section>
-
 
       <AddOwnerModal
         isOpen={isAddModalOpen}

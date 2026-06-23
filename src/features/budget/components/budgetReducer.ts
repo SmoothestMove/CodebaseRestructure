@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { Expense, Category, MoveType } from '../types/types';

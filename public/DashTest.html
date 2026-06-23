@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Move Management Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#007AFF", // Trust Blue
+                        "background-light": "#F4F5F7", // Calm Gray
+                        "surface-light": "#FFFFFF", // Clarity White
+                        "text-primary": "#1A202C", // Readability Gray
+                        "success": "#34C759", // Success Green
+                        "attention": "#FF9500", // Attention Amber
+                        "alert": "#FF3B30", // Alert Red
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light font-display">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex flex-col gap-2 bg-background-light p-4 pb-2 sticky top-0 z-10">
+<div class="flex items-center h-12 justify-between">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface-light text-text-primary">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<div class="flex w-12 items-center justify-end">
+<button class="flex h-12 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-surface-light text-text-primary gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0 w-12">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+<p class="text-text-primary tracking-light text-[28px] font-bold leading-tight">Hello, Alex</p>
+</div>
+<!-- Main Content -->
+<main class="flex flex-col gap-6 p-4">
+<!-- Countdown Timer Section -->
+<div class="flex flex-col gap-2">
+<p class="text-text-primary text-base font-normal leading-normal px-0">Days until your move</p>
+<div class="flex gap-2">
+<div class="flex grow basis-0 flex-col items-stretch gap-2">
+<div class="flex h-16 grow items-center justify-center rounded-xl bg-surface-light">
+<p class="text-text-primary text-2xl font-bold leading-tight tracking-[-0.015em]">14</p>
+</div>
+<div class="flex items-center justify-center"><p class="text-text-primary/70 text-sm font-normal leading-normal">Days</p></div>
+</div>
+<div class="flex grow basis-0 flex-col items-stretch gap-2">
+<div class="flex h-16 grow items-center justify-center rounded-xl bg-surface-light">
+<p class="text-text-primary text-2xl font-bold leading-tight tracking-[-0.015em]">08</p>
+</div>
+<div class="flex items-center justify-center"><p class="text-text-primary/70 text-sm font-normal leading-normal">Hours</p></div>
+</div>
+<div class="flex grow basis-0 flex-col items-stretch gap-2">
+<div class="flex h-16 grow items-center justify-center rounded-xl bg-surface-light">
+<p class="text-text-primary text-2xl font-bold leading-tight tracking-[-0.015em]">32</p>
+</div>
+<div class="flex items-center justify-center"><p class="text-text-primary/70 text-sm font-normal leading-normal">Minutes</p></div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Section -->
+<div>
+<h3 class="text-text-primary text-lg font-bold leading-tight tracking-[-0.015em] pb-3">Quick Actions</h3>
+<div class="@container">
+<div class="gap-3 grid-cols-[repeat(auto-fit,minmax(80px,_1fr))] grid">
+<div class="flex flex-col items-center gap-2 text-center">
+<button class="flex items-center justify-center rounded-full bg-primary/10 p-4 text-primary">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<p class="text-text-primary text-sm font-medium leading-normal">Scan Item</p>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<button class="flex items-center justify-center rounded-full bg-primary/10 p-4 text-primary">
+<span class="material-symbols-outlined">add_task</span>
+</button>
+<p class="text-text-primary text-sm font-medium leading-normal">Add Task</p>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<button class="flex items-center justify-center rounded-full bg-primary/10 p-4 text-primary">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<p class="text-text-primary text-sm font-medium leading-normal">Add Expense</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Cards -->
+<div class="flex flex-col gap-4">
+<!-- My Planner Card -->
+<div class="bg-surface-light rounded-xl p-4 flex flex-col gap-4 shadow-sm">
+<h4 class="text-text-primary font-bold text-base">My Planner</h4>
+<div class="flex items-center justify-between text-sm">
+<p class="text-text-primary">15 of 40 tasks done</p>
+<p class="font-medium text-primary">View All</p>
+</div>
+<div class="w-full bg-background-light rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 37.5%"></div>
+</div>
+<div class="flex flex-col gap-3 pt-2">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 border-2 border-text-primary/30 rounded"></div>
+<p class="text-text-primary text-sm">Book moving truck</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 border-2 border-text-primary/30 rounded"></div>
+<p class="text-text-primary text-sm">Purchase packing supplies</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 border-2 border-text-primary/30 rounded"></div>
+<p class="text-text-primary text-sm">Start packing non-essentials</p>
+</div>
+</div>
+</div>
+<!-- Move Budget Card -->
+<div class="bg-surface-light rounded-xl p-4 flex flex-col gap-4 shadow-sm">
+<h4 class="text-text-primary font-bold text-base">Move Budget</h4>
+<div class="flex items-baseline justify-between text-sm">
+<p class="text-text-primary"><span class="font-bold text-xl">$1,250</span> of $3,000 spent</p>
+<p class="font-medium text-primary">View Details</p>
+</div>
+<div class="w-full bg-background-light rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 41.6%"></div>
+</div>
+</div>
+<!-- Inventory Card -->
+<div class="bg-surface-light rounded-xl p-4 flex flex-col gap-4 shadow-sm">
+<h4 class="text-text-primary font-bold text-base">Inventory</h4>
+<div class="flex items-center justify-around text-center">
+<div>
+<p class="text-2xl font-bold text-text-primary">32</p>
+<p class="text-sm text-text-primary/70">Boxes Packed</p>
+</div>
+<div>
+<p class="text-2xl font-bold text-text-primary">158</p>
+<p class="text-sm text-text-primary/70">Items Tracked</p>
+</div>
+</div>
+<button class="w-full bg-primary text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+                        Scan New Item
+                    </button>
+</div>
+<!-- Move Team Card -->
+<div class="bg-surface-light rounded-xl p-4 flex flex-col gap-4 shadow-sm">
+<div class="flex items-center justify-between">
+<h4 class="text-text-primary font-bold text-base">Move Team</h4>
+<div class="flex -space-x-2">
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" data-alt="Team member avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3uMoDCeEpMDz5QmDxrAZ-Q1wQVo5rXJ49JJO8aXDVagcvg6w32W04ec1giGZTlZsATVPtLZ194yD8IkW3G9XyVp3wxtE1Xa_v1U7MVQZc0n7MeXdzQOPO-GnCPOncDBrpp-XdS8ITk--hxg0iKazKUshwcX3CHqAlw4NJFrkUcHbSaEGkbEpqGlqu2Lc4DWkF0YjLUceyCsEaKsBsOkC6HkUSYhtpDrZqYpG0gDZte-DxBNKJJ2mrIaciGWGyx_PTLJQ1QoYcSxR1"/>
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" data-alt="Team member avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKAqN_C_myxHqY1KfhOANTKbvKrYMErsaJPCdg2GBrg55Z1r6-RmiaX4xK96WLS123_yqQwkIsFXK7D2xRnlbnI1uJUkWStEa0Mz0vDxAH4CbFNPtJwBEYHXtCsd7NuCv8sL4pdB0-TS6qvTMd7WczJxlp94gZf804kSgKON66g1zjAGJvpACzJSCeRSAzAeOl-WYGLP0GwkwrvVFBaOxFMIR4U5FcHRd1Gpg8iCD4Z9WKVyhfl-AHafv6MiyL3lFynRz9__058cPH"/>
+<div class="h-8 w-8 rounded-full ring-2 ring-white bg-background-light flex items-center justify-center text-xs font-medium text-primary">+1</div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-3">
+<img class="h-8 w-8 rounded-full mt-1" data-alt="Team member avatar 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSAiQVPaJkhEQZqCCNmKJofS2slvSQbawIHS9SbaualRHyU81Y8PxVB3FYuuW5uje82M_lXXo_t_TZ_JhYK72aLIgpxvS_6PVbixsOBU-1MnjQNKtUKZfboSCDn2PzD6QqU49gZ9hCmg5eV8GNYGcHf9ILJrc6kbYeQZh3J3_pZNH2yNF14-glR5xa8n3vUbTf1IryIG0Pzlc6pYbufDm4XO0B4tS8HSJv67obvZeM7MA89D8JvmGRZ1xYTRYc6JRcjm2OVJ_J5ypF"/>
+<div class="text-sm">
+<p class="text-text-primary"><span class="font-bold">Jordan</span> added a new task: "Final walkthrough"</p>
+<p class="text-text-primary/60">2 hours ago</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<img class="h-8 w-8 rounded-full mt-1" data-alt="Team member avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUMtlvggtz3a7oMRLEHJP8I4_XGjUwBgt5LWmHhCSXY0ylflXWVZWXM0cYPxYL1YXh9xJhA6Xgj7y-aYc8UQnHFOZDVzlh6jwNHjMtMx25XYY91f6qSYBOsyiPVztDcu5XAbLMLiajIR6EHAockFKiDXqOLjzNfHbKou7qgwUPg5VVPccKwXg9JjpOIhD1TR_gqsIOUqxmhLDrUsdWO44F9JxjFuTl4br4jZ13CX5RXSu8lN8LS7FwzJ2jKlk0FPk_acAWCn9lCGjx"/>
+<div class="text-sm">
+<p class="text-text-primary"><span class="font-bold">Taylor</span> packed "Kitchen Box #4".</p>
+<p class="text-text-primary/60">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

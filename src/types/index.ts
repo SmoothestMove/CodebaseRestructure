@@ -1,4 +1,4 @@
-
+﻿
 export enum ItemStatus {
   PREPARED = 'Prepared', // Box identified, label printed, ready for packing contents
   PACKED = 'Packed', // Box filled with contents, sealed, QR label applied
@@ -23,6 +23,28 @@ export interface Owner {
   color: string; // Hex color code
   createdAt: number;
 }
+
+// NEW: Enhanced separation types - re-export from owners-spaces module
+export type { 
+  PersonalOwner, 
+  CommunalSpace, 
+  OwnerOrSpace,
+  LegacyOwner
+} from './owners-spaces';
+
+export {
+  isPersonalOwner,
+  isCommunalSpace,
+  isCustomCommunalSpace,
+  isLegacyOwner,
+  legacyOwnerToModern,
+  modernToLegacyOwner,
+  getDisplayName,
+  getShortName,
+  getEntityType,
+  separateOwnersAndSpaces,
+  combineOwnersAndSpaces
+} from './owners-spaces';
 
 export type NewOwnerData = Omit<Owner, 'uid' | 'createdAt'>;
 
@@ -69,3 +91,4 @@ export interface AppSettings {
   currentMoveId?: string; // Unique ID for the current move session
   // Add other settings here as needed
 }
+
